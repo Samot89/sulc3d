@@ -963,12 +963,9 @@
       <textarea id="message" name="message" rows="4" placeholder="Popište co potřebujete vytisknout, materiál, množství..."></textarea>
     </div>
     <div class="form-group">
-      <label>3D soubor</label>
-      <div style="background:rgba(79,123,239,0.06);border:1px solid rgba(79,123,239,0.2);border-radius:10px;padding:1.25rem 1.5rem;">
-        <p style="font-size:0.9rem;margin-bottom:0.5rem;">📎 Po odeslání poptávky pošlete váš soubor přímo na email:</p>
-        <a href="mailto:samot.sulc@seznam.cz" style="font-size:1rem;font-weight:700;color:var(--blue);">samot.sulc@seznam.cz</a>
-        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem;">Podporované formáty: STL · STEP · OBJ · 3MF</p>
-      </div>
+      <label for="filelink">Odkaz na 3D soubor (volitelné)</label>
+      <input type="url" id="filelink" name="filelink" placeholder="https://wetransfer.com/... nebo Google Drive, Dropbox..." />
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Nahrajte soubor na <a href="https://wetransfer.com" target="_blank" style="color:var(--blue);">WeTransfer</a>, Google Drive nebo Dropbox a vložte odkaz sem.</p>
     </div>
     <button type="submit" class="btn-primary" style="width:100%;justify-content:center;border:none;cursor:pointer;font-size:1rem;">
       Odeslat poptávku
