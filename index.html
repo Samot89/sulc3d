@@ -936,10 +936,14 @@
   <p class="section-sub" style="margin: 0 auto 2.5rem;">Nezávazná kalkulace zdarma. Odpovíme do 24 hodin.</p>
 
   <form
-    action="https://formspree.io/f/xdapwvvw"
+    action="https://formsubmit.co/samot.sulc@seznam.cz"
     method="POST"
+    enctype="multipart/form-data"
     class="contact-form reveal"
   >
+    <input type="hidden" name="_subject" value="Nová poptávka – 3D tisk" />
+    <input type="hidden" name="_captcha" value="false" />
+    <input type="hidden" name="_template" value="table" />
     <div class="form-row">
       <div class="form-group">
         <label for="name">Jméno a příjmení</label>
@@ -963,9 +967,15 @@
       <textarea id="message" name="message" rows="4" placeholder="Popište co potřebujete vytisknout, materiál, množství..."></textarea>
     </div>
     <div class="form-group">
-      <label for="filelink">Odkaz na 3D soubor (volitelné)</label>
-      <input type="url" id="filelink" name="filelink" placeholder="https://wetransfer.com/... nebo Google Drive, Dropbox..." />
-      <p style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;">Nahrajte soubor na <a href="https://wetransfer.com" target="_blank" style="color:var(--blue);">WeTransfer</a>, Google Drive nebo Dropbox a vložte odkaz sem.</p>
+      <label>3D soubor (STL, STEP, OBJ, 3MF)</label>
+      <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileUpload').click()">
+        <div class="upload-icon">☁️</div>
+        <div class="upload-title">Přetáhněte soubor sem</div>
+        <p class="upload-sub">nebo klikněte pro výběr ze zařízení</p>
+        <p class="supported">STL · STEP · OBJ · 3MF · max. 20 MB</p>
+      </div>
+      <input type="file" id="fileUpload" name="attachment" style="display:none" accept=".stl,.step,.obj,.3mf,.stp" />
+      <p id="fileName" style="margin-top:0.5rem;font-size:0.85rem;color:var(--blue);display:none;"></p>
     </div>
     <button type="submit" class="btn-primary" style="width:100%;justify-content:center;border:none;cursor:pointer;font-size:1rem;">
       Odeslat poptávku
