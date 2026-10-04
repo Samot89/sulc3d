@@ -4,15 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3D tisk na zakázku – Tomáš Šulc | sulc3d.cz</title>
-  <meta name="description" content="Profesionální FDM 3D tisk a 3D modelování na zakázku. Rychlé dodání do 72 hodin, 10+ materiálů. Kontakt: 733 524 062." />
-  <meta name="keywords" content="3D tisk na zakázku, FDM tisk, 3D modelování, plastové díly, prototypy" />
+  <meta name="description" content="FDM 3D tisk a 3D modelování na zakázku. Materiály PLA, PETG, ABS, ASA a TPU, nezávazná kalkulace zdarma. Kontakt: 733 524 062." />
   <meta name="author" content="Tomáš Šulc" />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
   <meta property="og:title" content="3D tisk na zakázku – Tomáš Šulc" />
-  <meta property="og:description" content="Profesionální FDM 3D tisk a modelování na zakázku. Dodání do 72 hodin." />
-  <meta property="og:url" content="https://sulc3d.cz" />
+  <meta property="og:description" content="FDM 3D tisk a modelování na zakázku. Nezávazná kalkulace zdarma." />
+  <meta property="og:url" content="https://sulc3d.cz/" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "sulc3d – 3D tisk na zakázku",
+    "url": "https://sulc3d.cz/",
+    "image": "https://sulc3d.cz/og.png",
+    "description": "FDM 3D tisk a 3D modelování na zakázku.",
+    "telephone": "+420733524062",
+    "email": "samot.sulc@seznam.cz",
+    "founder": { "@type": "Person", "name": "Tomáš Šulc" },
+    "areaServed": { "@type": "Country", "name": "Česká republika" },
+    "sameAs": ["https://www.facebook.com/tom3dprint"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Jaké formáty souborů přijímáte?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Přijímáme STL, STEP (STP), OBJ a 3MF. Pokud nemáte 3D soubor, nabízíme také službu 3D modelování na zakázku." } },
+      { "@type": "Question", "name": "Jak dlouho trvá výroba?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Záleží na velikosti a počtu dílů a na aktuálním vytížení. Konkrétní termín vám sdělíme předem v cenové nabídce." } },
+      { "@type": "Question", "name": "Kolik stojí 3D tisk?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Cena závisí na velikosti dílu, materiálu a složitosti tisku. Pošlete nám soubor a do 24 hodin zašleme přesnou kalkulaci zdarma." } },
+      { "@type": "Question", "name": "Nemám 3D model — co mám udělat?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Nabízíme 3D modelování na zakázku. Stačí nám poslat náčrt, fotku nebo popsat, co potřebujete — model vytvoříme za vás a pak rovnou vytiskneme." } },
+      { "@type": "Question", "name": "Jak probíhá platba?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Platba probíhá převodem na účet po dokončení výroby a před odesláním zásilky. Při větších objednávkách je možná záloha." } },
+      { "@type": "Question", "name": "Kam zasíláte?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Zasíláme po celé České republice. Cena dopravy závisí na velikosti zásilky." } }
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -40,6 +84,24 @@
       overflow-x: hidden;
     }
 
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     /* ── NAVBAR ────────────────────────────────── */
     nav {
       position: fixed;
@@ -53,12 +115,16 @@
       background: rgba(8,12,20,0.85);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
     }
+
+    nav.scrolled { background: rgba(8,12,20,0.97); }
 
     .logo {
       font-size: 1.4rem;
       font-weight: 900;
       letter-spacing: -0.5px;
+      text-decoration: none;
       background: var(--grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -81,6 +147,12 @@
 
     .nav-links a:hover { color: var(--text); }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
     .nav-cta {
       padding: 0.5rem 1.4rem;
       background: var(--grad);
@@ -93,6 +165,31 @@
     }
 
     .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .nav-toggle {
+      display: none;
+      width: 42px; height: 42px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 18px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+    nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* ── HERO ──────────────────────────────────── */
     .hero {
@@ -122,6 +219,8 @@
       bottom: 10%; right: 5%;
       pointer-events: none;
     }
+
+    .hero-inner { position: relative; }
 
     .badge {
       display: inline-flex;
@@ -182,13 +281,17 @@
     }
 
     .btn-primary {
+      display: inline-block;
       padding: 0.9rem 2.2rem;
       background: var(--grad);
       color: #fff;
+      font-family: inherit;
       font-weight: 700;
       font-size: 1rem;
+      border: none;
       border-radius: 50px;
       text-decoration: none;
+      cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 0 30px rgba(79,123,239,0.35);
     }
@@ -243,7 +346,10 @@
     }
 
     /* ── SECTIONS ──────────────────────────────── */
-    section { padding: 100px 5%; }
+    section { padding: 100px 5%; scroll-margin-top: 20px; }
+
+    .alt { background: var(--surface); }
+    .center { text-align: center; }
 
     .section-tag {
       display: inline-block;
@@ -258,6 +364,7 @@
     .section-title {
       font-size: clamp(1.8rem, 4vw, 2.8rem);
       font-weight: 800;
+      line-height: 1.2;
       letter-spacing: -1px;
       margin-bottom: 1rem;
     }
@@ -269,9 +376,11 @@
       margin-bottom: 3.5rem;
     }
 
-    /* ── HOW IT WORKS ──────────────────────────── */
-    .how { background: var(--surface); }
+    .center .section-sub { margin: 0 auto 2.5rem; }
 
+    .section-action { text-align: center; margin-top: 3rem; }
+
+    /* ── HOW IT WORKS ──────────────────────────── */
     .how-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -319,12 +428,6 @@
     }
 
     /* ── TECHNOLOGIES ──────────────────────────── */
-    .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
     .tech-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -333,7 +436,6 @@
       position: relative;
       overflow: hidden;
       transition: transform 0.3s, border-color 0.3s;
-      cursor: default;
     }
 
     .tech-card::before {
@@ -348,6 +450,8 @@
 
     .tech-card:hover { transform: translateY(-5px); border-color: rgba(79,123,239,0.3); }
     .tech-card:hover::before { opacity: 1; }
+
+    .tech-card.wide { max-width: 800px; margin: 0 auto; }
 
     .tech-label {
       font-size: 0.7rem;
@@ -388,8 +492,6 @@
     }
 
     /* ── BENEFITS ──────────────────────────────── */
-    .benefits { background: var(--surface); }
-
     .benefits-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -437,6 +539,8 @@
     }
 
     /* ── MATERIALS ─────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+
     .materials-table {
       width: 100%;
       border-collapse: collapse;
@@ -470,102 +574,165 @@
     .dot-yellow { color: #facc15; }
     .dot-red    { color: #f87171; }
 
-    /* ── UPLOAD / CTA ──────────────────────────── */
-    .upload-section {
-      background: var(--surface);
-      text-align: center;
+    /* ── PRICING ───────────────────────────────── */
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 800px;
     }
 
-    .upload-box {
-      max-width: 600px;
-      margin: 0 auto;
-      border: 2px dashed rgba(79,123,239,0.3);
-      border-radius: 20px;
-      padding: 3rem 2rem;
-      background: rgba(79,123,239,0.04);
-      transition: border-color 0.3s, background 0.3s;
+    .price-card { text-align: center; padding: 2.5rem 2rem; }
+    .price-card .tech-desc { margin-bottom: 1.75rem; }
+    .price-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+    .price-value {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin: 0.75rem 0;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── FAQ ───────────────────────────────────── */
+    .faq-list { max-width: 720px; }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      background: var(--card);
+    }
+
+    .faq-q {
+      width: 100%;
+      padding: 1.2rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-align: left;
       cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.2s;
     }
 
-    .upload-box:hover {
+    .faq-q:hover { background: rgba(255,255,255,0.03); }
+    .faq-q span { font-size: 1.2rem; transition: transform 0.3s; }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .faq-a p { padding: 0 1.5rem 1.2rem; }
+    .faq-item.open .faq-q span { transform: rotate(45deg); }
+
+    /* ── FORM ──────────────────────────────────── */
+    .contact-form {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      text-align: left;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label,
+    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .form-label small { font-weight: 400; color: var(--muted); }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--blue); }
+    .form-group textarea { resize: vertical; }
+    .form-group select { cursor: pointer; }
+
+    .file-drop {
+      display: block;
+      background: rgba(79,123,239,0.04);
+      border: 2px dashed rgba(79,123,239,0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .file-drop:hover,
+    .file-drop.dragover,
+    .file-drop:focus-within {
       border-color: rgba(79,123,239,0.6);
       background: rgba(79,123,239,0.08);
     }
 
-    .upload-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .upload-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .upload-sub { font-size: 0.825rem; color: var(--muted); font-weight: 400; }
+    .supported { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; font-weight: 400; }
 
-    .upload-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
+    .file-info { font-size: 0.85rem; color: var(--blue); }
+    .file-info.error { color: #f87171; }
 
-    .upload-sub {
-      color: var(--muted);
-      font-size: 0.875rem;
-      margin-bottom: 1.75rem;
-    }
+    .form-note { font-size: 0.78rem; color: var(--muted); text-align: center; }
+    .form-note a { color: var(--blue); }
 
-    .supported {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 1.25rem;
-    }
-
-    /* ── TESTIMONIALS ──────────────────────────── */
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .testi-card {
+    /* ── FACEBOOK ──────────────────────────────── */
+    .fb-box {
+      max-width: 500px;
+      margin: 0 auto;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.75rem;
-      transition: border-color 0.3s;
+      padding: 2.5rem 2rem;
     }
 
-    .testi-card:hover { border-color: rgba(139,92,246,0.3); }
+    .fb-box p { font-size: 0.8rem; color: var(--muted); margin-top: 1.25rem; }
+    .fb-box a:not(.btn-primary) { color: var(--blue); }
 
-    .stars { color: #facc15; font-size: 0.85rem; margin-bottom: 1rem; }
-
-    .testi-text {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 1.25rem;
-      font-style: italic;
+    .fb-frame {
+      display: block;
+      margin: 0 auto;
+      border: none;
+      overflow: hidden;
+      border-radius: 16px;
+      max-width: 100%;
     }
-
-    .testi-author {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .testi-avatar {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      background: var(--grad);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #fff;
-    }
-
-    .testi-name { font-size: 0.875rem; font-weight: 600; }
-    .testi-role { font-size: 0.775rem; color: var(--muted); }
 
     /* ── BIG CTA ───────────────────────────────── */
-    .big-cta {
-      background: var(--surface);
-      text-align: center;
-    }
-
     .cta-box {
       max-width: 700px;
       margin: 0 auto;
@@ -590,6 +757,7 @@
     .cta-box h2 {
       font-size: clamp(1.6rem, 4vw, 2.4rem);
       font-weight: 800;
+      line-height: 1.2;
       letter-spacing: -1px;
       margin-bottom: 1rem;
     }
@@ -622,7 +790,7 @@
       max-width: 280px;
     }
 
-    .footer-col h4 {
+    .footer-col h3 {
       font-size: 0.85rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -653,17 +821,61 @@
     }
 
     .footer-bottom p { font-size: 0.8rem; color: var(--muted); }
+    .footer-bottom a { color: var(--muted); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--text); }
+
+    /* ── WHATSAPP ──────────────────────────────── */
+    .wa-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 58px;
+      height: 58px;
+      background: #25d366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      z-index: 999;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+
+    .wa-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.6);
+    }
 
     /* ── RESPONSIVE ────────────────────────────── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
+    @media (max-width: 860px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px; left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem 5% 1rem;
+        background: rgba(8,12,20,0.98);
+        border-bottom: 1px solid var(--border);
+      }
+      nav.open .nav-links { display: flex; }
+      .nav-links a { display: block; padding: 0.85rem 0; font-size: 1rem; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .hero-stats { gap: 1.5rem; }
+      section { padding: 70px 5%; }
+    }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 520px) {
-      .footer-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
       h1 { letter-spacing: -1px; }
+      .nav-cta { padding: 0.5rem 1rem; font-size: 0.8rem; }
+      .wa-btn { bottom: 1.25rem; right: 1.25rem; }
     }
 
     /* ── SCROLL REVEAL ─────────────────────────── */
@@ -677,34 +889,50 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .badge-dot { animation: none; }
+    }
   </style>
+  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
 
 <!-- ── NAVBAR ──────────────────────────────────────── -->
-<nav>
-  <a href="#" class="logo" style="text-decoration:none;">PRINTLAB</a>
-  <ul class="nav-links">
+<nav id="nav">
+  <a href="#" class="logo">SULC3D</a>
+  <ul class="nav-links" id="navLinks">
     <li><a href="#jak-to-funguje">Jak to funguje</a></li>
     <li><a href="#technologie">Technologie</a></li>
     <li><a href="#modelovani">3D modelování</a></li>
     <li><a href="#materialy">Materiály</a></li>
+    <li><a href="#cenik">Ceník</a></li>
+    <li><a href="#faq">FAQ</a></li>
   </ul>
-  <a href="#naceneni" class="nav-cta">Nezávazná poptávka</a>
+  <div class="nav-right">
+    <a href="#naceneni" class="nav-cta">Nezávazná poptávka</a>
+    <button type="button" class="nav-toggle" id="navToggle" aria-label="Otevřít menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
+
+<main>
 
 <!-- ── HERO ───────────────────────────────────────── -->
 <section class="hero">
   <div class="hero-glow"></div>
   <div class="hero-glow-2"></div>
-  <div>
+  <div class="hero-inner">
     <div class="badge">
       <span class="badge-dot"></span>
-      Dodání do 72 hodin
+      Nezávazná kalkulace zdarma
     </div>
     <h1>Váš návrh.<br /><span>Vytiskneme ho.</span></h1>
     <p class="hero-sub">
-      Profesionální 3D tisk na zakázku z nejkvalitnějších materiálů.
+      3D tisk a modelování na zakázku z kvalitních materiálů.
       Nahrajte soubor, dostanete cenu — a my se postaráme o zbytek.
     </p>
     <div class="hero-btns">
@@ -712,16 +940,12 @@
       <a href="#jak-to-funguje" class="btn-secondary">Jak to funguje →</a>
     </div>
     <div class="hero-stats">
-<div class="stat">
-        <div class="stat-num">72h</div>
-        <div class="stat-label">Standardní dodací lhůta</div>
+      <div class="stat">
+        <div class="stat-num">24 h</div>
+        <div class="stat-label">Odpověď na poptávku</div>
       </div>
       <div class="stat">
-        <div class="stat-num">99 %</div>
-        <div class="stat-label">Spokojených zákazníků</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">10+</div>
+        <div class="stat-num">5</div>
         <div class="stat-label">Materiálů FDM</div>
       </div>
     </div>
@@ -729,33 +953,33 @@
 </section>
 
 <!-- ── JAK TO FUNGUJE ─────────────────────────────── -->
-<section class="how" id="jak-to-funguje">
+<section class="alt" id="jak-to-funguje">
   <div class="section-tag">Proces</div>
-  <div class="section-title">Objednávka za 3 kroky</div>
+  <h2 class="section-title">Objednávka ve 4 krocích</h2>
   <p class="section-sub">Celý proces je navržen tak, aby byl co nejjednodušší — bez zbytečné byrokracie.</p>
   <div class="how-grid">
     <div class="step-card reveal">
       <div class="step-num">01</div>
       <div class="step-icon">📁</div>
-      <div class="step-title">Nahrajte 3D soubor</div>
+      <h3 class="step-title">Nahrajte 3D soubor</h3>
       <p class="step-desc">Stačí nám váš 3D model ve formátu STL, STEP, OBJ nebo 3MF. Zvládneme i složité geometrie.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">02</div>
       <div class="step-icon">💬</div>
-      <div class="step-title">Dostanete nabídku</div>
-      <p class="step-desc">Do 24 hodin vám zašleme přesnou cenovou kalkulaci s výběrem materiálu a technologie tisku.</p>
+      <h3 class="step-title">Dostanete nabídku</h3>
+      <p class="step-desc">Do 24 hodin vám zašleme přesnou cenovou kalkulaci s doporučením materiálu.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">03</div>
       <div class="step-icon">🚀</div>
-      <div class="step-title">Zahájíme výrobu</div>
-      <p class="step-desc">Po potvrzení objednávky tiskneme — hotový díl dorazí k vám do 72 hodin od schválení.</p>
+      <h3 class="step-title">Zahájíme výrobu</h3>
+      <p class="step-desc">Po potvrzení objednávky se pustíme do tisku. Termín dodání se dozvíte předem v cenové nabídce.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">04</div>
       <div class="step-icon">📦</div>
-      <div class="step-title">Bezpečné doručení</div>
+      <h3 class="step-title">Bezpečné doručení</h3>
       <p class="step-desc">Balíme s péčí, každý díl je zkontrolován a zabalen tak, aby dorazil v perfektním stavu.</p>
     </div>
   </div>
@@ -764,127 +988,98 @@
 <!-- ── TECHNOLOGIE ────────────────────────────────── -->
 <section id="technologie">
   <div class="section-tag">Technologie</div>
-  <div class="section-title">FDM tisk — naše specializace</div>
-  <p class="section-sub">Fused Deposition Modeling je nejrozšířenější metoda 3D tisku. Zvládneme prototypy, funkční díly i sériovou výrobu malých sérií.</p>
-  <div class="tech-grid" style="grid-template-columns: 1fr;">
-    <div class="tech-card reveal" style="max-width: 800px; margin: 0 auto; width: 100%;">
-      <div class="tech-label">Naše technologie</div>
-      <div class="tech-name">FDM – Fused Deposition Modeling</div>
-      <p class="tech-desc">Vrstvení roztaveného termoplastu s přesností až 0,1 mm. Ideální pro funkční prototypy, konstrukční díly, přípravky i finální produkty. Zvládáme tisknout díly různých velikostí, složitých geometrií i v různých barevných variantách. Tisk bez zbytečných příplatků za technologii.</p>
-      <div class="tech-tags">
-        <span class="tag">PLA</span>
-        <span class="tag">PETG</span>
-        <span class="tag">ABS</span>
-        <span class="tag">ASA</span>
-        <span class="tag">TPU</span>
-        <span class="tag">Nylon</span>
-        <span class="tag">PLA-CF</span>
-        <span class="tag">PETG-CF</span>
-        <span class="tag">PC</span>
-        <span class="tag">HIPS</span>
-      </div>
+  <h2 class="section-title">FDM tisk — naše specializace</h2>
+  <p class="section-sub">Fused Deposition Modeling je nejrozšířenější metoda 3D tisku. Zvládneme prototypy, funkční díly i malé série.</p>
+  <div class="tech-card wide reveal">
+    <div class="tech-label">Naše technologie</div>
+    <h3 class="tech-name">FDM – Fused Deposition Modeling</h3>
+    <p class="tech-desc">Vrstvení roztaveného termoplastu. Ideální pro funkční prototypy, konstrukční díly, přípravky i finální produkty. Zvládáme tisknout díly různých velikostí, složitých geometrií i v různých barevných variantách. Tisk bez zbytečných příplatků za technologii.</p>
+    <div class="tech-tags">
+      <span class="tag">PLA</span>
+      <span class="tag">PETG</span>
+      <span class="tag">ABS</span>
+      <span class="tag">ASA</span>
+      <span class="tag">TPU</span>
     </div>
   </div>
 </section>
 
 <!-- ── 3D MODELOVÁNÍ ──────────────────────────────── -->
-<section id="modelovani" style="background:var(--surface);">
+<section class="alt" id="modelovani">
   <div class="section-tag">Nová služba</div>
-  <div class="section-title">3D modelování na zakázku</div>
+  <h2 class="section-title">3D modelování na zakázku</h2>
   <p class="section-sub">Nemáte 3D soubor? Nevadí — nakreslíme ho za vás. Stačí náčrt, rozměry nebo fotka a my vytvoříme přesný 3D model připravený k tisku.</p>
   <div class="how-grid">
     <div class="step-card reveal">
       <div class="step-num">01</div>
       <div class="step-icon">✏️</div>
-      <div class="step-title">Pošlete podklady</div>
+      <h3 class="step-title">Pošlete podklady</h3>
       <p class="step-desc">Stačí náčrt na papíře, fotka, rozměry nebo slovní popis. Čím více informací, tím přesnější model.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">02</div>
       <div class="step-icon">🖥️</div>
-      <div class="step-title">Vytvoříme 3D model</div>
+      <h3 class="step-title">Vytvoříme 3D model</h3>
       <p class="step-desc">Modelujeme v profesionálních CAD nástrojích. Výsledkem je přesný 3D model ve formátu STEP, STL nebo dle vašeho požadavku.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">03</div>
       <div class="step-icon">✅</div>
-      <div class="step-title">Schválení a tisk</div>
+      <h3 class="step-title">Schválení a tisk</h3>
       <p class="step-desc">Model vám zašleme ke schválení. Po potvrzení rovnou tiskneme — vše na jednom místě bez zbytečného přeposílání.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">04</div>
       <div class="step-icon">📐</div>
-      <div class="step-title">Dostanete soubor</div>
+      <h3 class="step-title">Dostanete soubor</h3>
       <p class="step-desc">3D soubor zůstává váš — poskytneme vám ho ke stažení pro případné budoucí úpravy nebo přetisky.</p>
     </div>
   </div>
-  <div style="text-align:center;margin-top:3rem;">
-    <a href="#naceneni" class="btn-primary">Poptat 3D modelování</a>
+  <div class="section-action">
+    <a href="#naceneni" class="btn-primary" data-sluzba="3D modelování na zakázku">Poptat 3D modelování</a>
   </div>
 </section>
 
 <!-- ── VÝHODY ─────────────────────────────────────── -->
-<section class="benefits">
-  <div class="section-tag">Proč PRINTLAB</div>
-  <div class="section-title">S námi to prostě funguje</div>
+<section id="vyhody">
+  <div class="section-tag">Proč sulc3d</div>
+  <h2 class="section-title">S námi to prostě funguje</h2>
   <p class="section-sub">Nejsme jen tiskárna — jsme váš technický partner.</p>
   <div class="benefits-grid">
     <div class="benefit-card reveal">
-      <div class="benefit-icon">⚡</div>
-      <div>
-        <div class="benefit-title">Expresní výroba</div>
-        <p class="benefit-desc">Standardní objednávky vyřídíme do 72 hodin. V urgentních případech i za 24 hodin.</p>
-      </div>
-    </div>
-    <div class="benefit-card reveal">
       <div class="benefit-icon">🔬</div>
       <div>
-        <div class="benefit-title">Kontrola kvality</div>
+        <h3 class="benefit-title">Kontrola kvality</h3>
         <p class="benefit-desc">Každý díl prochází vizuální i rozměrovou kontrolou před odesláním.</p>
       </div>
     </div>
     <div class="benefit-card reveal">
       <div class="benefit-icon">🌿</div>
       <div>
-        <div class="benefit-title">Ekologické materiály</div>
-        <p class="benefit-desc">Používáme biologicky odbouratelné materiály a minimalizujeme odpad z tisku.</p>
+        <h3 class="benefit-title">Šetrný tisk</h3>
+        <p class="benefit-desc">Základní materiál PLA se vyrábí z obnovitelných zdrojů. Tiskneme na míru, takže vzniká minimum odpadu.</p>
       </div>
     </div>
     <div class="benefit-card reveal">
       <div class="benefit-icon">💡</div>
       <div>
-        <div class="benefit-title">Technické poradenství</div>
-        <p class="benefit-desc">Nejste si jistí volbou materiálu? Poradíme vám, jaká technologie je pro váš díl ideální.</p>
-      </div>
-    </div>
-    <div class="benefit-card reveal">
-      <div class="benefit-icon">🔒</div>
-      <div>
-        <div class="benefit-title">NDA & důvěrnost</div>
-        <p class="benefit-desc">Vaše návrhy jsou v bezpečí. Podepíšeme NDA a zachováme mlčenlivost o vašich projektech.</p>
-      </div>
-    </div>
-    <div class="benefit-card reveal">
-      <div class="benefit-icon">📐</div>
-      <div>
-        <div class="benefit-title">Postprocessing</div>
-        <p class="benefit-desc">Nabízíme broušení, lakování, lepení a další úpravy povrchu dle vašich požadavků.</p>
+        <h3 class="benefit-title">Technické poradenství</h3>
+        <p class="benefit-desc">Nejste si jistí volbou materiálu? Poradíme vám, jaký materiál je pro váš díl ideální.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ── MATERIALY ──────────────────────────────────── -->
-<section id="materialy">
+<section class="alt" id="materialy">
   <div class="section-tag">Materiály</div>
-  <div class="section-title">Přehled materiálů</div>
-  <p class="section-sub">Vyberte materiál podle mechanických vlastností, které váš díl potřebuje.</p>
-  <div style="overflow-x:auto;" class="reveal">
+  <h2 class="section-title">Přehled materiálů</h2>
+  <p class="section-sub">Vyberte materiál podle vlastností, které váš díl potřebuje. Nevíte si rady? Poradíme.</p>
+  <div class="table-wrap reveal">
     <table class="materials-table">
       <thead>
         <tr>
           <th>Materiál</th>
-          <th>Technologie</th>
           <th>Pevnost</th>
           <th>Tepelná odolnost</th>
           <th>Flexibilita</th>
@@ -894,175 +1089,196 @@
       <tbody>
         <tr>
           <td><strong>PLA</strong></td>
-          <td>FDM</td>
-          <td><span class="dot-yellow">●●●</span></td>
-          <td><span class="dot-red">●</span></td>
-          <td><span class="dot-red">●</span></td>
+          <td><span class="dot-yellow" aria-label="3 z 5">●●●</span></td>
+          <td><span class="dot-red" aria-label="1 z 5">●</span></td>
+          <td><span class="dot-red" aria-label="1 z 5">●</span></td>
           <td>Prototypy, modely, dekorace</td>
         </tr>
         <tr>
           <td><strong>PETG</strong></td>
-          <td>FDM</td>
-          <td><span class="dot-yellow">●●●</span></td>
-          <td><span class="dot-yellow">●●</span></td>
-          <td><span class="dot-yellow">●●</span></td>
+          <td><span class="dot-yellow" aria-label="3 z 5">●●●</span></td>
+          <td><span class="dot-yellow" aria-label="2 z 5">●●</span></td>
+          <td><span class="dot-yellow" aria-label="2 z 5">●●</span></td>
           <td>Funkční díly, nádoby, úchyty</td>
         </tr>
         <tr>
           <td><strong>ABS / ASA</strong></td>
-          <td>FDM</td>
-          <td><span class="dot-green">●●●●</span></td>
-          <td><span class="dot-green">●●●</span></td>
-          <td><span class="dot-yellow">●●</span></td>
+          <td><span class="dot-green" aria-label="4 z 5">●●●●</span></td>
+          <td><span class="dot-green" aria-label="3 z 5">●●●</span></td>
+          <td><span class="dot-yellow" aria-label="2 z 5">●●</span></td>
           <td>Venkovní použití, technické díly</td>
         </tr>
         <tr>
           <td><strong>TPU</strong></td>
-          <td>FDM</td>
-          <td><span class="dot-yellow">●●</span></td>
-          <td><span class="dot-yellow">●●</span></td>
-          <td><span class="dot-green">●●●●●</span></td>
-          <td>Těsnění, ochranné kryty, hadičky</td>
+          <td><span class="dot-yellow" aria-label="2 z 5">●●</span></td>
+          <td><span class="dot-yellow" aria-label="2 z 5">●●</span></td>
+          <td><span class="dot-green" aria-label="5 z 5">●●●●●</span></td>
+          <td>Těsnění, ochranné kryty, tlumiče</td>
         </tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<!-- ── NAHRAT SOUBOR ───────────────────────────────── -->
-<section class="upload-section" id="naceneni">
+<!-- ── CENÍK ───────────────────────────────────────── -->
+<section id="cenik">
+  <div class="section-tag">Ceník</div>
+  <h2 class="section-title">Orientační ceny</h2>
+  <p class="section-sub">Každá zakázka je individuální. Přesnou cenu dostanete po odeslání poptávky zdarma.</p>
+  <div class="price-grid reveal">
+    <div class="tech-card price-card">
+      <div class="price-icon">🖨️</div>
+      <h3 class="tech-name">3D tisk</h3>
+      <div class="price-value">od 50 Kč</div>
+      <p class="tech-desc">za díl podle náročnosti, materiálu a velikosti tisku</p>
+      <a href="#naceneni" class="btn-primary" data-sluzba="3D tisk na zakázku">Poptat tisk</a>
+    </div>
+    <div class="tech-card price-card">
+      <div class="price-icon">✏️</div>
+      <h3 class="tech-name">3D modelování</h3>
+      <div class="price-value">od 300 Kč/hod</div>
+      <p class="tech-desc">podle složitosti modelu — jednoduchý díl, součástka nebo kompletní design</p>
+      <a href="#naceneni" class="btn-primary" data-sluzba="3D modelování na zakázku">Poptat modelování</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────── -->
+<section class="alt" id="faq">
+  <div class="section-tag">Časté otázky</div>
+  <h2 class="section-title">FAQ</h2>
+  <p class="section-sub">Odpovědi na nejčastější otázky zákazníků.</p>
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button type="button" class="faq-q" aria-expanded="false">Jaké formáty souborů přijímáte? <span aria-hidden="true">+</span></button>
+      <div class="faq-a"><p>Přijímáme STL, STEP (STP), OBJ a 3MF. Pokud nemáte 3D soubor, nabízíme také službu 3D modelování na zakázku.</p></div>
+    </div>
+    <div class="faq-item">
+      <button type="button" class="faq-q" aria-expanded="false">Jak dlouho trvá výroba? <span aria-hidden="true">+</span></button>
+      <div class="faq-a"><p>Záleží na velikosti a počtu dílů a na aktuálním vytížení. Konkrétní termín vám sdělíme předem v cenové nabídce.</p></div>
+    </div>
+    <div class="faq-item">
+      <button type="button" class="faq-q" aria-expanded="false">Kolik stojí 3D tisk? <span aria-hidden="true">+</span></button>
+      <div class="faq-a"><p>Cena závisí na velikosti dílu, materiálu a složitosti tisku. Každá poptávka je individuální — pošlete nám soubor a do 24 hodin zašleme přesnou kalkulaci zdarma.</p></div>
+    </div>
+    <div class="faq-item">
+      <button type="button" class="faq-q" aria-expanded="false">Nemám 3D model — co mám udělat? <span aria-hidden="true">+</span></button>
+      <div class="faq-a"><p>Nevadí! Nabízíme 3D modelování na zakázku. Stačí nám poslat náčrt, fotku nebo popsat, co potřebujete — model vytvoříme za vás a pak rovnou vytiskneme.</p></div>
+    </div>
+    <div class="faq-item">
+      <button type="button" class="faq-q" aria-expanded="false">Jak probíhá platba? <span aria-hidden="true">+</span></button>
+      <div class="faq-a"><p>Platba probíhá převodem na účet po dokončení výroby a před odesláním zásilky. Při větších objednávkách je možná záloha.</p></div>
+    </div>
+    <div class="faq-item">
+      <button type="button" class="faq-q" aria-expanded="false">Kam zasíláte? <span aria-hidden="true">+</span></button>
+      <div class="faq-a"><p>Zasíláme po celé České republice. Cena dopravy závisí na velikosti zásilky.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── POPTÁVKA ───────────────────────────────────── -->
+<section class="center" id="naceneni">
   <div class="section-tag">Poptávka</div>
-  <div class="section-title">Pošlete nám váš model</div>
-  <p class="section-sub" style="margin: 0 auto 2.5rem;">Nezávazná kalkulace zdarma. Odpovíme do 24 hodin.</p>
+  <h2 class="section-title">Pošlete nám váš model</h2>
+  <p class="section-sub">Nezávazná kalkulace zdarma. Odpovíme do 24 hodin.</p>
 
   <form
     action="https://formsubmit.co/samot.sulc@seznam.cz"
     method="POST"
     enctype="multipart/form-data"
     class="contact-form reveal"
+    id="contactForm"
   >
     <input type="hidden" name="_subject" value="Nová poptávka – 3D tisk" />
     <input type="hidden" name="_captcha" value="false" />
     <input type="hidden" name="_template" value="table" />
+    <input type="hidden" name="_next" value="https://sulc3d.cz/dekujeme.html" />
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
     <div class="form-row">
       <div class="form-group">
         <label for="name">Jméno a příjmení</label>
-        <input type="text" id="name" name="name" placeholder="Jan Novák" required />
+        <input type="text" id="name" name="name" placeholder="Jan Novák" autocomplete="name" required />
       </div>
       <div class="form-group">
         <label for="email">Váš e-mail</label>
-        <input type="email" id="email" name="email" placeholder="vas@email.cz" required />
+        <input type="email" id="email" name="email" placeholder="vas@email.cz" autocomplete="email" required />
       </div>
     </div>
-    <div class="form-group">
-      <label for="sluzba">Typ služby</label>
-      <select id="sluzba" name="sluzba" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-family:inherit;font-size:0.9rem;outline:none;transition:border-color 0.2s;cursor:pointer;">
-        <option value="3D tisk na zakázku">3D tisk na zakázku</option>
-        <option value="3D modelování na zakázku">3D modelování na zakázku</option>
-        <option value="3D tisk + modelování">3D tisk + modelování</option>
-      </select>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="telefon" class="form-label">Telefon <small>(nepovinné)</small></label>
+        <input type="tel" id="telefon" name="telefon" placeholder="+420 123 456 789" autocomplete="tel" />
+      </div>
+      <div class="form-group">
+        <label for="sluzba">Typ služby</label>
+        <select id="sluzba" name="sluzba">
+          <option value="3D tisk na zakázku">3D tisk na zakázku</option>
+          <option value="3D modelování na zakázku">3D modelování na zakázku</option>
+          <option value="3D tisk + modelování">3D tisk + modelování</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="material">Materiál</label>
+        <select id="material" name="material">
+          <option value="Nevím, poraďte mi">Nevím, poraďte mi</option>
+          <option value="PLA">PLA</option>
+          <option value="PETG">PETG</option>
+          <option value="ABS / ASA">ABS / ASA</option>
+          <option value="TPU">TPU</option>
+          <option value="Jiný (uvedu v popisu)">Jiný (uvedu v popisu)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="kusu">Počet kusů</label>
+        <input type="number" id="kusu" name="pocet_kusu" min="1" value="1" inputmode="numeric" />
+      </div>
     </div>
     <div class="form-group">
       <label for="message">Popis objednávky</label>
-      <textarea id="message" name="message" rows="4" placeholder="Popište co potřebujete vytisknout, materiál, množství..."></textarea>
+      <textarea id="message" name="message" rows="4" placeholder="Popište, co potřebujete vytisknout, barvu, rozměry, termín..."></textarea>
     </div>
     <div class="form-group">
-      <label>3D soubor (STL, STEP, OBJ, 3MF)</label>
-      <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileUpload').click()">
+      <span class="form-label">3D soubor <small>(nepovinné)</small></span>
+      <label class="file-drop" id="fileDrop" for="fileUpload">
+        <input type="file" id="fileUpload" name="attachment" class="sr-only" accept=".stl,.step,.stp,.obj,.3mf" />
         <div class="upload-icon">☁️</div>
         <div class="upload-title">Přetáhněte soubor sem</div>
         <p class="upload-sub">nebo klikněte pro výběr ze zařízení</p>
-        <p class="supported">STL · STEP · OBJ · 3MF · max. 20 MB</p>
-      </div>
-      <input type="file" id="fileUpload" name="attachment" style="display:none" accept=".stl,.step,.obj,.3mf,.stp" />
-      <p id="fileName" style="margin-top:0.5rem;font-size:0.85rem;color:var(--blue);display:none;"></p>
+        <p class="supported">STL · STEP · OBJ · 3MF · max. 10 MB</p>
+      </label>
+      <p id="fileInfo" class="file-info" role="status" hidden></p>
     </div>
-    <button type="submit" class="btn-primary" style="width:100%;justify-content:center;border:none;cursor:pointer;font-size:1rem;">
-      Odeslat poptávku
-    </button>
+    <button type="submit" class="btn-primary">Odeslat poptávku</button>
+    <p class="form-note">
+      Větší soubory nebo více modelů pošlete e-mailem na
+      <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>.<br />
+      Odesláním souhlasíte se <a href="ochrana-osobnich-udaju.html">zpracováním osobních údajů</a> za účelem vyřízení poptávky.
+    </p>
   </form>
-
-  <style>
-    .contact-form {
-      max-width: 640px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-    }
-    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-    .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
-    .form-group input,
-    .form-group textarea {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus { border-color: var(--blue); }
-    .form-group textarea { resize: vertical; }
-    .file-drop {
-      background: rgba(79,123,239,0.04);
-      border: 2px dashed rgba(79,123,239,0.3);
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .file-drop:hover {
-      border-color: rgba(79,123,239,0.6);
-      background: rgba(79,123,239,0.08);
-    }
-    .file-drop .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-    .file-drop .upload-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .file-drop .upload-sub { font-size: 0.825rem; color: var(--muted); }
-    .file-drop .supported { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
-  </style>
-
-  <script>
-    const fileUpload = document.getElementById('fileUpload');
-    const fileDrop = document.getElementById('fileDrop');
-    const fileName = document.getElementById('fileName');
-
-    fileUpload.addEventListener('change', () => {
-      if (fileUpload.files[0]) {
-        fileName.textContent = '✓ ' + fileUpload.files[0].name;
-        fileName.style.display = 'block';
-      }
-    });
-
-    fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.style.borderColor = 'var(--blue)'; });
-    fileDrop.addEventListener('dragleave', () => { fileDrop.style.borderColor = ''; });
-    fileDrop.addEventListener('drop', e => {
-      e.preventDefault();
-      fileDrop.style.borderColor = '';
-      if (e.dataTransfer.files[0]) {
-        fileUpload.files = e.dataTransfer.files;
-        fileName.textContent = '✓ ' + e.dataTransfer.files[0].name;
-        fileName.style.display = 'block';
-      }
-    });
-  </script>
 </section>
 
+<!-- ── FACEBOOK ────────────────────────────────────── -->
+<section class="alt center" id="facebook">
+  <div class="section-tag">Sledujte nás</div>
+  <h2 class="section-title">Naše práce na Facebooku</h2>
+  <p class="section-sub">Sledujte naši FB stránku a buďte první, kdo uvidí nové výtisky.</p>
+  <div class="reveal" id="fbWrap">
+    <div class="fb-box">
+      <button type="button" class="btn-primary" id="fbLoad">Zobrazit příspěvky z Facebooku</button>
+      <p>
+        Načtením obsahu se připojíte k Facebooku, který může používat cookies.<br />
+        Nebo přejděte rovnou na <a href="https://www.facebook.com/tom3dprint" target="_blank" rel="noopener">facebook.com/tom3dprint</a>.
+      </p>
+    </div>
+  </div>
+</section>
 
 <!-- ── BIG CTA ─────────────────────────────────────── -->
-<section class="big-cta">
+<section class="center">
   <div class="cta-box reveal">
-    <h2>Připraveni začít?<br /><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Pošlete nám model.</span></h2>
+    <h2>Připraveni začít?<br /><span class="grad-text">Pošlete nám model.</span></h2>
     <p>První kalkulace je zdarma. Žádné závazky, žádné skryté poplatky.</p>
     <div class="hero-btns">
       <a href="#naceneni" class="btn-primary">Získat cenovou nabídku</a>
@@ -1070,182 +1286,172 @@
   </div>
 </section>
 
-<!-- ── FAQ ────────────────────────────────────────── -->
-<section>
-  <div class="section-tag">Časté otázky</div>
-  <div class="section-title">FAQ</div>
-  <p class="section-sub">Odpovědi na nejčastější otázky zákazníků.</p>
-  <div style="max-width:720px;" class="reveal">
-    <style>
-      .faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 0.75rem; overflow: hidden; }
-      .faq-q { padding: 1.2rem 1.5rem; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
-      .faq-q:hover { background: rgba(255,255,255,0.03); }
-      .faq-q span { font-size: 1.2rem; transition: transform 0.3s; }
-      .faq-a { padding: 0 1.5rem; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
-      .faq-item.open .faq-a { max-height: 200px; padding: 0 1.5rem 1.2rem; }
-      .faq-item.open .faq-q span { transform: rotate(45deg); }
-    </style>
-    <div class="faq-item">
-      <div class="faq-q">Jaké formáty souborů přijímáte? <span>+</span></div>
-      <div class="faq-a">Přijímáme STL, STEP, OBJ, 3MF a STP. Pokud nemáte 3D soubor, nabízíme také službu 3D modelování na zakázku.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Jak dlouho trvá výroba? <span>+</span></div>
-      <div class="faq-a">Standardní objednávky vyřídíme do 72 hodin od potvrzení. V urgentních případech je možné expresní dodání do 24 hodin — kontaktujte nás předem.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Kolik stojí 3D tisk? <span>+</span></div>
-      <div class="faq-a">Cena závisí na velikosti dílu, materiálu a složitosti tisku. Každá poptávka je individuální — pošlete nám soubor a do 24 hodin zašleme přesnou kalkulaci zdarma.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Nemám 3D model — co mám udělat? <span>+</span></div>
-      <div class="faq-a">Nevadí! Nabízíme 3D modelování na zakázku. Stačí nám poslat náčrt, fotku nebo popsat co potřebujete — model vytvoříme za vás a pak rovnou vytiskneme.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Jak probíhá platba? <span>+</span></div>
-      <div class="faq-a">Platba probíhá převodem na účet po dokončení výroby a před odesláním zásilky. Při větších objednávkách je možná záloha.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Zasíláte i mimo ČR? <span>+</span></div>
-      <div class="faq-a">Ano, zasíláme po celé České republice i do zahraničí. Cena dopravy závisí na cílové destinaci a velikosti zásilky.</div>
-    </div>
-  </div>
-  <script>
-    document.querySelectorAll('.faq-q').forEach(q => {
-      q.addEventListener('click', () => {
-        const item = q.parentElement;
-        const isOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-        if (!isOpen) item.classList.add('open');
-      });
-    });
-  </script>
-</section>
-
-
-<!-- ── CENÍK ───────────────────────────────────────── -->
-<section style="background:var(--surface);">
-  <div class="section-tag">Ceník</div>
-  <div class="section-title">Orientační ceny</div>
-  <p class="section-sub">Každá zakázka je individuální. Přesnou cenu dostanete po odeslání poptávky zdarma.</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:800px;" class="reveal">
-    <div class="tech-card" style="text-align:center;padding:2.5rem 2rem;">
-      <div style="font-size:2.5rem;margin-bottom:1rem;">🖨️</div>
-      <div class="tech-name">3D tisk</div>
-      <div style="font-size:2.5rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0.75rem 0;">od 50 Kč</div>
-      <p class="tech-desc">za díl podle náročnosti, materiálu a velikosti tisku</p>
-      <a href="#naceneni" class="btn-primary" style="display:inline-block;margin-top:1rem;">Poptat tisk</a>
-    </div>
-    <div class="tech-card" style="text-align:center;padding:2.5rem 2rem;">
-      <div style="font-size:2.5rem;margin-bottom:1rem;">✏️</div>
-      <div class="tech-name">3D modelování</div>
-      <div style="font-size:2.5rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0.75rem 0;">od 300 Kč/hod</div>
-      <p class="tech-desc">podle složitosti modelu — jednoduchý díl, součástka nebo kompletní design</p>
-      <a href="#naceneni" class="btn-primary" style="display:inline-block;margin-top:1rem;">Poptat modelování</a>
-    </div>
-  </div>
-</section>
-
-<!-- ── FACEBOOK ────────────────────────────────────── -->
-<section style="background:var(--surface);text-align:center;">
-  <div class="section-tag">Sledujte nás</div>
-  <div class="section-title">Naše práce na Facebooku</div>
-  <p class="section-sub" style="margin: 0 auto 2.5rem;">Sledujte naši FB stránku a buďte první, kdo uvidí nové výtisky.</p>
-  <div style="display:flex;justify-content:center;" class="reveal">
-    <iframe
-      src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ftom3dprint&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
-      width="500"
-      height="600"
-      style="border:none;overflow:hidden;border-radius:16px;max-width:100%;"
-      scrolling="no"
-      frameborder="0"
-      allowfullscreen="true"
-      allow="autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share">
-    </iframe>
-  </div>
-</section>
+</main>
 
 <!-- ── FOOTER ──────────────────────────────────────── -->
 <footer id="kontakt">
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="logo">PRINTLAB</div>
-      <p>Profesionální FDM 3D tisk a modelování na zakázku.<br/>Tomáš Šulc</p>
-      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
-        <a href="tel:+420733524062" style="color:var(--muted);text-decoration:none;font-size:0.875rem;">📞 733 524 062</a>
-        <a href="mailto:samot.sulc@seznam.cz" style="color:var(--muted);text-decoration:none;font-size:0.875rem;">✉️ samot.sulc@seznam.cz</a>
-        <a href="https://www.facebook.com/tom3dprint" target="_blank" style="color:var(--muted);text-decoration:none;font-size:0.875rem;">👍 facebook.com/tom3dprint</a>
-      </div>
+      <a href="#" class="logo">SULC3D</a>
+      <p>FDM 3D tisk a modelování na zakázku.<br />Tomáš Šulc</p>
+    </div>
+    <div class="footer-col">
+      <h3>Služby</h3>
+      <a href="#technologie">3D tisk</a>
+      <a href="#modelovani">3D modelování</a>
+      <a href="#materialy">Materiály</a>
+      <a href="#cenik">Ceník</a>
+    </div>
+    <div class="footer-col">
+      <h3>Informace</h3>
+      <a href="#jak-to-funguje">Jak to funguje</a>
+      <a href="#faq">Časté otázky</a>
+      <a href="#naceneni">Nezávazná poptávka</a>
+    </div>
+    <div class="footer-col">
+      <h3>Kontakt</h3>
+      <a href="tel:+420733524062">📞 733 524 062</a>
+      <a href="mailto:samot.sulc@seznam.cz">✉️ samot.sulc@seznam.cz</a>
+      <a href="https://wa.me/420733524062" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a href="https://www.facebook.com/tom3dprint" target="_blank" rel="noopener">👍 facebook.com/tom3dprint</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 Tomáš Šulc – 3D tisk na zakázku. Všechna práva vyhrazena.</p>
-    <p>
-      <a href="#" style="color:var(--muted);text-decoration:none;margin-right:1.5rem;">Ochrana osobních údajů</a>
-      <a href="#" style="color:var(--muted);text-decoration:none;">Obchodní podmínky</a>
-    </p>
+    <p>© 2026 Tomáš Šulc – 3D tisk na zakázku. Všechna práva vyhrazena.</p>
+    <p><a href="ochrana-osobnich-udaju.html">Ochrana osobních údajů</a></p>
   </div>
 </footer>
 
-<script>
-  // Scroll reveal
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Stagger cards in grids
-  document.querySelectorAll('.how-grid .step-card, .tech-grid .tech-card, .benefits-grid .benefit-card, .testimonials-grid .testi-card').forEach((el, i) => {
-    el.style.transitionDelay = `${(i % 4) * 80}ms`;
-  });
-
-  // File drag-and-drop
-  const uploadBox = document.querySelector('.upload-box');
-  uploadBox.addEventListener('dragover', e => { e.preventDefault(); uploadBox.style.borderColor = 'var(--blue)'; });
-  uploadBox.addEventListener('dragleave', () => { uploadBox.style.borderColor = ''; });
-  uploadBox.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadBox.style.borderColor = '';
-    const file = e.dataTransfer.files[0];
-    if (file) alert(`Soubor "${file.name}" přijat! Brzy vás budeme kontaktovat s nabídkou.`);
-  });
-
-  // Navbar scroll effect
-  const nav = document.querySelector('nav');
-  window.addEventListener('scroll', () => {
-    nav.style.background = window.scrollY > 50
-      ? 'rgba(8,12,20,0.97)'
-      : 'rgba(8,12,20,0.85)';
-  });
-</script>
 <!-- ── WHATSAPP TLAČÍTKO ──────────────────────────── -->
-<a href="https://wa.me/420733524062" target="_blank" title="Napište nám na WhatsApp" style="
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 58px;
-  height: 58px;
-  background: #25d366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-  z-index: 999;
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-decoration: none;
-" onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 6px 28px rgba(37,211,102,0.6)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(37,211,102,0.4)'">
-  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="white">
+<a href="https://wa.me/420733524062" target="_blank" rel="noopener" class="wa-btn" title="Napište nám na WhatsApp" aria-label="Napište nám na WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
   </svg>
 </a>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    reveals.forEach(el => observer.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add('visible'));
+  }
+
+  // Stagger cards in grids
+  document.querySelectorAll('.how-grid .step-card, .benefits-grid .benefit-card').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 80}ms`;
+  });
+
+  // Navbar: scroll effect + mobile menu
+  const nav = document.getElementById('nav');
+  const navToggle = document.getElementById('navToggle');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+
+  function setMenu(open) {
+    nav.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', open);
+    navToggle.setAttribute('aria-label', open ? 'Zavřít menu' : 'Otevřít menu');
+  }
+  navToggle.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+  document.querySelectorAll('.nav-links a, .nav-cta').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        i.querySelector('.faq-a').style.maxHeight = '';
+      });
+      if (!wasOpen) {
+        const answer = item.querySelector('.faq-a');
+        item.classList.add('open');
+        q.setAttribute('aria-expanded', 'true');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Předvyplnění typu služby z tlačítek "Poptat ..."
+  document.querySelectorAll('[data-sluzba]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('sluzba').value = btn.dataset.sluzba;
+    });
+  });
+
+  // Nahrání souboru
+  const MAX_FILE_MB = 10;
+  const ALLOWED_EXT = ['stl', 'step', 'stp', 'obj', '3mf'];
+  const fileUpload = document.getElementById('fileUpload');
+  const fileDrop = document.getElementById('fileDrop');
+  const fileInfo = document.getElementById('fileInfo');
+
+  function showFileInfo(text, isError) {
+    fileInfo.textContent = text;
+    fileInfo.classList.toggle('error', isError);
+    fileInfo.hidden = false;
+  }
+
+  function checkFile() {
+    const file = fileUpload.files[0];
+    if (!file) { fileInfo.hidden = true; return; }
+    const ext = file.name.split('.').pop().toLowerCase();
+    const sizeMb = file.size / 1024 / 1024;
+    if (!ALLOWED_EXT.includes(ext)) {
+      fileUpload.value = '';
+      showFileInfo('Nepodporovaný formát. Nahrajte prosím STL, STEP, OBJ nebo 3MF.', true);
+    } else if (sizeMb > MAX_FILE_MB) {
+      fileUpload.value = '';
+      showFileInfo(`Soubor má ${sizeMb.toFixed(1)} MB, limit je ${MAX_FILE_MB} MB. Pošlete ho prosím e-mailem.`, true);
+    } else {
+      showFileInfo(`✓ ${file.name} (${sizeMb.toFixed(1)} MB)`, false);
+    }
+  }
+
+  fileUpload.addEventListener('change', checkFile);
+  fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('dragover'); });
+  fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
+  fileDrop.addEventListener('drop', e => {
+    e.preventDefault();
+    fileDrop.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+      const dt = new DataTransfer();
+      dt.items.add(e.dataTransfer.files[0]);
+      fileUpload.files = dt.files;
+      checkFile();
+    }
+  });
+
+  // Facebook – načíst až po kliknutí
+  document.getElementById('fbLoad').addEventListener('click', () => {
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ftom3dprint&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true';
+    iframe.width = 500;
+    iframe.height = 600;
+    iframe.className = 'fb-frame';
+    iframe.title = 'Facebook stránka tom3dprint';
+    iframe.loading = 'lazy';
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share');
+    document.getElementById('fbWrap').replaceChildren(iframe);
+  });
+</script>
 </body>
 </html>
