@@ -317,3 +317,22 @@ fieldset:disabled .field { opacity: 0.45; }
 .info-card a { color: var(--blue); }
 
 [hidden] { display: none !important; }
+
+.btn-secondary {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.8rem 2rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.btn-secondary:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+.btn-secondary:disabled { opacity: 0.4; cursor: default; }

@@ -161,6 +161,7 @@
 
     <ul class="messages" id="messages" aria-live="polite"></ul>
     <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto krabičku</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
   </div>
 
 </div>
@@ -200,7 +201,7 @@
 <script src="model.js"></script>
 <script src="box.js"></script>
 <script>
-  const { CALC, csNum, measure, estimate, fitsBed, handoff, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, fitsBed, handoff, ownerMode, download, createViewer } = window.Sulc3D;
   const { buildBox, place, join } = window.Sulc3DBox;
   const $ = id => document.getElementById(id);
   const DIVIDER = 1.2;      // mm, tloušťka přepážek
@@ -309,6 +310,7 @@
     errors.forEach(t => { const li = document.createElement('li'); li.className = 'error'; li.textContent = t; $('messages').append(li); });
     warnings.forEach(t => { const li = document.createElement('li'); li.className = 'warn'; li.textContent = t; $('messages').append(li); });
     order.setAttribute('aria-disabled', String(!ok));
+    $('stlBtn').disabled = !ok;
     order.tabIndex = ok ? 0 : -1;
     if (!ok) {
       current = null;
@@ -356,6 +358,9 @@
   });
   // Při poptávce přiložit vygenerovaný model (převezme ho formulář na hlavní stránce)
   $('order').addEventListener('click', () => { if (current) handoff(current.pos, current.name, current.multi); });
+  // Stažení STL jen s adresou ?stl=1
+  $('stlBtn').hidden = !ownerMode();
+  $('stlBtn').addEventListener('click', () => { if (current) download(current.pos, current.name); });
   $('cfg').addEventListener('input', update);
   $('cfg').addEventListener('submit', e => e.preventDefault());
   update();

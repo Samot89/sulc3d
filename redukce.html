@@ -147,6 +147,7 @@
 
     <ul class="messages" id="messages" aria-live="polite"></ul>
     <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto redukci</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
   </div>
 
 </div>
@@ -185,7 +186,7 @@
 
 <script src="model.js"></script>
 <script>
-  const { CALC, csNum, measure, estimate, handoff, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, handoff, ownerMode, download, createViewer } = window.Sulc3D;
   const $ = id => document.getElementById(id);
   const SEGMENTS = 96;
   const MODES = { na: 'nasadí se na trubku', do: 'zasune se do trubky' };
@@ -323,6 +324,7 @@
 
     const ok = !errors.length;
     order.setAttribute('aria-disabled', String(!ok));
+    $('stlBtn').disabled = !ok;
     if (!ok) current = null;
     order.tabIndex = ok ? 0 : -1;
     if (!ok) {
@@ -343,6 +345,9 @@
   // Při poptávce přiložit vygenerovaný model (převezme ho formulář na hlavní stránce)
   $('order').addEventListener('click', () => { if (current) handoff(current.pos, current.name); });
   $('lT').addEventListener('input', () => { transitionTouched = true; });
+  // Stažení STL jen s adresou ?stl=1
+  $('stlBtn').hidden = !ownerMode();
+  $('stlBtn').addEventListener('click', () => { if (current) download(current.pos, current.name); });
   $('cfg').addEventListener('input', update);
   $('cfg').addEventListener('submit', e => e.preventDefault());
   update();

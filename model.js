@@ -103,6 +103,19 @@
     }
   }
 
+  // Stažení STL – tlačítko se v konfigurátorech ukáže jen s adresou ?stl=1
+  const ownerMode = () => new URLSearchParams(location.search).get('stl') === '1';
+  function download(pos, name) {
+    const url = URL.createObjectURL(new Blob([toSTL(pos)], { type: 'model/stl' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   // Orientační hmotnost a cena pro změřený model
   function estimate(model, material, qtyValue) {
     const exact = !!CALC.materials[material];
@@ -248,5 +261,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, ownerMode, download, createViewer };
 })();
