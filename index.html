@@ -1626,13 +1626,15 @@
   const odhadField = document.getElementById('odhadField');
   let model = null;
   let viewer = null;
-  let multiName = null; // soubor z konfigurátoru, který obsahuje víc dílů
+  let fromKonfig = null; // { name, multi, factor } souboru předaného z konfigurátoru
 
   function updateEstimate() {
     if (!model) return;
-    const e = estimate(model, materialSel.value, qtyInput.value);
+    // údaje z konfigurátoru platí jen pro soubor, který z něj přišel
+    const konfig = fromKonfig && fileUpload.files[0] && fileUpload.files[0].name === fromKonfig.name ? fromKonfig : null;
+    const e = estimate(model, materialSel.value, qtyInput.value, konfig ? konfig.factor : 1);
     // u souboru s více díly vedle sebe celkový rozměr o tiskovém prostoru nic neříká
-    const multi = !!multiName && !!fileUpload.files[0] && fileUpload.files[0].name === multiName;
+    const multi = !!konfig && konfig.multi;
     const fits = multi || e.fits;
     document.getElementById('mDims').textContent = e.dims;
     document.getElementById('mVol').textContent = e.vol;
@@ -1681,7 +1683,7 @@
       if (!saved || !saved.data) return;
       const dt = new DataTransfer();
       dt.items.add(new File([saved.data], saved.name || 'model.stl', { type: 'model/stl' }));
-      multiName = saved.multi ? saved.name : null;
+      fromKonfig = { name: saved.name || 'model.stl', multi: !!saved.multi, factor: saved.factor || 1 };
       fileUpload.files = dt.files;
       checkFile();
     });

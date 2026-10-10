@@ -91,7 +91,7 @@
   /**
    * Spustí konfigurátor. Stránka musí mít prvky #cfg, #canvas, #material, #kusu, #rWeight, #rPrice,
    * #messages, #order a #stlBtn.
-   * cfg.compute(ctx) → { pos, name, popis, rows?, shown?, viewOpts?, multi?, count?, fitSize?, partName? }
+   * cfg.compute(ctx) → { pos, name, popis, rows?, shown?, viewOpts?, multi?, count?, fitSize?, partName?, priceFactor? }
    *   ctx.error(text), ctx.warn(text), ctx.range(hodnota, od, do, název[, jednotka]) → true/false
    * cfg.debounce: ms, o kolik odložit přepočet při psaní (pro náročnější modely)
    */
@@ -125,7 +125,7 @@
       if (!errors.length && res) {
         model = measure(res.pos);
         const pieces = Math.max(1, parseInt($('kusu').value, 10) || 1) * (res.count || 1);
-        est = estimate(model, $('material').value, pieces);
+        est = estimate(model, $('material').value, pieces, res.priceFactor || 1);
         if (!fitsBed(res.fitSize || model.size)) {
           errors.push(`${res.partName || 'Díl'} se nevejde do tiskového prostoru ${CALC.maxSize.join(' × ')} mm. Zmenšete rozměry.`);
         }
@@ -157,7 +157,7 @@
       $('rWeight').textContent = est.weight + (est.qty > 1 ? ' / ks' : '');
       $('rPrice').textContent = est.price + (est.qty > 1 ? ` za ${est.qty} ks` : '');
 
-      current = { pos: res.pos, name: res.name.replace(/,/g, '_'), multi: !!res.multi };
+      current = { pos: res.pos, name: res.name.replace(/,/g, '_'), multi: !!res.multi, factor: res.priceFactor || 1 };
       const popis = `${res.popis} Orientační odhad: ${est.weight}${est.qty > 1 ? ' na kus' : ''}, ${est.price}${est.qty > 1 ? ` za ${est.qty} ks` : ''}.`;
       const home = location.protocol === 'file:' ? 'index.html' : '/';
       order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty }) + '#naceneni';
@@ -175,7 +175,7 @@
       if (!current || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
       const href = order.href;
-      handoff(current.pos, current.name, current.multi).then(() => { location.href = href; });
+      handoff(current.pos, current.name, current.multi, current.factor).then(() => { location.href = href; });
     });
     // Stažení STL jen s adresou ?stl=1
     stlBtn.hidden = !ownerMode();

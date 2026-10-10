@@ -139,7 +139,7 @@
     </div>
     <div class="info-card">
       <h3>⏱️ Tisk trvá déle</h3>
-      <p>Lithofan se tiskne nastojato v jemných vrstvách, aby byl obrázek co nejpodrobnější. Proto vychází dráž, než by odpovídalo jeho hmotnosti; přesnou cenu dostanete v nabídce.</p>
+      <p>Lithofan se tiskne nastojato v jemných vrstvách, aby byl obrázek co nejpodrobnější. Proto vychází o něco dráž než jiné výtisky stejné hmotnosti; orientační cena s tím už počítá.</p>
     </div>
     <div class="info-card">
       <h3>✏️ Stojánek nebo lampička?</h3>
@@ -166,6 +166,7 @@
   const { buildLitho } = window.Sulc3DRelief;
   const MAX_CELLS = 70000;  // strop podrobnosti, aby se model vešel do přílohy poptávky
   const MIN_CELL = 0.3;     // mm, jemnější rastr už tryska nevytiskne
+  const PRICE_FACTOR = 1.5; // tiskne se nastojato v jemných vrstvách, proto dráž než podle hmotnosti
   let image = null;         // { el, promise } načtená fotka
 
   function loadImage(file) {
@@ -237,6 +238,7 @@
     return {
       pos: buildLitho({ nx, ny, cell, thick }),
       name: `lithofan-${mm(size[0])}x${mm(size[1])}.stl`,
+      priceFactor: PRICE_FACTOR,
       viewOpts: { tintZ: [p.tmax, p.tmin], view: { yaw: 0, pitch: 1.5, spin: false } },
       rows: { rSize: dims3(size), rDetail: `${nx} × ${ny} bodů (${mm(cell)} mm)` },
       popis: 'Lithofan z konfigurátoru – ' +

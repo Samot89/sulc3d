@@ -109,8 +109,8 @@
 
   // multi: soubor obsahuje víc dílů vedle sebe, takže celkový rozměr neříká nic o tiskovém prostoru.
   // Vrací Promise; na chybu se nečeká – rozměry jsou i tak v textu poptávky.
-  function handoff(pos, name, multi) {
-    return handoffStore('readwrite', store => store.put({ name, multi: !!multi, data: toSTL(pos), time: Date.now() }, 'model'))
+  function handoff(pos, name, multi, factor = 1) {
+    return handoffStore('readwrite', store => store.put({ name, multi: !!multi, factor, data: toSTL(pos), time: Date.now() }, 'model'))
       .catch(() => {});
   }
 
@@ -137,7 +137,8 @@
   }
 
   // Orientační hmotnost a cena pro změřený model
-  function estimate(model, material, qtyValue) {
+  // factor: cenový koeficient pro výrobky s delším tiskem (např. lithofan)
+  function estimate(model, material, qtyValue, factor = 1) {
     const exact = !!CALC.materials[material];
     const matName = exact ? material : CALC.fallback;
     const mat = CALC.materials[matName];
@@ -145,7 +146,7 @@
     // spotřeba materiálu: stěny + řídká výplň zbytku objemu
     const shell = Math.min(model.volume, model.area * CALC.wall);
     const grams = (shell + (model.volume - shell) * CALC.infill) / 1000 * mat.density;
-    const piece = grams * mat.perGram;
+    const piece = grams * mat.perGram * factor;
     const round10 = v => Math.max(CALC.minPrice, Math.round(v / 10) * 10);
     const lo = round10(piece * CALC.spread[0]) * qty, hi = round10(piece * CALC.spread[1]) * qty;
     return {
