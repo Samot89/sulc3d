@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redukce na trubky a hadice na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor redukcí na trubky a hadice. Zadejte průměry, prohlédněte si 3D náhled s orientační cenou a pošlete nezávaznou poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/redukce" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Redukce na trubky a hadice na míru" />
+  <meta property="og:description" content="Zadejte průměry, prohlédněte si 3D náhled s orientační cenou a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/redukce" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080c14;
+      --surface:  #0f1625;
+      --card:     #141c2e;
+      --border:   rgba(255,255,255,0.07);
+      --blue:     #4f7bef;
+      --grad:     linear-gradient(135deg, #4f7bef, #8b5cf6);
+      --text:     #e8eaf0;
+      --muted:    #7a869a;
+      --radius:   16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── NAVBAR ────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0 5%;
+      height: 70px;
+      background: rgba(8,12,20,0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      padding: 0.5rem 1.4rem;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border-radius: 50px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    /* ── HEADER ────────────────────────────────── */
+    header { padding: 70px 5% 40px; text-align: center; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--blue);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 1rem;
+    }
+
+    .lead { color: var(--muted); max-width: 600px; margin: 0 auto; }
+
+    /* ── KONFIGURÁTOR ──────────────────────────── */
+    .config {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 5% 80px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+
+    fieldset { border: none; margin-bottom: 1.5rem; }
+
+    legend {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.9rem; }
+    .row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label { font-size: 0.82rem; font-weight: 600; }
+    .field small { font-size: 0.74rem; color: var(--muted); line-height: 1.4; }
+
+    .field input,
+    .field select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field input:focus,
+    .field select:focus { border-color: var(--blue); }
+    .field select { cursor: pointer; }
+
+    .preview { position: sticky; top: 90px; }
+
+    .model-canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 12px;
+      background: radial-gradient(ellipse at center, rgba(79,123,239,0.14) 0%, rgba(8,12,20,0.6) 75%);
+      cursor: grab;
+      touch-action: pan-y;
+    }
+
+    .model-canvas:active { cursor: grabbing; }
+
+    .hint { font-size: 0.74rem; color: var(--muted); text-align: center; margin: 0.4rem 0 1rem; }
+
+    .section-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      margin-bottom: 1.25rem;
+    }
+
+    .results { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .res-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .res-row strong { color: var(--text); font-weight: 600; text-align: right; }
+
+    .price {
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      padding-top: 0.9rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .price strong { display: block; font-size: 1.9rem; font-weight: 800; line-height: 1.3; }
+    .price small { font-size: 0.75rem; }
+
+    .messages { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .messages li { font-size: 0.8rem; line-height: 1.5; padding: 0.55rem 0.8rem; border-radius: 10px; }
+    .messages .error { color: #fca5a5; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); }
+    .messages .warn { color: #fde68a; background: rgba(250,204,21,0.07); border: 1px solid rgba(250,204,21,0.22); }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.9rem 2rem;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: center;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 0 30px rgba(79,123,239,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(79,123,239,0.5); }
+    .btn-primary[aria-disabled="true"] { opacity: 0.4; pointer-events: none; box-shadow: none; }
+
+    /* ── INFO ──────────────────────────────────── */
+    .info { background: var(--surface); padding: 80px 5%; }
+    .info h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 2rem; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .info-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .info-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── FOOTER ────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 5%;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--muted); text-decoration: none; margin-left: 1.25rem; }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 860px) {
+      .config { grid-template-columns: 1fr; }
+      .preview { position: static; order: -1; }
+      .nav-links { display: none; }
+      header { padding: 50px 5% 30px; }
+    }
+
+    @media (max-width: 480px) {
+      .row.three { grid-template-columns: 1fr 1fr; }
+      .panel { padding: 1.25rem; }
+      .nav-cta { padding: 0.5rem 1rem; font-size: 0.8rem; }
+      footer a { margin: 0 1.25rem 0 0; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#materialy">Materiály</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Redukce na trubky<br /><span class="grad-text">a hadice na míru</span></h1>
+  <p class="lead">Zadejte průměry obou konců. Hned uvidíte 3D náhled, řez a orientační cenu — a jedním kliknutím pošlete poptávku.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Konec A</legend>
+      <div class="row">
+        <div class="field">
+          <label for="dA">Průměr (mm)</label>
+          <input type="number" id="dA" value="50" min="4" max="230" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="lA">Délka konce (mm)</label>
+          <input type="number" id="lA" value="30" min="5" max="150" step="1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="mA">Připojení</label>
+        <select id="mA">
+          <option value="na">Nasadí se na trubku (zvenku)</option>
+          <option value="do">Zasune se do trubky nebo hadice</option>
+        </select>
+        <small id="hA"></small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Konec B</legend>
+      <div class="row">
+        <div class="field">
+          <label for="dB">Průměr (mm)</label>
+          <input type="number" id="dB" value="32" min="4" max="230" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="lB">Délka konce (mm)</label>
+          <input type="number" id="lB" value="30" min="5" max="150" step="1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="mB">Připojení</label>
+        <select id="mB">
+          <option value="na">Nasadí se na trubku (zvenku)</option>
+          <option value="do" selected>Zasune se do trubky nebo hadice</option>
+        </select>
+        <small id="hB"></small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tělo redukce</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="lT">Přechod (mm)</label>
+          <input type="number" id="lT" value="20" min="0" max="150" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="wall">Stěna (mm)</label>
+          <input type="number" id="wall" value="2" min="0.8" max="8" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="gap">Vůle (mm)</label>
+          <input type="number" id="gap" value="0.3" min="0" max="2" step="0.05" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Přechod je délka kuželové části mezi konci. Vůle je rezerva na průměru, aby šel díl nasadit; pro těsnější spoj ji zmenšete.</small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA">PLA</option>
+            <option value="PETG" selected>PETG</option>
+            <option value="ABS / ASA">ABS / ASA</option>
+            <option value="TPU">TPU (pružný)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled redukce – tažením lze otáčet"></canvas>
+    <p class="hint">Tažením model otočíte</p>
+    <svg id="section" class="section-svg" viewBox="0 0 320 150" role="img" aria-label="Řez redukcí"></svg>
+
+    <div class="results">
+      <div class="res-row"><span>Konec A – vnitřní / vnější Ø</span><strong id="rA">–</strong></div>
+      <div class="res-row"><span>Konec B – vnitřní / vnější Ø</span><strong id="rB">–</strong></div>
+      <div class="res-row"><span>Celková délka</span><strong id="rLen">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto redukci</a>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než redukci objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📏 Jak měřit</h3>
+      <p>Průměr změřte posuvným měřítkem. Když se redukce nasazuje na trubku, zadejte vnější průměr trubky. Když se zasouvá dovnitř, zadejte vnitřní průměr trubky nebo hadice.</p>
+    </div>
+    <div class="info-card">
+      <h3>🌡️ Materiál a teplota</h3>
+      <p>PLA měkne už kolem 55 °C. Na teplý vzduch nebo ven na slunce je vhodnější PETG nebo ASA. TPU je pružné a hodí se tam, kde má spoj trochu pracovat.</p>
+    </div>
+    <div class="info-card">
+      <h3>🔧 K čemu se hodí</h3>
+      <p>Odsávání, vysavače, ventilace nebo odtoky bez tlaku. Tištěná redukce není určená pro tlakové rozvody.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Potřebujete jiný tvar?</h3>
+      <p>Koleno, odbočku nebo nesouosou redukci vymodelujeme na zakázku. Stačí poslat rozměry nebo náčrt přes <a href="/#naceneni" style="color:var(--blue);">poptávkový formulář</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script>
+  const { CALC, csNum, measure, estimate, createViewer } = window.Sulc3D;
+  const $ = id => document.getElementById(id);
+  const SEGMENTS = 96;
+  const MODES = { na: 'nasadí se na trubku', do: 'zasune se do trubky' };
+  const HINTS = {
+    na: 'Zadejte vnější průměr trubky, na kterou se redukce nasadí.',
+    do: 'Zadejte vnitřní průměr trubky nebo hadice, do které se redukce zasune.'
+  };
+  const num = id => parseFloat(String($(id).value).replace(',', '.'));
+  const mm = v => csNum(v, Number.isInteger(Math.round(v * 10) / 10) ? 0 : 1);
+  const viewer = createViewer($('canvas'));
+  let transitionTouched = false;
+
+  // Vnitřní a vnější poloměr konce podle způsobu připojení
+  function endRadii(d, mode, wall, gap) {
+    if (mode === 'na') { const ri = (d + gap) / 2; return { ri, ro: ri + wall }; }
+    const ro = (d - gap) / 2;
+    return { ri: ro - wall, ro };
+  }
+
+  function readParams() {
+    const p = {
+      dA: num('dA'), lA: num('lA'), mA: $('mA').value,
+      dB: num('dB'), lB: num('lB'), mB: $('mB').value,
+      lT: num('lT'), wall: num('wall'), gap: num('gap')
+    };
+    const errors = [], warnings = [];
+    const range = (v, lo, hi, name) => {
+      if (!(v >= lo && v <= hi)) errors.push(`${name} musí být v rozmezí ${mm(lo)}–${mm(hi)} mm.`);
+    };
+    range(p.dA, 4, 230, 'Průměr konce A');
+    range(p.dB, 4, 230, 'Průměr konce B');
+    range(p.lA, 5, 150, 'Délka konce A');
+    range(p.lB, 5, 150, 'Délka konce B');
+    range(p.lT, 0, 150, 'Délka přechodu');
+    range(p.wall, 0.8, 8, 'Tloušťka stěny');
+    range(p.gap, 0, 2, 'Vůle');
+    if (errors.length) return { p, errors, warnings };
+
+    p.A = endRadii(p.dA, p.mA, p.wall, p.gap);
+    p.B = endRadii(p.dB, p.mB, p.wall, p.gap);
+    p.length = p.lA + p.lT + p.lB;
+    [['A', p.A], ['B', p.B]].forEach(([name, e]) => {
+      if (e.ri < 1.5) errors.push(`Konec ${name}: po odečtení stěny nezbývá průchod. Zmenšete tloušťku stěny, nebo konec nasaďte na trubku zvenku.`);
+    });
+    const step = Math.max(Math.abs(p.A.ro - p.B.ro), Math.abs(p.A.ri - p.B.ri));
+    if (p.lT < step) warnings.push(`Přechod je strmý a tisk by potřeboval podpory. Doporučujeme délku přechodu alespoň ${Math.ceil(step)} mm.`);
+    if (p.wall < 1.2) warnings.push('Stěna pod 1,2 mm je křehká. Pro běžné použití doporučujeme 1,6–2,4 mm.');
+    return { p, errors, warnings };
+  }
+
+  // Rotační těleso: vnější a vnitřní plášť + dvě čela
+  function buildMesh(p) {
+    const z = [0, p.lA, p.lA + p.lT, p.length];
+    const ro = [p.A.ro, p.A.ro, p.B.ro, p.B.ro];
+    const ri = [p.A.ri, p.A.ri, p.B.ri, p.B.ri];
+    const out = [];
+    const pt = (r, a, h) => [r * Math.cos(a), r * Math.sin(a), h];
+    const tri = (a, b, c) => out.push(...a, ...b, ...c);
+    for (let i = 0; i < SEGMENTS; i++) {
+      // poslední segment se vrací přesně na úhel 0, aby šev plynule navazoval
+      const a0 = i / SEGMENTS * 2 * Math.PI, a1 = ((i + 1) % SEGMENTS) / SEGMENTS * 2 * Math.PI;
+      for (let j = 0; j < 3; j++) {
+        if (z[j] === z[j + 1] && ro[j] === ro[j + 1] && ri[j] === ri[j + 1]) continue;
+        // vnější plášť (normála ven)
+        tri(pt(ro[j], a0, z[j]), pt(ro[j], a1, z[j]), pt(ro[j + 1], a1, z[j + 1]));
+        tri(pt(ro[j], a0, z[j]), pt(ro[j + 1], a1, z[j + 1]), pt(ro[j + 1], a0, z[j + 1]));
+        // vnitřní plášť (normála k ose)
+        tri(pt(ri[j], a0, z[j]), pt(ri[j + 1], a1, z[j + 1]), pt(ri[j], a1, z[j]));
+        tri(pt(ri[j], a0, z[j]), pt(ri[j + 1], a0, z[j + 1]), pt(ri[j + 1], a1, z[j + 1]));
+      }
+      // spodní čelo (−Z) a horní čelo (+Z)
+      tri(pt(ro[0], a0, 0), pt(ri[0], a1, 0), pt(ro[0], a1, 0));
+      tri(pt(ro[0], a0, 0), pt(ri[0], a0, 0), pt(ri[0], a1, 0));
+      tri(pt(ro[3], a0, p.length), pt(ro[3], a1, p.length), pt(ri[3], a1, p.length));
+      tri(pt(ro[3], a0, p.length), pt(ri[3], a1, p.length), pt(ri[3], a0, p.length));
+    }
+    return new Float32Array(out);
+  }
+
+  // Podélný řez (konec A vlevo, konec B vpravo)
+  function drawSection(p) {
+    const W = 320, H = 150, pad = 22;
+    const maxR = Math.max(p.A.ro, p.B.ro);
+    const s = Math.min((W - 2 * pad) / p.length, (H - 2 * pad) / (2 * maxR));
+    const x0 = (W - p.length * s) / 2, cy = H / 2;
+    const z = [0, p.lA, p.lA + p.lT, p.length];
+    const ro = [p.A.ro, p.A.ro, p.B.ro, p.B.ro], ri = [p.A.ri, p.A.ri, p.B.ri, p.B.ri];
+    const wallPath = sign => {
+      const pts = z.map((v, i) => [x0 + v * s, cy - sign * ro[i] * s])
+        .concat(z.map((v, i) => [x0 + v * s, cy - sign * ri[i] * s]).reverse());
+      return 'M' + pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join('L') + 'Z';
+    };
+    $('section').innerHTML =
+      `<path d="${wallPath(1)}${wallPath(-1)}" fill="rgba(79,123,239,0.55)" stroke="#8fa8ff" stroke-width="1"/>` +
+      `<line x1="${x0 - 12}" y1="${cy}" x2="${x0 + p.length * s + 12}" y2="${cy}" stroke="#7a869a" stroke-width="1" stroke-dasharray="6 4"/>` +
+      `<text x="${Math.max(10, x0 - 8)}" y="16" fill="#7a869a" font-size="11" font-family="Inter, sans-serif" font-weight="700">A</text>` +
+      `<text x="${Math.min(W - 10, x0 + p.length * s + 8)}" y="16" fill="#7a869a" font-size="11" font-family="Inter, sans-serif" font-weight="700" text-anchor="end">B</text>`;
+  }
+
+  function update() {
+    $('hA').textContent = HINTS[$('mA').value];
+    $('hB').textContent = HINTS[$('mB').value];
+
+    // dokud uživatel přechod neupraví, dopočítat ho tak, aby se tiskl bez podpor
+    if (!transitionTouched) {
+      const w = num('wall'), g = num('gap');
+      const a = endRadii(num('dA'), $('mA').value, w, g), b = endRadii(num('dB'), $('mB').value, w, g);
+      const step = Math.max(Math.abs(a.ro - b.ro), Math.abs(a.ri - b.ri));
+      if (isFinite(step)) $('lT').value = Math.min(150, Math.max(10, Math.ceil(step * 1.5)));
+    }
+
+    const { p, errors, warnings } = readParams();
+    const order = $('order');
+    let est = null;
+    if (!errors.length) {
+      const pos = buildMesh(p);
+      const model = measure(pos);
+      est = estimate(model, $('material').value, $('kusu').value);
+      if (!est.fits) errors.push(`Redukce se nevejde do tiskového prostoru ${CALC.maxSize.join(' × ')} mm. Zmenšete průměr nebo délku.`);
+      if (viewer) viewer.setModel(pos, model, true);
+      else $('canvas').hidden = true;
+      drawSection(p);
+      $('rA').textContent = `${mm(p.A.ri * 2)} / ${mm(p.A.ro * 2)} mm`;
+      $('rB').textContent = `${mm(p.B.ri * 2)} / ${mm(p.B.ro * 2)} mm`;
+      $('rLen').textContent = `${mm(p.length)} mm`;
+      $('rWeight').textContent = est.weight + (est.qty > 1 ? ' / ks' : '');
+      $('rPrice').textContent = est.price + (est.qty > 1 ? ` za ${est.qty} ks` : '');
+    }
+
+    $('messages').innerHTML = '';
+    errors.forEach(t => { const li = document.createElement('li'); li.className = 'error'; li.textContent = t; $('messages').append(li); });
+    warnings.forEach(t => { const li = document.createElement('li'); li.className = 'warn'; li.textContent = t; $('messages').append(li); });
+
+    const ok = !errors.length;
+    order.setAttribute('aria-disabled', String(!ok));
+    order.tabIndex = ok ? 0 : -1;
+    if (!ok) {
+      ['rWeight', 'rPrice'].forEach(id => { $(id).textContent = '–'; });
+      return;
+    }
+    const end = (name, d, mode, len, e) =>
+      `konec ${name}: Ø ${mm(d)} mm, ${MODES[mode]}, délka ${mm(len)} mm (vnitřní Ø ${mm(e.ri * 2)} / vnější Ø ${mm(e.ro * 2)} mm)`;
+    const popis = 'Redukce z konfigurátoru – ' +
+      `${end('A', p.dA, p.mA, p.lA, p.A)}; ${end('B', p.dB, p.mB, p.lB, p.B)}; ` +
+      `přechod ${mm(p.lT)} mm; stěna ${mm(p.wall)} mm; vůle ${csNum(p.gap, 2)} mm; celková délka ${mm(p.length)} mm. ` +
+      `Orientační odhad: ${est.weight}, ${est.price}.`;
+    const home = location.protocol === 'file:' ? 'index.html' : '/';
+    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty }) + '#naceneni';
+  }
+
+  $('lT').addEventListener('input', () => { transitionTouched = true; });
+  $('cfg').addEventListener('input', update);
+  $('cfg').addEventListener('submit', e => e.preventDefault());
+  update();
+</script>
+</body>
+</html>
