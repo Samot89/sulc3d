@@ -513,6 +513,35 @@
     .spec strong { font-size: 1.15rem; font-weight: 700; }
     .spec-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
 
+    /* ── KONFIGURÁTORY ─────────────────────────── */
+    .tools {
+      background: linear-gradient(135deg, rgba(79,123,239,0.10), rgba(139,92,246,0.10));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+    }
+
+    .tool-card {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .tool-card:hover { transform: translateY(-5px); border-color: rgba(79,123,239,0.4); }
+    .tool-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+    .tool-link { font-size: 0.9rem; font-weight: 700; color: var(--blue); }
+
     /* ── BENEFITS ──────────────────────────────── */
     .benefits-grid {
       display: grid;
@@ -988,7 +1017,7 @@
     <li><a href="#technologie">Technologie</a></li>
     <li><a href="#modelovani">3D modelování</a></li>
     <li><a href="#materialy">Materiály</a></li>
-    <li><a href="/redukce">Redukce</a></li>
+    <li><a href="#konfiguratory">Konfigurátory</a></li>
     <li><a href="#cenik">Ceník</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
@@ -1089,6 +1118,27 @@
       </div>
     </div>
     <p class="spec-note">Větší model je potřeba rozdělit na více částí.</p>
+  </div>
+</section>
+
+<!-- ── KONFIGURÁTORY ──────────────────────────────── -->
+<section class="tools" id="konfiguratory">
+  <div class="section-tag">Konfigurátory</div>
+  <h2 class="section-title">Navrhněte si díl sami</h2>
+  <p class="section-sub">Zadáte rozměry, hned vidíte 3D náhled a orientační cenu. Poptávku pak pošlete jedním kliknutím — model se přiloží sám.</p>
+  <div class="tools-grid">
+    <a href="/redukce" class="tool-card reveal">
+      <div class="tool-icon">🔧</div>
+      <h3 class="tech-name">Redukce na trubky a hadice</h3>
+      <p class="tech-desc">Přechod mezi dvěma průměry — na vysavač, odsávání, ventilaci nebo odtok. Každý konec se nasadí na trubku, nebo zasune dovnitř.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
+    <a href="/krabicky" class="tool-card reveal">
+      <div class="tool-icon">📦</div>
+      <h3 class="tech-name">Krabičky s víkem</h3>
+      <p class="tech-desc">Krabička přesně podle toho, co se do ní má vejít. S nasazovacím víkem, zaoblenými rohy a přihrádkami na drobnosti.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
   </div>
 </section>
 
@@ -1402,6 +1452,7 @@
       <a href="#technologie">3D tisk</a>
       <a href="#modelovani">3D modelování</a>
       <a href="/redukce">Redukce na míru</a>
+      <a href="/krabicky">Krabičky s víkem</a>
       <a href="#materialy">Materiály</a>
       <a href="#cenik">Ceník</a>
     </div>
@@ -1547,10 +1598,14 @@
   const odhadField = document.getElementById('odhadField');
   let model = null;
   let viewer = null;
+  let multiName = null; // soubor z konfigurátoru, který obsahuje víc dílů
 
   function updateEstimate() {
     if (!model) return;
     const e = estimate(model, materialSel.value, qtyInput.value);
+    // u souboru s více díly vedle sebe celkový rozměr o tiskovém prostoru nic neříká
+    const multi = !!multiName && !!fileUpload.files[0] && fileUpload.files[0].name === multiName;
+    const fits = multi || e.fits;
     document.getElementById('mDims').textContent = e.dims;
     document.getElementById('mVol').textContent = e.vol;
     document.getElementById('mWeight').textContent = e.weight + (e.qty > 1 ? ' / ks' : '');
@@ -1559,10 +1614,12 @@
     note.textContent =
       `Odhad pro ${e.matName}${e.exact ? '' : ' (materiál upřesníme)'}, rozměry bereme v milimetrech. ` +
       'Přesnou cenu potvrdíme v nabídce.' +
-      (e.fits ? '' : ` Pozor: model je větší než tiskový prostor ${CALC.maxSize.join(' × ')} mm, bylo by nutné ho rozdělit na části.`);
-    note.classList.toggle('warn', !e.fits);
+      (multi ? ' Soubor obsahuje všechny díly vedle sebe.' : '') +
+      (fits ? '' : ` Pozor: model je větší než tiskový prostor ${CALC.maxSize.join(' × ')} mm, bylo by nutné ho rozdělit na části.`);
+    note.classList.toggle('warn', !fits);
     odhadField.value = `${e.dims}, objem ${e.vol}, ${e.weight}, odhad ${e.price} (${e.matName}, ${e.qty} ks)` +
-      (e.fits ? '' : ' – NEVEJDE SE do tiskového prostoru');
+      (multi ? ' – více dílů v jednom souboru' : '') +
+      (fits ? '' : ' – NEVEJDE SE do tiskového prostoru');
     odhadField.disabled = false;
   }
 
@@ -1585,7 +1642,7 @@
   materialSel.addEventListener('change', updateEstimate);
   qtyInput.addEventListener('input', updateEstimate);
 
-  // Předvyplnění poptávky z konfigurátoru redukcí (/redukce)
+  // Předvyplnění poptávky z konfigurátorů (/redukce, /krabicky)
   const query = new URLSearchParams(location.search);
   if (query.get('popis')) {
     document.getElementById('message').value = query.get('popis');
@@ -1593,12 +1650,13 @@
     if (parseInt(query.get('kusu'), 10) > 0) qtyInput.value = parseInt(query.get('kusu'), 10);
     // model vygenerovaný konfigurátorem přiložit jako soubor
     try {
-      const saved = JSON.parse(sessionStorage.getItem('sulc3d-redukce'));
-      sessionStorage.removeItem('sulc3d-redukce');
+      const saved = JSON.parse(sessionStorage.getItem('sulc3d-model'));
+      sessionStorage.removeItem('sulc3d-model');
       if (saved && saved.data) {
         const bytes = Uint8Array.from(atob(saved.data), ch => ch.charCodeAt(0));
         const dt = new DataTransfer();
-        dt.items.add(new File([bytes], saved.name || 'redukce.stl', { type: 'model/stl' }));
+        dt.items.add(new File([bytes], saved.name || 'model.stl', { type: 'model/stl' }));
+        multiName = saved.multi ? saved.name : null;
         fileUpload.files = dt.files;
         checkFile();
       }

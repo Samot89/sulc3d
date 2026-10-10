@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krabičky s víkem na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor krabiček s víkem a přihrádkami. Zadejte vnitřní rozměry, prohlédněte si 3D náhled s orientační cenou a pošlete nezávaznou poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/krabicky" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Krabičky s víkem na míru" />
+  <meta property="og:description" content="Zadejte vnitřní rozměry a počet přihrádek, prohlédněte si 3D náhled s orientační cenou a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/krabicky" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/redukce">Redukce na trubky</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Krabičky s víkem<br /><span class="grad-text">přesně na míru</span></h1>
+  <p class="lead">Zadejte, co se má dovnitř vejít. Hned uvidíte 3D náhled, půdorys přihrádek a orientační cenu — a jedním kliknutím pošlete poptávku.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Vnitřní rozměry</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="w">Šířka (mm)</label>
+          <input type="number" id="w" value="100" min="10" max="225" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="d">Hloubka (mm)</label>
+          <input type="number" id="d" value="60" min="10" max="225" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="h">Výška (mm)</label>
+          <input type="number" id="h" value="40" min="5" max="240" step="1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Zadejte prostor, který potřebujete uvnitř. Vnější rozměr se dopočítá podle tloušťky stěny.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Stěny a rohy</legend>
+      <div class="row">
+        <div class="field">
+          <label for="wall">Stěna a dno (mm)</label>
+          <input type="number" id="wall" value="2" min="0.8" max="5" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="r">Zaoblení rohů (mm)</label>
+          <input type="number" id="r" value="6" min="0" max="50" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Zaoblení je poloměr vnějšího rohu. Hodnota 0 nebo menší než tloušťka stěny dá ostré rohy.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Přihrádky</legend>
+      <div class="row">
+        <div class="field">
+          <label for="nx">Počet na šířku</label>
+          <input type="number" id="nx" value="1" min="1" max="10" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="ny">Počet na hloubku</label>
+          <input type="number" id="ny" value="1" min="1" max="10" step="1" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="field">
+        <small id="pocketHint">Přepážky jsou silné 1,2 mm a sahají po okraj krabičky.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Víko</legend>
+      <label class="check"><input type="checkbox" id="lid" checked /> Přidat nasazovací víko</label>
+      <fieldset id="lidFields" style="margin-bottom:0;">
+        <div class="row">
+          <div class="field">
+            <label for="lidH">Výška lemu (mm)</label>
+            <input type="number" id="lidH" value="10" min="3" max="60" step="1" inputmode="decimal" />
+          </div>
+          <div class="field">
+            <label for="gap">Vůle (mm)</label>
+            <input type="number" id="gap" value="0.2" min="0" max="1" step="0.05" inputmode="decimal" />
+          </div>
+        </div>
+        <div class="field">
+          <small>Víko se nasouvá přes okraj krabičky. Vůle je mezera mezi krabičkou a víkem na každé straně; menší znamená těsnější víko.</small>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA</option>
+            <option value="PETG">PETG</option>
+            <option value="ABS / ASA">ABS / ASA</option>
+            <option value="TPU">TPU (pružný)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled krabičky – tažením lze otáčet"></canvas>
+    <div class="toggle" id="viewToggle" role="group" aria-label="Způsob zobrazení">
+      <button type="button" data-view="apart" aria-pressed="true">Vedle sebe</button>
+      <button type="button" data-view="closed" aria-pressed="false">Zavřená</button>
+    </div>
+    <p class="hint">Tažením model otočíte</p>
+    <svg id="plan" class="section-svg" viewBox="0 0 320 170" role="img" aria-label="Půdorys krabičky s přihrádkami"></svg>
+
+    <div class="results">
+      <div class="res-row"><span>Krabička – vnější rozměr</span><strong id="rBox">–</strong></div>
+      <div class="res-row" id="rowLid"><span>Víko – vnější rozměr</span><strong id="rLid">–</strong></div>
+      <div class="res-row" id="rowPocket"><span>Jedna přihrádka</span><strong id="rPocket">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto krabičku</a>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než krabičku objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📏 Jak zvolit rozměry</h3>
+      <p>Změřte to, co do krabičky patří, a ke každému rozměru přidejte 1–2 mm rezervu. U přihrádek počítejte s rozměrem jedné přihrádky, který vidíte ve výsledcích.</p>
+    </div>
+    <div class="info-card">
+      <h3>🧱 Tloušťka stěny</h3>
+      <p>Pro běžné krabičky stačí 1,6–2 mm. Na těžší obsah nebo větší krabičky zvolte 2,5–3 mm, aby se stěny neprohýbaly.</p>
+    </div>
+    <div class="info-card">
+      <h3>🔒 Jak drží víko</h3>
+      <p>Víko drží třením. S vůlí 0,2 mm jde nasadit lehce, s menší vůlí sedí pevněji. Vyšší lem drží lépe, nižší se snáz sundává.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Potřebujete něco navíc?</h3>
+      <p>Otvor na kabel, popisek na víku, různě velké přihrádky nebo jiný typ víka vymodelujeme na zakázku. Napište to do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="box.js"></script>
+<script>
+  const { CALC, csNum, measure, estimate, fitsBed, handoff, createViewer } = window.Sulc3D;
+  const { buildBox, place, join } = window.Sulc3DBox;
+  const $ = id => document.getElementById(id);
+  const DIVIDER = 1.2;      // mm, tloušťka přepážek
+  const PART_GAP = 10;      // mm, mezera mezi krabičkou a víkem v tiskovém souboru
+  const MIN_POCKET = 8;     // mm, nejmenší rozumná přihrádka
+  const num = id => parseFloat(String($(id).value).replace(',', '.'));
+  const mm = v => csNum(v, Number.isInteger(Math.round(v * 10) / 10) ? 0 : 1);
+  const dims3 = s => s.map(mm).join(' × ') + ' mm';
+  const viewer = createViewer($('canvas'));
+  let view = 'apart';
+  let current = null;       // poslední platný model { pos, name, multi }
+
+  function readParams() {
+    const p = {
+      w: num('w'), d: num('d'), h: num('h'), wall: num('wall'), r: num('r'),
+      nx: num('nx'), ny: num('ny'), lid: $('lid').checked, lidH: num('lidH'), gap: num('gap')
+    };
+    const errors = [], warnings = [];
+    const range = (v, lo, hi, name, unit = ' mm') => {
+      if (!(v >= lo && v <= hi)) errors.push(`${name} musí být v rozmezí ${mm(lo)}–${mm(hi)}${unit}.`);
+    };
+    range(p.w, 10, 225, 'Šířka');
+    range(p.d, 10, 225, 'Hloubka');
+    range(p.h, 5, 240, 'Výška');
+    range(p.wall, 0.8, 5, 'Tloušťka stěny');
+    range(p.r, 0, 50, 'Zaoblení rohů');
+    [['nx', 'Počet přihrádek na šířku'], ['ny', 'Počet přihrádek na hloubku']].forEach(([k, name]) => {
+      if (!Number.isInteger(p[k]) || p[k] < 1 || p[k] > 10) errors.push(`${name} musí být celé číslo 1–10.`);
+    });
+    if (p.lid) {
+      range(p.lidH, 3, 60, 'Výška lemu víka');
+      range(p.gap, 0, 1, 'Vůle víka');
+    }
+    if (errors.length) return { p, errors, warnings };
+
+    // vnitřní poloměr rohu; pod tloušťkou stěny vychází ostrý roh
+    p.ri = p.r > p.wall ? Math.min(p.r - p.wall, p.w / 2, p.d / 2) : 0;
+    p.outer = [p.w + 2 * p.wall, p.d + 2 * p.wall, p.h + p.wall];
+    p.pocket = [(p.w - (p.nx - 1) * DIVIDER) / p.nx, (p.d - (p.ny - 1) * DIVIDER) / p.ny];
+    const split = p.nx > 1 || p.ny > 1;
+    if (split && Math.min(...p.pocket) < MIN_POCKET) {
+      errors.push(`Přihrádky by vyšly menší než ${MIN_POCKET} mm. Zmenšete jejich počet, nebo zvětšete krabičku.`);
+    } else if (split && Math.min(...p.pocket) < p.ri) {
+      errors.push('Zaoblení rohů je větší než přihrádka. Zmenšete zaoblení, nebo počet přihrádek.');
+    }
+    if (!fitsBed(p.outer)) errors.push(`Krabička se nevejde do tiskového prostoru ${CALC.maxSize.join(' × ')} mm. Zmenšete rozměry.`);
+
+    if (p.lid) {
+      // víko je mělká krabička, která se nasune přes vnější obrys
+      p.lidInner = [p.outer[0] + 2 * p.gap, p.outer[1] + 2 * p.gap, p.lidH];
+      p.lidRi = p.ri > 0 ? p.ri + p.wall + p.gap : 0;
+      p.lidOuter = [p.lidInner[0] + 2 * p.wall, p.lidInner[1] + 2 * p.wall, p.lidH + p.wall];
+      if (p.lidH > p.outer[2]) errors.push('Lem víka je vyšší než krabička. Zmenšete výšku lemu.');
+      if (!fitsBed(p.lidOuter)) errors.push(`Víko se nevejde do tiskového prostoru ${CALC.maxSize.join(' × ')} mm. Zmenšete rozměry.`);
+      if (p.gap < 0.1) warnings.push('S vůlí pod 0,1 mm půjde víko nasadit ztuha nebo vůbec. Běžně se volí 0,2–0,3 mm.');
+    }
+    if (p.wall < 1.2) warnings.push('Stěna pod 1,2 mm je křehká. Pro běžné použití doporučujeme 1,6–2 mm.');
+    if (p.wall < 2 && Math.max(p.w, p.d) > 150) warnings.push('U takto velké krabičky se tenká stěna může prohýbat. Doporučujeme alespoň 2 mm.');
+    return { p, errors, warnings };
+  }
+
+  function buildParts(p) {
+    const box = buildBox({ w: p.w, d: p.d, h: p.h, wall: p.wall, floor: p.wall, ri: p.ri, nx: p.nx, ny: p.ny, div: DIVIDER });
+    if (!p.lid) return { print: box, closed: box };
+    const lid = buildBox({ w: p.lidInner[0], d: p.lidInner[1], h: p.lidH, wall: p.wall, floor: p.wall, ri: p.lidRi });
+    const off = p.gap + p.wall;
+    return {
+      // tisková poloha: víko dnem dolů vedle krabičky
+      print: join(box, place(lid, p.outer[0] + PART_GAP + off, -off, 0, false)),
+      // nasazené víko: otočené o 180° a položené na okraj
+      closed: join(box, place(lid, -off, p.d + off, p.h + 2 * p.wall, true))
+    };
+  }
+
+  // Půdorys: vnější obrys a přihrádky
+  function drawPlan(p) {
+    const W = 320, H = 170, pad = 26;
+    const s = Math.min((W - 2 * pad) / p.outer[0], (H - 2 * pad) / p.outer[1]);
+    const x0 = (W - p.outer[0] * s) / 2, y0 = (H - p.outer[1] * s) / 2;
+    const ro = p.ri > 0 ? p.ri + p.wall : 0;
+    let svg = `<rect x="${x0.toFixed(1)}" y="${y0.toFixed(1)}" width="${(p.outer[0] * s).toFixed(1)}" height="${(p.outer[1] * s).toFixed(1)}" rx="${(ro * s).toFixed(1)}" fill="rgba(79,123,239,0.55)" stroke="#8fa8ff" stroke-width="1"/>`;
+    // dutina jako jeden zaoblený obdélník, přepážky přes ni
+    svg += `<rect x="${(x0 + p.wall * s).toFixed(1)}" y="${(y0 + p.wall * s).toFixed(1)}" width="${(p.w * s).toFixed(1)}" height="${(p.d * s).toFixed(1)}" rx="${(p.ri * s).toFixed(1)}" fill="#0f1625"/>`;
+    for (let i = 1; i < p.nx; i++) {
+      const x = x0 + (p.wall + i * (p.pocket[0] + DIVIDER) - DIVIDER) * s;
+      svg += `<rect x="${x.toFixed(1)}" y="${(y0 + p.wall * s).toFixed(1)}" width="${Math.max(1, DIVIDER * s).toFixed(1)}" height="${(p.d * s).toFixed(1)}" fill="#6f8df2"/>`;
+    }
+    for (let j = 1; j < p.ny; j++) {
+      const y = y0 + (p.wall + j * (p.pocket[1] + DIVIDER) - DIVIDER) * s;
+      svg += `<rect x="${(x0 + p.wall * s).toFixed(1)}" y="${y.toFixed(1)}" width="${(p.w * s).toFixed(1)}" height="${Math.max(1, DIVIDER * s).toFixed(1)}" fill="#6f8df2"/>`;
+    }
+    const text = (x, y, t, extra = '') => `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="#7a869a" font-size="11" font-family="Inter, sans-serif" text-anchor="middle" ${extra}>${t}</text>`;
+    svg += text(W / 2, y0 + p.outer[1] * s + 16, `${mm(p.w)} mm uvnitř`);
+    const lx = x0 - 10, ly = H / 2;
+    svg += text(lx, ly, `${mm(p.d)} mm`, `transform="rotate(-90 ${lx.toFixed(1)} ${ly.toFixed(1)})"`);
+    $('plan').innerHTML = svg;
+  }
+
+  function update() {
+    $('lidFields').disabled = !$('lid').checked;
+    const { p, errors, warnings } = readParams();
+    const order = $('order');
+    const ok = !errors.length;
+
+    $('messages').innerHTML = '';
+    errors.forEach(t => { const li = document.createElement('li'); li.className = 'error'; li.textContent = t; $('messages').append(li); });
+    warnings.forEach(t => { const li = document.createElement('li'); li.className = 'warn'; li.textContent = t; $('messages').append(li); });
+    order.setAttribute('aria-disabled', String(!ok));
+    order.tabIndex = ok ? 0 : -1;
+    if (!ok) {
+      current = null;
+      ['rWeight', 'rPrice'].forEach(id => { $(id).textContent = '–'; });
+      return;
+    }
+
+    const parts = buildParts(p);
+    const est = estimate(measure(parts.print), $('material').value, $('kusu').value);
+    const shown = p.lid && view === 'closed' ? parts.closed : parts.print;
+    if (viewer) viewer.setModel(shown, measure(shown), true);
+    else $('canvas').hidden = true;
+    drawPlan(p);
+
+    const split = p.nx > 1 || p.ny > 1;
+    $('viewToggle').hidden = !p.lid;
+    $('rowLid').hidden = !p.lid;
+    $('rowPocket').hidden = !split;
+    $('rBox').textContent = dims3(p.outer);
+    if (p.lid) $('rLid').textContent = dims3(p.lidOuter);
+    if (split) $('rPocket').textContent = `${mm(p.pocket[0])} × ${mm(p.pocket[1])} × ${mm(p.h)} mm`;
+    $('pocketHint').textContent = 'Přepážky jsou silné 1,2 mm a sahají po okraj krabičky.' +
+      (split ? ` Vyjde ${p.nx * p.ny} přihrádek.` : '');
+    $('rWeight').textContent = est.weight + (est.qty > 1 ? ' / ks' : '');
+    $('rPrice').textContent = est.price + (est.qty > 1 ? ` za ${est.qty} ks` : '');
+
+    current = { pos: parts.print, name: `krabicka-${mm(p.w)}x${mm(p.d)}x${mm(p.h)}.stl`.replace(/,/g, '_'), multi: p.lid };
+    const popis = 'Krabička z konfigurátoru – ' +
+      `vnitřní rozměry ${dims3([p.w, p.d, p.h])}; stěna a dno ${mm(p.wall)} mm; ` +
+      `zaoblení rohů ${p.ri > 0 ? mm(p.r) + ' mm' : 'žádné (ostré rohy)'}; ` +
+      `přihrádky ${p.nx} × ${p.ny}${split ? ` (jedna ${mm(p.pocket[0])} × ${mm(p.pocket[1])} mm, přepážky 1,2 mm)` : ''}; ` +
+      (p.lid ? `nasazovací víko s lemem ${mm(p.lidH)} mm a vůlí ${csNum(p.gap, 2)} mm; ` : 'bez víka; ') +
+      `vnější rozměr krabičky ${dims3(p.outer)}` + (p.lid ? `, víka ${dims3(p.lidOuter)}` : '') + '. ' +
+      `Orientační odhad: ${est.weight}, ${est.price}.`;
+    const home = location.protocol === 'file:' ? 'index.html' : '/';
+    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty }) + '#naceneni';
+  }
+
+  $('viewToggle').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-view]');
+    if (!btn) return;
+    view = btn.dataset.view;
+    $('viewToggle').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    update();
+  });
+  // Při poptávce přiložit vygenerovaný model (převezme ho formulář na hlavní stránce)
+  $('order').addEventListener('click', () => { if (current) handoff(current.pos, current.name, current.multi); });
+  $('cfg').addEventListener('input', update);
+  $('cfg').addEventListener('submit', e => e.preventDefault());
+  update();
+</script>
+</body>
+</html>

@@ -84,6 +84,25 @@
     return { min, max, size, volume, area };
   }
 
+  // Vejde se díl v některé orientaci do tiskového prostoru?
+  function fitsBed(size) {
+    const sorted = [...size].sort((a, b) => a - b), bed = [...CALC.maxSize].sort((a, b) => a - b);
+    return sorted.every((v, i) => v <= bed[i]);
+  }
+
+  // Předat vygenerovaný model poptávkovému formuláři na hlavní stránce (přes sessionStorage).
+  // multi: soubor obsahuje víc dílů vedle sebe, takže celkový rozměr neříká nic o tiskovém prostoru.
+  function handoff(pos, name, multi) {
+    try {
+      const bytes = new Uint8Array(toSTL(pos));
+      let bin = '';
+      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      sessionStorage.setItem('sulc3d-model', JSON.stringify({ name, multi: !!multi, data: btoa(bin) }));
+    } catch (e) {
+      // bez přílohy – rozměry jsou i tak v textu poptávky
+    }
+  }
+
   // Orientační hmotnost a cena pro změřený model
   function estimate(model, material, qtyValue) {
     const exact = !!CALC.materials[material];
@@ -96,11 +115,9 @@
     const piece = grams * mat.perGram;
     const round10 = v => Math.max(CALC.minPrice, Math.round(v / 10) * 10);
     const lo = round10(piece * CALC.spread[0]) * qty, hi = round10(piece * CALC.spread[1]) * qty;
-    // vejde se díl v některé orientaci do tiskového prostoru?
-    const sorted = [...model.size].sort((a, b) => a - b), bed = [...CALC.maxSize].sort((a, b) => a - b);
     return {
       matName, exact, qty, grams, lo, hi,
-      fits: sorted.every((v, i) => v <= bed[i]),
+      fits: fitsBed(model.size),
       price: (lo === hi ? `cca ${csNum(lo, 0)}` : `${csNum(lo, 0)}–${csNum(hi, 0)}`) + ' Kč',
       dims: model.size.map(v => csNum(v, v < 10 ? 1 : 0)).join(' × ') + ' mm',
       vol: csNum(model.volume / 1000, 1) + ' cm³',
@@ -231,5 +248,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, createViewer };
 })();
