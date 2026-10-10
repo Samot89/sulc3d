@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cedulky a jmenovky s vlastním textem – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor cedulek, jmenovek a štítků s vlastním textem. Napište text, zvolte velikost a písmo, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/cedulky" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Cedulky a jmenovky s vlastním textem" />
+  <meta property="og:description" content="Napište text, zvolte velikost a písmo, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/cedulky" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@600&family=Inter:wght@400;500;600;700;800;900&family=Lobster&family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Cedulky a jmenovky<br /><span class="grad-text">s vlastním textem</span></h1>
+  <p class="lead">Na dveře, schránku, dílnu nebo jako popisek. Napište text, zvolte velikost a písmo — náhled a cena se přepočítají hned.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Text</legend>
+      <div class="field" style="margin-bottom:0.9rem;">
+        <label for="text">Nápis (až 3 řádky)</label>
+        <textarea id="text" rows="3" maxlength="120">Novákovi</textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="font">Písmo</label>
+          <select id="font"></select>
+        </div>
+        <div class="field">
+          <label for="style">Provedení</label>
+          <select id="style">
+            <option value="raised">Vystouplé písmo</option>
+            <option value="engraved">Zapuštěné písmo</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <small>Text se sám zvětší tak, aby vyplnil cedulku. Vystouplé písmo vynikne nejlépe ve dvou barvách — barvu podkladu a písma napište do poptávky.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cedulka</legend>
+      <div class="row">
+        <div class="field">
+          <label for="w">Šířka (mm)</label>
+          <input type="number" id="w" value="120" min="20" max="225" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="h">Výška (mm)</label>
+          <input type="number" id="h" value="40" min="10" max="225" step="1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row three">
+        <div class="field">
+          <label for="t">Tloušťka (mm)</label>
+          <input type="number" id="t" value="2.4" min="1.2" max="6" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="depth">Reliéf (mm)</label>
+          <input type="number" id="depth" value="1" min="0.4" max="3" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="r">Zaoblení (mm)</label>
+          <input type="number" id="r" value="5" min="0" max="110" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Reliéf je výška písma nad podkladem, u zapuštěného písma hloubka.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Úprava</legend>
+      <label class="check"><input type="checkbox" id="frame" checked /> Rámeček kolem okraje</label>
+      <div class="row">
+        <div class="field">
+          <label for="holes">Otvory na šrouby</label>
+          <select id="holes">
+            <option value="0">Bez otvorů (lepení)</option>
+            <option value="2">2 otvory po stranách</option>
+            <option value="4">4 otvory v rozích</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="holeD">Průměr otvoru (mm)</label>
+          <input type="number" id="holeD" value="4" min="2" max="8" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="margin">Okraj kolem textu (mm)</label>
+        <input type="number" id="margin" value="5" min="1" max="30" step="0.5" inputmode="decimal" />
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA</option>
+            <option value="PETG">PETG (i ven)</option>
+            <option value="ABS / ASA">ASA (ven na slunce)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled cedulky – tažením lze otáčet"></canvas>
+    <p class="hint">Světlejší plochy jsou výš. Tažením model otočíte.</p>
+
+    <div class="results">
+      <div class="res-row"><span>Rozměr cedulky</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span>Výška písmen</span><strong id="rLetter">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto cedulku</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než cedulku objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🎨 Barvy</h3>
+      <p>Cedulku tiskneme jednobarevně, nebo s písmem v jiné barvě než podklad. Požadované barvy napište do poptávky, potvrdíme, co máme skladem.</p>
+    </div>
+    <div class="info-card">
+      <h3>🔤 Velikost písma</h3>
+      <p>Písmena pod 5 mm se tisknou hůř, hlavně u psacího a ozdobného písma. Když text vychází malý, zvětšete cedulku, nebo ho rozdělte na víc řádků.</p>
+    </div>
+    <div class="info-card">
+      <h3>☀️ Ven, nebo dovnitř</h3>
+      <p>Do interiéru stačí PLA. Na dveře a schránku venku je lepší PETG, na přímé slunce ASA, které teplem neměkne a nevybledne tak rychle.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Logo nebo znak?</h3>
+      <p>Cedulku s logem, piktogramem nebo číslem popisným podle předlohy připravíme na zakázku. Obrázek pošlete e-mailem a napište to do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, dims3, MAX_TRIS, FONTS, loadFont, layoutText, raster, roundRect, init } = window.Sulc3DKonfig;
+  const { buildRelief } = window.Sulc3DRelief;
+  const FRAME_W = 1.2, FRAME_INSET = 1.5;  // mm, šířka rámečku a jeho odstup od okraje
+  const MIN_FLOOR = 0.8;                   // mm, kolik podkladu musí zbýt pod zapuštěným písmem
+
+  for (const [key, f] of Object.entries(FONTS)) $('font').add(new Option(f.label, key));
+
+  async function compute(ctx) {
+    const p = { w: num('w'), h: num('h'), t: num('t'), depth: num('depth'), r: num('r'), margin: num('margin'),
+      holes: +$('holes').value, holeD: num('holeD'), frame: $('frame').checked, raised: $('style').value === 'raised', font: $('font').value };
+    $('holeD').disabled = !p.holes;
+    const lines = $('text').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 3);
+    const ok = [ctx.range(p.w, 20, 225, 'Šířka'), ctx.range(p.h, 10, 225, 'Výška'), ctx.range(p.t, 1.2, 6, 'Tloušťka'),
+      ctx.range(p.depth, 0.4, 3, 'Reliéf'), ctx.range(p.r, 0, 110, 'Zaoblení'), ctx.range(p.margin, 1, 30, 'Okraj kolem textu')];
+    if (p.holes) ok.push(ctx.range(p.holeD, 2, 8, 'Průměr otvoru'));
+    if (!lines.length) { ctx.error('Napište text, který má na cedulce být.'); ok.push(false); }
+    if (!p.raised && p.t - p.depth < MIN_FLOOR) { ctx.error(`Zapuštěné písmo je moc hluboké. Pod ním musí zůstat alespoň ${mm(MIN_FLOOR)} mm podkladu.`); ok.push(false); }
+    if (ok.includes(false)) return null;
+    await loadFont(p.font, lines.join(' '));
+
+    // plocha pro text: uvnitř rámečku a mimo otvory
+    const frameZone = p.frame ? FRAME_INSET + FRAME_W : 0;
+    const holeOff = frameZone + 1.5 + p.holeD / 2;       // střed otvoru od okraje
+    const side = p.holes ? holeOff + p.holeD / 2 : frameZone;
+    const availW = p.w - 2 * (side + p.margin), availH = p.h - 2 * (frameZone + p.margin);
+    if (availW < 6 || availH < 4) { ctx.error('Na text nezbývá místo. Zvětšete cedulku, nebo zmenšete okraj.'); return null; }
+
+    let cell = Math.max(0.2, Math.max(p.w, p.h) / 640), pos, layout;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const nx = Math.round(p.w / cell), ny = Math.round(p.h / cell), s = p.w / nx;
+      const R = raster(nx, ny), c = R.ctx;
+      // podklad se zaoblením a otvory
+      R.clear();
+      roundRect(c, 0, 0, nx, ny, p.r / s);
+      c.fill();
+      c.globalCompositeOperation = 'destination-out';
+      const hx = holeOff / s, hy = p.holes === 4 ? holeOff / s : ny / 2;
+      const spots = p.holes === 2 ? [[hx, hy], [nx - hx, hy]]
+        : p.holes === 4 ? [[hx, hy], [nx - hx, hy], [hx, ny - hy], [nx - hx, ny - hy]] : [];
+      spots.forEach(([x, y]) => { c.beginPath(); c.arc(x, y, p.holeD / 2 / s, 0, 2 * Math.PI); c.fill(); });
+      const plate = R.mask();
+      // text a rámeček
+      R.clear();
+      layout = layoutText(c, lines, p.font, availW / s, availH / s);
+      layout.draw(c, nx / 2, ny / 2);
+      if (p.frame) {
+        const e = (FRAME_INSET + FRAME_W / 2) / s;
+        c.lineWidth = FRAME_W / s;
+        roundRect(c, e, e, nx - 2 * e, ny - 2 * e, Math.max(0, p.r / s - e));
+        c.stroke();
+      }
+      const ink = R.mask();
+      const levels = new Uint8Array(nx * ny);
+      for (let k = 0; k < levels.length; k++) levels[k] = plate[k] ? (ink[k] ? 2 : 1) : 0;
+      pos = buildRelief({ nx, ny, cell: s, levels, heights: [0, p.t, p.raised ? p.t + p.depth : p.t - p.depth] });
+      layout.cell = s;
+      if (pos.length / 9 <= MAX_TRIS) break;
+      cell *= 1.3; // moc podrobné → hrubší rastr
+    }
+
+    const letter = layout.px * layout.cell * 0.72; // přibližná výška velkého písmene
+    if (letter < 5) ctx.warn(`Písmena vycházejí asi ${mm(letter)} mm vysoká a tenké tahy se nemusí vytisknout. Zvětšete cedulku, nebo zkraťte text.`);
+    const top = p.raised ? p.t + p.depth : p.t;
+    return {
+      pos,
+      name: `cedulka-${mm(p.w)}x${mm(p.h)}.stl`,
+      viewOpts: { tintZ: [top - p.depth, top], view: { yaw: 0, pitch: 1.1, spin: false } },
+      rows: { rSize: dims3([p.w, p.h, top]), rLetter: `asi ${mm(letter)} mm` },
+      popis: 'Cedulka z konfigurátoru – ' +
+        `text „${lines.join(' / ')}“, písmo ${FONTS[p.font].label.toLowerCase()}, ${p.raised ? 'vystouplé' : 'zapuštěné'} o ${mm(p.depth)} mm; ` +
+        `rozměr ${mm(p.w)} × ${mm(p.h)} mm, tloušťka podkladu ${mm(p.t)} mm, zaoblení ${mm(p.r)} mm; ` +
+        `${p.frame ? 's rámečkem' : 'bez rámečku'}; ` +
+        (p.holes ? `${p.holes} otvory Ø ${mm(p.holeD)} mm.` : 'bez otvorů.') +
+        ' Barvy: (doplňte barvu podkladu a písma).'
+    };
+  }
+
+  init({ compute, debounce: 180 });
+</script>
+</body>
+</html>

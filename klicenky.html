@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Klíčenky se jménem na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor klíčenek se jménem nebo vlastním nápisem. Napište text, zvolte písmo a tvar, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/klicenky" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Klíčenky se jménem na míru" />
+  <meta property="og:description" content="Napište jméno, zvolte písmo a tvar, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/klicenky" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@600&family=Inter:wght@400;500;600;700;800;900&family=Lobster&family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Klíčenky se jménem<br /><span class="grad-text">nebo vlastním nápisem</span></h1>
+  <p class="lead">Dárek, označení klíčů nebo drobnost pro celý tým. Napište text, zvolte písmo a tvar — náhled a cena se přepočítají hned.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Text</legend>
+      <div class="field" style="margin-bottom:0.9rem;">
+        <label for="text">Jméno nebo nápis</label>
+        <input type="text" id="text" value="Tomáš" maxlength="20" autocomplete="off" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="font">Písmo</label>
+          <select id="font"></select>
+        </div>
+        <div class="field">
+          <label for="shape">Tvar</label>
+          <select id="shape">
+            <option value="outline">Obrys podle písma</option>
+            <option value="tag">Štítek</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <small id="shapeHint"></small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Rozměry</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="len">Délka (mm)</label>
+          <input type="number" id="len" value="70" min="30" max="160" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="t">Podklad (mm)</label>
+          <input type="number" id="t" value="2.5" min="1.5" max="5" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="depth">Písmo (mm)</label>
+          <input type="number" id="depth" value="1.2" min="0.6" max="3" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="edge">Okraj kolem písma (mm)</label>
+          <input type="number" id="edge" value="2.5" min="1.5" max="6" step="0.5" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="hole">Otvor na kroužek (mm)</label>
+          <input type="number" id="hole" value="4" min="3" max="8" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Délka je celá klíčenka i s očkem. Výška vyjde podle textu a písma. „Podklad“ je tloušťka spodní části, „Písmo“ výška písmen nad ním.</small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA">PLA</option>
+            <option value="PETG" selected>PETG (odolnější)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled klíčenky – tažením lze otáčet"></canvas>
+    <p class="hint">Světlejší plochy jsou výš. Tažením model otočíte.</p>
+
+    <div class="results">
+      <div class="res-row"><span>Rozměr klíčenky</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span>Výška písmen</span><strong id="rLetter">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto klíčenku</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než klíčenku objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🎨 Dvě barvy</h3>
+      <p>Klíčenka vynikne s písmem v jiné barvě než podklad. Požadované barvy napište do poptávky, potvrdíme, co máme skladem.</p>
+    </div>
+    <div class="info-card">
+      <h3>🔤 Délka a čitelnost</h3>
+      <p>Krátké jméno se vejde na 50–70 mm. U delšího nápisu zvětšete délku, aby písmena nevyšla menší než 5 mm.</p>
+    </div>
+    <div class="info-card">
+      <h3>👥 Víc jmen najednou</h3>
+      <p>Pro třídu, tým nebo svatební hosty stačí jednu klíčenku nastavit a seznam jmen připsat do poptávky. Ostatní připravíme stejně.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Logo nebo obrázek?</h3>
+      <p>Klíčenku s logem firmy nebo klubu vyrobíme podle předlohy. Obrázek pošlete e-mailem a napište to do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, dims3, MAX_TRIS, FONTS, loadFont, layoutText, raster, roundRect, init } = window.Sulc3DKonfig;
+  const { buildRelief } = window.Sulc3DRelief;
+  const RING_WALL = 2.2;  // mm, materiál kolem otvoru na kroužek
+  const MAX_TEXT_H = 26;  // mm, vyšší písmo by z klíčenky dělalo cedulku
+  const HINTS = {
+    outline: 'Podklad kopíruje tvar písmen, očko je vlevo. Hodí se na jména a krátké nápisy bez mezer.',
+    tag: 'Zaoblený štítek s otvorem vlevo. Hodí se na delší nápisy, čísla a text s mezerami.'
+  };
+
+  for (const [key, f] of Object.entries(FONTS)) $('font').add(new Option(f.label, key));
+  $('font').value = 'fredoka';
+
+  // Název souboru bez diakritiky a mezer (kombinující znaky mají kódy 0x300–0x36f)
+  const slug = s => [...s.toLowerCase().normalize('NFD')].filter(ch => ch.charCodeAt(0) < 0x300 || ch.charCodeAt(0) > 0x36f).join('')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  // Počet samostatných ostrůvků v masce (podklad musí držet pohromadě)
+  function islands(mask, nx, ny) {
+    const seen = new Uint8Array(mask.length), stack = [];
+    let count = 0;
+    for (let start = 0; start < mask.length; start++) {
+      if (!mask[start] || seen[start]) continue;
+      count++;
+      seen[start] = 1;
+      stack.push(start);
+      while (stack.length) {
+        const k = stack.pop(), i = k % nx, j = (k - i) / nx;
+        if (i > 0 && mask[k - 1] && !seen[k - 1]) { seen[k - 1] = 1; stack.push(k - 1); }
+        if (i < nx - 1 && mask[k + 1] && !seen[k + 1]) { seen[k + 1] = 1; stack.push(k + 1); }
+        if (j > 0 && mask[k - nx] && !seen[k - nx]) { seen[k - nx] = 1; stack.push(k - nx); }
+        if (j < ny - 1 && mask[k + nx] && !seen[k + nx]) { seen[k + nx] = 1; stack.push(k + nx); }
+      }
+    }
+    return count;
+  }
+
+  async function compute(ctx) {
+    const p = { len: num('len'), t: num('t'), depth: num('depth'), edge: num('edge'), hole: num('hole'), shape: $('shape').value, font: $('font').value };
+    $('shapeHint').textContent = HINTS[p.shape];
+    const text = $('text').value.trim().replace(/\s+/g, ' ');
+    const ok = [ctx.range(p.len, 30, 160, 'Délka'), ctx.range(p.t, 1.5, 5, 'Podklad'), ctx.range(p.depth, 0.6, 3, 'Výška písma'),
+      ctx.range(p.edge, 1.5, 6, 'Okraj kolem písma'), ctx.range(p.hole, 3, 8, 'Otvor na kroužek')];
+    if (!text) { ctx.error('Napište jméno nebo nápis.'); ok.push(false); }
+    if (ok.includes(false)) return null;
+    await loadFont(p.font, text);
+
+    const ringR = p.hole / 2 + RING_WALL;          // vnější poloměr očka
+    // kde začíná písmo: u obrysu očko zasahuje do okraje písma, u štítku je otvor uvnitř
+    const textLeft = p.shape === 'outline' ? 2 * ringR - 0.5 : p.edge + p.hole + p.edge;
+    const textW = p.len - textLeft - p.edge;
+    if (textW < 10) { ctx.error('Na text nezbývá místo. Zvětšete délku klíčenky.'); return null; }
+
+    let cell = Math.max(0.15, p.len / 640), pos, layout, height;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const nx = Math.round(p.len / cell), s = p.len / nx;
+      // nejdřív jen změřit text, výška klíčenky z něj vyjde
+      const probe = raster(8, 8);
+      layout = layoutText(probe.ctx, [text], p.font, textW / s, MAX_TEXT_H / s);
+      height = Math.max(layout.height * s + 2 * p.edge, 2 * ringR);
+      const ny = Math.ceil(height / s) + 2, cy = ny / 2;
+      // střed textu: u obrysu hned za očkem, na štítku uprostřed volné plochy
+      const tx = p.shape === 'outline' ? textLeft / s + layout.width / 2 : (textLeft + textW / 2) / s;
+      const R = raster(nx, ny), c = R.ctx;
+
+      R.clear();
+      if (p.shape === 'outline') {
+        layout.draw(c, tx, cy);
+        layout.draw(c, tx, cy, 'stroke', 2 * p.edge / s);
+        c.beginPath(); c.arc(ringR / s, cy, ringR / s, 0, 2 * Math.PI); c.fill();
+        // můstek mezi očkem a prvním písmenem
+        c.fillRect(ringR / s, cy - ringR / s * 0.7, (textLeft - ringR + p.edge) / s, ringR / s * 1.4);
+      } else {
+        roundRect(c, 0, cy - height / s / 2, nx, height / s, Math.min(height / 2, 6) / s);
+        c.fill();
+      }
+      c.globalCompositeOperation = 'destination-out';
+      const holeX = p.shape === 'outline' ? ringR : p.edge + p.hole / 2;
+      c.beginPath(); c.arc(holeX / s, cy, p.hole / 2 / s, 0, 2 * Math.PI); c.fill();
+      const base = R.mask();
+
+      R.clear();
+      layout.draw(c, tx, cy);
+      const ink = R.mask();
+      if (islands(base, nx, ny) > 1) {
+        ctx.error('Podklad by se rozpadl na víc kusů. Zvětšete okraj kolem písma, nebo zvolte tvar Štítek.');
+        return null;
+      }
+      const levels = new Uint8Array(nx * ny);
+      for (let k = 0; k < levels.length; k++) levels[k] = base[k] ? (ink[k] ? 2 : 1) : 0;
+      pos = buildRelief({ nx, ny, cell: s, levels, heights: [0, p.t, p.t + p.depth] });
+      layout.cell = s;
+      if (pos.length / 9 <= MAX_TRIS) break;
+      cell *= 1.3; // moc podrobné → hrubší rastr
+    }
+
+    const letter = layout.px * layout.cell * 0.72; // přibližná výška velkého písmene
+    if (letter < 5) ctx.warn(`Písmena vycházejí asi ${mm(letter)} mm vysoká a tenké tahy se nemusí vytisknout. Zvětšete délku, nebo zkraťte text.`);
+    if (p.shape === 'outline' && layout.width * layout.cell < textW - 1) ctx.warn('Text je krátký, klíčenka proto vyjde kratší než zadaná délka. Skutečný rozměr vidíte ve výsledcích.');
+    const size = window.Sulc3D.measure(pos).size;
+    return {
+      pos,
+      name: `klicenka-${slug(text) || 'text'}.stl`,
+      viewOpts: { tintZ: [p.t, p.t + p.depth], view: { yaw: 0, pitch: 1.1, spin: false } },
+      rows: { rSize: dims3(size), rLetter: `asi ${mm(letter)} mm` },
+      popis: 'Klíčenka z konfigurátoru – ' +
+        `text „${text}“, písmo ${FONTS[p.font].label.toLowerCase()}, tvar ${p.shape === 'outline' ? 'obrys podle písma' : 'štítek'}; ` +
+        `rozměr ${dims3(size)}, podklad ${mm(p.t)} mm, písmo vystouplé o ${mm(p.depth)} mm, okraj ${mm(p.edge)} mm, otvor Ø ${mm(p.hole)} mm.` +
+        ' Barvy: (doplňte barvu podkladu a písma).'
+    };
+  }
+
+  init({ compute, debounce: 180 });
+</script>
+</body>
+</html>

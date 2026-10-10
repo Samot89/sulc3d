@@ -90,17 +90,37 @@
     return sorted.every((v, i) => v <= bed[i]);
   }
 
-  // Předat vygenerovaný model poptávkovému formuláři na hlavní stránce (přes sessionStorage).
+  // Předání vygenerovaného modelu poptávkovému formuláři na hlavní stránce.
+  // Jde přes IndexedDB, protože větší modely (cedulky, lithofan) se do sessionStorage nevejdou.
+  const HANDOFF_MAX_AGE = 10 * 60 * 1000; // ms, starší model už k poptávce nepatří
+  function handoffStore(mode, work) {
+    return new Promise((resolve, reject) => {
+      const open = indexedDB.open('sulc3d', 1);
+      open.onupgradeneeded = () => open.result.createObjectStore('handoff');
+      open.onerror = () => reject(open.error);
+      open.onsuccess = () => {
+        const tx = open.result.transaction('handoff', mode);
+        const result = work(tx.objectStore('handoff'));
+        tx.oncomplete = () => { open.result.close(); resolve(result && result.result); };
+        tx.onerror = tx.onabort = () => { open.result.close(); reject(tx.error); };
+      };
+    });
+  }
+
   // multi: soubor obsahuje víc dílů vedle sebe, takže celkový rozměr neříká nic o tiskovém prostoru.
+  // Vrací Promise; na chybu se nečeká – rozměry jsou i tak v textu poptávky.
   function handoff(pos, name, multi) {
-    try {
-      const bytes = new Uint8Array(toSTL(pos));
-      let bin = '';
-      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-      sessionStorage.setItem('sulc3d-model', JSON.stringify({ name, multi: !!multi, data: btoa(bin) }));
-    } catch (e) {
-      // bez přílohy – rozměry jsou i tak v textu poptávky
-    }
+    return handoffStore('readwrite', store => store.put({ name, multi: !!multi, data: toSTL(pos), time: Date.now() }, 'model'))
+      .catch(() => {});
+  }
+
+  // Vyzvednout (a smazat) předaný model; null, když žádný čerstvý není.
+  function takeHandoff() {
+    let found;
+    return handoffStore('readwrite', store => {
+      const get = store.get('model');
+      get.onsuccess = () => { found = get.result; if (found) store.delete('model'); };
+    }).then(() => (found && Date.now() - found.time < HANDOFF_MAX_AGE ? found : null)).catch(() => null);
   }
 
   // Stažení STL – tlačítko se v konfigurátorech ukáže jen s adresou ?stl=1
@@ -150,12 +170,16 @@
     };
     const prog = gl.createProgram();
     gl.attachShader(prog, compile(gl.VERTEX_SHADER,
-      'attribute vec3 p; attribute vec3 n; uniform mat4 mvp; uniform mat4 rot; varying vec3 vn;' +
-      'void main(){ vn = (rot * vec4(n, 0.0)).xyz; gl_Position = mvp * vec4(p, 1.0); }'));
+      'attribute vec3 p; attribute vec3 n; uniform mat4 mvp; uniform mat4 rot; varying vec3 vn; varying float vz;' +
+      'void main(){ vn = (rot * vec4(n, 0.0)).xyz; vz = p.z; gl_Position = mvp * vec4(p, 1.0); }'));
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER,
-      'precision mediump float; varying vec3 vn;' +
+      // tint.z > 0: barvit podle výšky (tint.x = spodní mez, tint.y = rozsah) – odliší text od podkladu
+      'precision mediump float; varying vec3 vn; varying float vz; uniform vec3 tint;' +
       'void main(){ float d = abs(dot(normalize(vn), normalize(vec3(0.35, 0.55, 1.0))));' +
-      'gl_FragColor = vec4(mix(vec3(0.13, 0.18, 0.40), vec3(0.52, 0.64, 1.0), d), 1.0); }'));
+      'vec3 c = mix(vec3(0.13, 0.18, 0.40), vec3(0.52, 0.64, 1.0), d);' +
+      'if (tint.z > 0.5) { float t = clamp((vz - tint.x) / tint.y, 0.0, 1.0);' +
+      'c = mix(vec3(0.16, 0.22, 0.50), vec3(0.95, 0.96, 1.0), t) * (0.55 + 0.45 * d); }' +
+      'gl_FragColor = vec4(c, 1.0); }'));
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
     gl.useProgram(prog);
@@ -163,6 +187,7 @@
     const posBuf = gl.createBuffer(), norBuf = gl.createBuffer();
     const aP = gl.getAttribLocation(prog, 'p'), aN = gl.getAttribLocation(prog, 'n');
     const uMvp = gl.getUniformLocation(prog, 'mvp'), uRot = gl.getUniformLocation(prog, 'rot');
+    const uTint = gl.getUniformLocation(prog, 'tint');
 
     const mul = (a, b) => {
       const o = new Float32Array(16);
@@ -225,7 +250,9 @@
 
     return {
       // keepView: ponechat natočení (pro živé úpravy parametrů)
-      setModel(pos, m, keepView) {
+      // opts.tintZ: [z nejtmavší, z nejsvětlejší] v mm – barvení podle výšky
+      // opts.view: { yaw, pitch, spin } – výchozí pohled místo otáčení
+      setModel(pos, m, keepView, opts = {}) {
         // vystředit a zmenšit tak, aby se model vešel do koule o poloměru 0,5
         const cx = (m.min[0] + m.max[0]) / 2, cy = (m.min[1] + m.max[1]) / 2, cz = (m.min[2] + m.max[2]) / 2;
         const scale = 1 / Math.hypot(m.size[0], m.size[1], m.size[2]);
@@ -249,11 +276,18 @@
         gl.bufferData(gl.ARRAY_BUFFER, n, gl.STATIC_DRAW);
         gl.enableVertexAttribArray(aN);
         gl.vertexAttribPointer(aN, 3, gl.FLOAT, false, 0, 0);
+        if (opts.tintZ && opts.tintZ[0] !== opts.tintZ[1]) {
+          gl.uniform3f(uTint, (opts.tintZ[0] - cz) * scale, (opts.tintZ[1] - opts.tintZ[0]) * scale, 1);
+        } else {
+          gl.uniform3f(uTint, 0, 1, 0);
+        }
         const first = !count;
         count = pos.length / 3;
         if (!keepView || first) {
-          yaw = 0.7; pitch = 0.45;
-          spinning = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const v = opts.view || {};
+          yaw = v.yaw === undefined ? 0.7 : v.yaw;
+          pitch = v.pitch === undefined ? 0.45 : v.pitch;
+          spinning = v.spin !== false && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         }
         draw();
         if (spinning && !raf) raf = requestAnimationFrame(loop);
@@ -261,5 +295,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, ownerMode, download, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, takeHandoff, ownerMode, download, createViewer };
 })();

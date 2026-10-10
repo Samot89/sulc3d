@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lithofan z fotky – 3D tištěný obrázek | sulc3d.cz</title>
+  <meta name="description" content="Lithofan je tištěná destička, na které se proti světlu objeví vaše fotka. Nahrajte fotku, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/lithofan" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Lithofan z fotky" />
+  <meta property="og:description" content="Tištěná destička, na které se proti světlu objeví vaše fotka. Nahrajte fotku a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/lithofan" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Lithofan<br /><span class="grad-text">fotka, která svítí</span></h1>
+  <p class="lead">Tenká tištěná destička, na které se proti světlu objeví vaše fotka. Nahrajte obrázek a hned uvidíte, jak bude vypadat.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Fotka</legend>
+      <div class="field">
+        <label for="photo">Obrázek (JPG nebo PNG)</label>
+        <input type="file" id="photo" accept="image/jpeg,image/png,image/webp" />
+        <small>Fotka se zpracuje jen ve vašem prohlížeči. S poptávkou se odešle pouze vytvořený 3D model.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Rozměry</legend>
+      <div class="row">
+        <div class="field">
+          <label for="w">Šířka (mm)</label>
+          <input type="number" id="w" value="120" min="40" max="225" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="frame">Rámeček (mm)</label>
+          <input type="number" id="frame" value="3" min="0" max="10" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small id="sizeHint">Výška se dopočítá podle poměru stran fotky.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tloušťka</legend>
+      <div class="row">
+        <div class="field">
+          <label for="tmin">Nejtenčí místo (mm)</label>
+          <input type="number" id="tmin" value="0.8" min="0.6" max="1.5" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="tmax">Nejtlustší místo (mm)</label>
+          <input type="number" id="tmax" value="3" min="2" max="4.5" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Světlá místa fotky jsou tenká a propouštějí víc světla, tmavá jsou tlustá. Výchozí hodnoty sedí na bílý materiál.</small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA bílé</option>
+            <option value="PETG">PETG bílé</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="Náhled lithofanu – tažením lze otáčet"></canvas>
+    <p class="hint">Náhled ukazuje obrázek tak, jak vynikne proti světlu. Tažením model otočíte.</p>
+
+    <div class="results">
+      <div class="res-row"><span>Rozměr</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span>Podrobnost</span><strong id="rDetail">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tento lithofan</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než lithofan objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📷 Jaká fotka se hodí</h3>
+      <p>Nejlépe vyjdou portréty a fotky s výrazným kontrastem a klidným pozadím. Drobné detaily a text se ztrácejí, tmavé fotky je lepší předem zesvětlit.</p>
+    </div>
+    <div class="info-card">
+      <h3>💡 Jak se na něj dívat</h3>
+      <p>Bez světla vypadá lithofan jako bílá reliéfní destička. Obrázek se objeví, až ho postavíte před okno, lampu nebo svíčku.</p>
+    </div>
+    <div class="info-card">
+      <h3>⏱️ Tisk trvá déle</h3>
+      <p>Lithofan se tiskne nastojato v jemných vrstvách, aby byl obrázek co nejpodrobnější. Proto vychází dráž, než by odpovídalo jeho hmotnosti; přesnou cenu dostanete v nabídce.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Stojánek nebo lampička?</h3>
+      <p>Stojánek, rámeček na zavěšení nebo válcové stínítko na lampičku připravíme na zakázku. Napište to do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, dims3, init } = window.Sulc3DKonfig;
+  const { buildLitho } = window.Sulc3DRelief;
+  const MAX_CELLS = 70000;  // strop podrobnosti, aby se model vešel do přílohy poptávky
+  const MIN_CELL = 0.3;     // mm, jemnější rastr už tryska nevytiskne
+  let image = null;         // { el, promise } načtená fotka
+
+  function loadImage(file) {
+    const url = URL.createObjectURL(file);
+    const el = new Image();
+    const promise = new Promise((resolve, reject) => {
+      el.onload = () => { URL.revokeObjectURL(url); resolve(el); };
+      el.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Obrázek nejde načíst')); };
+    });
+    el.src = url;
+    return { promise };
+  }
+
+  // Jas 0–1 ve vrcholech mřížky; kontrast roztažený mezi 1. a 99. percentil
+  function brightness(img, nx, ny) {
+    const cv = document.createElement('canvas');
+    cv.width = nx + 1;
+    cv.height = ny + 1;
+    const c = cv.getContext('2d', { willReadFrequently: true });
+    c.fillStyle = '#fff';
+    c.fillRect(0, 0, cv.width, cv.height);
+    c.imageSmoothingQuality = 'high';
+    c.drawImage(img, 0, 0, cv.width, cv.height);
+    const d = c.getImageData(0, 0, cv.width, cv.height).data;
+    const lum = new Float32Array(cv.width * cv.height), hist = new Uint32Array(256);
+    for (let k = 0; k < lum.length; k++) {
+      const v = 0.2126 * d[k * 4] + 0.7152 * d[k * 4 + 1] + 0.0722 * d[k * 4 + 2];
+      lum[k] = v;
+      hist[Math.round(v)]++;
+    }
+    let lo = 0, hi = 255, acc = 0;
+    for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc >= lum.length * 0.01) { lo = v; break; } }
+    acc = 0;
+    for (let v = 255; v >= 0; v--) { acc += hist[v]; if (acc >= lum.length * 0.01) { hi = v; break; } }
+    const span = Math.max(hi - lo, 1);
+    for (let k = 0; k < lum.length; k++) lum[k] = Math.max(0, Math.min(1, (lum[k] - lo) / span));
+    return { lum, flat: hi - lo < 40 };
+  }
+
+  async function compute(ctx) {
+    const p = { w: num('w'), frame: num('frame'), tmin: num('tmin'), tmax: num('tmax') };
+    const ok = [ctx.range(p.w, 40, 225, 'Šířka'), ctx.range(p.frame, 0, 10, 'Rámeček'),
+      ctx.range(p.tmin, 0.6, 1.5, 'Nejtenčí místo'), ctx.range(p.tmax, 2, 4.5, 'Nejtlustší místo')];
+    if (!image) { ctx.error('Nahrajte fotku, ze které má lithofan vzniknout.'); ok.push(false); }
+    if (ok.includes(false)) return null;
+
+    let img;
+    try { img = await image.promise; } catch (e) { ctx.error('Obrázek se nepodařilo načíst. Zkuste jiný soubor JPG nebo PNG.'); return null; }
+    const h = p.w * img.naturalHeight / img.naturalWidth;
+    $('sizeHint').textContent = `Výška vyjde ${mm(h)} mm podle poměru stran fotky.`;
+    if (h > 225) { ctx.error(`Lithofan by vyšel ${mm(h)} mm vysoký, což je víc než tisková plocha. Zmenšete šířku.`); return null; }
+    if (h < 20) { ctx.error('Fotka je moc široká a nízká. Ořízněte ji, nebo zvětšete šířku.'); return null; }
+
+    const cell0 = Math.max(MIN_CELL, Math.sqrt(p.w * h / MAX_CELLS));
+    const nx = Math.round(p.w / cell0), ny = Math.max(1, Math.round(h / (p.w / nx))), cell = p.w / nx;
+    const { lum, flat } = brightness(img, nx, ny);
+    if (flat) ctx.warn('Fotka má málo kontrastu, obrázek proti světlu bude nevýrazný. Zkuste jinou, nebo ji předem upravte.');
+    if (img.naturalWidth < nx / 2) ctx.warn('Fotka má malé rozlišení, lithofan bude rozmazaný. Použijte větší obrázek.');
+
+    // tmavé = tlusté; řádek 0 sítě je dole, obrázek má řádek 0 nahoře
+    const thick = new Float32Array((nx + 1) * (ny + 1));
+    const fr = p.frame / cell;
+    for (let j = 0; j <= ny; j++) for (let i = 0; i <= nx; i++) {
+      const edge = Math.min(i, nx - i, j, ny - j) < fr;
+      const v = lum[(ny - j) * (nx + 1) + i];
+      thick[j * (nx + 1) + i] = edge ? p.tmax : p.tmax - v * (p.tmax - p.tmin);
+    }
+    const size = [p.w, ny * cell, p.tmax];
+    return {
+      pos: buildLitho({ nx, ny, cell, thick }),
+      name: `lithofan-${mm(size[0])}x${mm(size[1])}.stl`,
+      viewOpts: { tintZ: [p.tmax, p.tmin], view: { yaw: 0, pitch: 1.5, spin: false } },
+      rows: { rSize: dims3(size), rDetail: `${nx} × ${ny} bodů (${mm(cell)} mm)` },
+      popis: 'Lithofan z konfigurátoru – ' +
+        `rozměr ${mm(size[0])} × ${mm(size[1])} mm, tloušťka ${mm(p.tmin)}–${mm(p.tmax)} mm, ` +
+        `${p.frame > 0 ? `rámeček ${mm(p.frame)} mm` : 'bez rámečku'}. Obrázek je čitelný ze strany reliéfu.`
+    };
+  }
+
+  const konfig = init({ compute, debounce: 250 });
+  $('photo').addEventListener('change', () => {
+    const file = $('photo').files[0];
+    image = file ? loadImage(file) : null;
+    konfig.schedule();
+  });
+</script>
+</body>
+</html>

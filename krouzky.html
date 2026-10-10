@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Podložky, distanční kroužky a záslepky na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor plastových podložek, distančních kroužků, záslepek a krytek na trubky. Zadejte průměry, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/krouzky" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Podložky, kroužky a záslepky na míru" />
+  <meta property="og:description" content="Zadejte průměry, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/krouzky" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Podložky, kroužky<br /><span class="grad-text">a záslepky na míru</span></h1>
+  <p class="lead">Drobné díly, které se v obchodě špatně shánějí. Zadejte průměry, zkontrolujte řez a pošlete poptávku.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Co potřebujete</legend>
+      <div class="field">
+        <label for="type">Typ dílu</label>
+        <select id="type">
+          <option value="ring">Podložka nebo distanční kroužek</option>
+          <option value="plug">Záslepka do trubky</option>
+          <option value="cap">Krytka na trubku</option>
+        </select>
+        <small id="typeHint"></small>
+      </div>
+    </fieldset>
+
+    <fieldset id="fRing">
+      <legend>Rozměry kroužku</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="ringD">Vnější Ø (mm)</label>
+          <input type="number" id="ringD" value="20" min="3" max="230" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="ringd">Otvor Ø (mm)</label>
+          <input type="number" id="ringd" value="8.4" min="1" max="225" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="ringH">Výška (mm)</label>
+          <input type="number" id="ringH" value="3" min="0.6" max="200" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Otvor zadejte o 0,2–0,4 mm větší než šroub nebo hřídel, aby šel díl nasadit.</small>
+      </div>
+    </fieldset>
+
+    <fieldset id="fPlug" hidden>
+      <legend>Rozměry záslepky</legend>
+      <div class="row">
+        <div class="field">
+          <label for="plugD">Vnitřní Ø trubky (mm)</label>
+          <input type="number" id="plugD" value="26" min="6" max="220" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="plugL">Délka čepu (mm)</label>
+          <input type="number" id="plugL" value="12" min="4" max="80" step="1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="plugF">Ø hlavy (mm)</label>
+          <input type="number" id="plugF" value="32" min="8" max="230" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="plugT">Výška hlavy (mm)</label>
+          <input type="number" id="plugT" value="2" min="1" max="15" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="plugW">Stěna čepu (mm)</label>
+          <input type="number" id="plugW" value="1.6" min="1" max="10" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="plugG">Vůle (mm)</label>
+          <input type="number" id="plugG" value="0.2" min="0" max="1" step="0.05" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Hlava zůstane venku a kryje konec trubky, čep se zasune dovnitř. Ø hlavy obvykle odpovídá vnějšímu průměru trubky.</small>
+      </div>
+    </fieldset>
+
+    <fieldset id="fCap" hidden>
+      <legend>Rozměry krytky</legend>
+      <div class="row">
+        <div class="field">
+          <label for="capD">Vnější Ø trubky (mm)</label>
+          <input type="number" id="capD" value="25" min="4" max="220" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="capL">Hloubka nasazení (mm)</label>
+          <input type="number" id="capL" value="15" min="4" max="100" step="1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row three">
+        <div class="field">
+          <label for="capW">Stěna (mm)</label>
+          <input type="number" id="capW" value="1.6" min="1" max="6" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="capT">Dno (mm)</label>
+          <input type="number" id="capT" value="2" min="1" max="15" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="capG">Vůle (mm)</label>
+          <input type="number" id="capG" value="0.2" min="0" max="1" step="0.05" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Krytka se nasadí přes konec trubky zvenku. Vůle je rezerva na průměru; pro pevnější držení ji zmenšete.</small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA">PLA</option>
+            <option value="PETG" selected>PETG</option>
+            <option value="ABS / ASA">ABS / ASA</option>
+            <option value="TPU">TPU (pružný)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="4" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled dílu – tažením lze otáčet"></canvas>
+    <p class="hint">Tažením model otočíte</p>
+    <svg id="section" class="section-svg" viewBox="0 0 320 150" role="img" aria-label="Řez dílem"></svg>
+
+    <div class="results">
+      <div class="res-row"><span>Vnější rozměr</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span id="rFitLabel">Otvor</span><strong id="rFit">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tento díl</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než díl objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📏 Jak měřit</h3>
+      <p>Průměry změřte posuvným měřítkem. U záslepky zadejte vnitřní průměr trubky, u krytky vnější. Vůle se odečte nebo přičte sama.</p>
+    </div>
+    <div class="info-card">
+      <h3>🧪 Jaký materiál</h3>
+      <p>PETG je houževnatý a hodí se na většinu dílů. TPU je pružné, takže záslepka nebo krytka z něj drží i s malou vůlí. PLA stačí na podložky bez zátěže.</p>
+    </div>
+    <div class="info-card">
+      <h3>🔩 K čemu se hodí</h3>
+      <p>Vymezení mezer, podložení šroubů, zakrytí konců trubek u nábytku, zábradlí nebo jeklů. Nejde o náhradu kovových podložek pod velkou zátěž.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Potřebujete jiný tvar?</h3>
+      <p>Čtvercovou záslepku do jeklu, podložku se zkosením nebo díl podle vzorku vymodelujeme na zakázku. Napište to do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, init } = window.Sulc3DKonfig;
+  const { revolve } = window.Sulc3DRelief;
+  const csNum = window.Sulc3D.csNum;
+  const HINTS = {
+    ring: 'Plochý kroužek s otvorem – podložka pod šroub, vymezovací nebo distanční kroužek.',
+    plug: 'Zátka s hlavou, která se zasune do konce trubky a uzavře ho.',
+    cap: 'Čepička, která se nasadí na konec trubky zvenku.'
+  };
+  const CHAMFER = 0.8; // mm, zkosení čepu pro snazší zasunutí
+
+  // Řez profilem [r, z] – zrcadlově kolem osy
+  function drawSection(profile) {
+    const W = 320, H = 150, pad = 20;
+    const maxR = Math.max(...profile.map(p => p[0])), maxZ = Math.max(...profile.map(p => p[1]));
+    const s = Math.min((W - 2 * pad) / (2 * maxR), (H - 2 * pad) / maxZ);
+    const cx = W / 2, base = (H + maxZ * s) / 2;
+    const path = sign => 'M' + profile.map(p => (cx + sign * p[0] * s).toFixed(1) + ',' + (base - p[1] * s).toFixed(1)).join('L') + 'Z';
+    $('section').innerHTML =
+      `<path d="${path(1)}${path(-1)}" fill="rgba(79,123,239,0.55)" stroke="#8fa8ff" stroke-width="1"/>` +
+      `<line x1="${cx}" y1="${base + 10}" x2="${cx}" y2="${base - maxZ * s - 10}" stroke="#7a869a" stroke-width="1" stroke-dasharray="6 4"/>`;
+  }
+
+  function compute(ctx) {
+    const type = $('type').value;
+    $('typeHint').textContent = HINTS[type];
+    $('fRing').hidden = type !== 'ring';
+    $('fPlug').hidden = type !== 'plug';
+    $('fCap').hidden = type !== 'cap';
+
+    let profile, rows, name, popis;
+    if (type === 'ring') {
+      const D = num('ringD'), d = num('ringd'), h = num('ringH');
+      const ok = [ctx.range(D, 3, 230, 'Vnější průměr'), ctx.range(d, 1, 225, 'Průměr otvoru'), ctx.range(h, 0.6, 200, 'Výška')];
+      if (ok.includes(false)) return null;
+      if (D - d < 2.4) { ctx.error('Mezi otvorem a vnějším průměrem musí zůstat stěna alespoň 1,2 mm.'); return null; }
+      if (h < 1) ctx.warn('Díl pod 1 mm je jen pár vrstev a snadno se ohne.');
+      profile = [[d / 2, 0], [D / 2, 0], [D / 2, h], [d / 2, h]];
+      rows = { rSize: `Ø ${mm(D)} × ${mm(h)} mm`, rFit: `Ø ${mm(d)} mm` };
+      $('rFitLabel').textContent = 'Otvor';
+      name = `krouzek-${mm(D)}x${mm(d)}x${mm(h)}.stl`;
+      popis = `Kroužek z konfigurátoru – vnější Ø ${mm(D)} mm, otvor Ø ${mm(d)} mm, výška ${mm(h)} mm.`;
+    } else if (type === 'plug') {
+      const d = num('plugD'), L = num('plugL'), F = num('plugF'), t = num('plugT'), w = num('plugW'), g = num('plugG');
+      const ok = [ctx.range(d, 6, 220, 'Vnitřní průměr trubky'), ctx.range(L, 4, 80, 'Délka čepu'), ctx.range(F, 8, 230, 'Průměr hlavy'),
+        ctx.range(t, 1, 15, 'Výška hlavy'), ctx.range(w, 1, 10, 'Stěna čepu'), ctx.range(g, 0, 1, 'Vůle')];
+      if (ok.includes(false)) return null;
+      const rp = (d - g) / 2, rf = F / 2;
+      if (rf < rp + 1) { ctx.error('Hlava musí být alespoň o 2 mm širší než vnitřní průměr trubky, jinak by záslepka propadla dovnitř.'); return null; }
+      const c = Math.min(CHAMFER, w / 2);
+      // úzký čep vyjde plný, širší dutý (šetří materiál a lépe pruží)
+      const solid = rp - w < 1.5;
+      profile = solid
+        ? [[0, 0], [rf, 0], [rf, t], [rp, t], [rp, t + L - c], [rp - c, t + L], [0, t + L]]
+        : [[0, 0], [rf, 0], [rf, t], [rp, t], [rp, t + L - c], [rp - c, t + L], [rp - w, t + L], [rp - w, t], [0, t]];
+      rows = { rSize: `Ø ${mm(F)} × ${mm(t + L)} mm`, rFit: `Ø ${mm(rp * 2)} mm${solid ? ' (plný)' : ''}` };
+      $('rFitLabel').textContent = 'Čep';
+      name = `zaslepka-${mm(d)}.stl`;
+      popis = `Záslepka do trubky z konfigurátoru – vnitřní Ø trubky ${mm(d)} mm, čep Ø ${mm(rp * 2)} mm (vůle ${csNum(g, 2)} mm) délky ${mm(L)} mm` +
+        `${solid ? ', plný' : `, stěna ${mm(w)} mm`}; hlava Ø ${mm(F)} mm výšky ${mm(t)} mm.`;
+    } else {
+      const d = num('capD'), L = num('capL'), w = num('capW'), t = num('capT'), g = num('capG');
+      const ok = [ctx.range(d, 4, 220, 'Vnější průměr trubky'), ctx.range(L, 4, 100, 'Hloubka nasazení'), ctx.range(w, 1, 6, 'Stěna'),
+        ctx.range(t, 1, 15, 'Dno'), ctx.range(g, 0, 1, 'Vůle')];
+      if (ok.includes(false)) return null;
+      const ri = (d + g) / 2, ro = ri + w;
+      profile = [[0, 0], [ro, 0], [ro, t + L], [ri, t + L], [ri, t], [0, t]];
+      rows = { rSize: `Ø ${mm(ro * 2)} × ${mm(t + L)} mm`, rFit: `Ø ${mm(ri * 2)} mm` };
+      $('rFitLabel').textContent = 'Vnitřní průměr';
+      name = `krytka-${mm(d)}.stl`;
+      popis = `Krytka na trubku z konfigurátoru – vnější Ø trubky ${mm(d)} mm, vnitřní Ø krytky ${mm(ri * 2)} mm (vůle ${csNum(g, 2)} mm), ` +
+        `hloubka ${mm(L)} mm, stěna ${mm(w)} mm, dno ${mm(t)} mm.`;
+    }
+    drawSection(profile);
+    return { pos: revolve(profile), rows, name, popis };
+  }
+
+  init({ compute });
+</script>
+</body>
+</html>

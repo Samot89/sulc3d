@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizér do šuplíku na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor organizéru do šuplíku. Zadejte rozměry šuplíku a počet přihrádek, prohlédněte si 3D náhled s orientační cenou a pošlete poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/organizery" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Organizér do šuplíku na míru" />
+  <meta property="og:description" content="Zadejte rozměry šuplíku a počet přihrádek, prohlédněte si 3D náhled s orientační cenou a pošlete poptávku." />
+  <meta property="og:url" content="https://sulc3d.cz/organizery" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Organizér do šuplíku<br /><span class="grad-text">přesně na míru</span></h1>
+  <p class="lead">Zadejte vnitřní rozměry šuplíku a kolik přihrádek chcete. Větší šuplík se sám rozdělí na stejné díly, které se poskládají vedle sebe.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Šuplík</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="w">Šířka (mm)</label>
+          <input type="number" id="w" value="400" min="50" max="1200" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="d">Hloubka (mm)</label>
+          <input type="number" id="d" value="300" min="50" max="1200" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="gap">Vůle (mm)</label>
+          <input type="number" id="gap" value="1" min="0" max="10" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Zadejte vnitřní rozměry šuplíku. Vůle je rezerva po obvodu, aby šel organizér vložit.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Organizér</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="h">Výška (mm)</label>
+          <input type="number" id="h" value="40" min="10" max="150" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="wall">Stěna (mm)</label>
+          <input type="number" id="wall" value="1.6" min="0.8" max="4" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="r">Zaoblení (mm)</label>
+          <input type="number" id="r" value="4" min="0" max="30" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Výšku zvolte o pár milimetrů menší, než je světlá výška šuplíku.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Přihrádky v jednom dílu</legend>
+      <div class="row">
+        <div class="field">
+          <label for="nx">Počet na šířku</label>
+          <input type="number" id="nx" value="2" min="1" max="10" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="ny">Počet na hloubku</label>
+          <input type="number" id="ny" value="2" min="1" max="10" step="1" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="field">
+        <small id="splitHint"></small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA</option>
+            <option value="PETG">PETG</option>
+            <option value="ABS / ASA">ABS / ASA</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet organizérů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled organizéru – tažením lze otáčet"></canvas>
+    <p class="hint">Tažením model otočíte</p>
+
+    <div class="results">
+      <div class="res-row"><span>Počet dílů</span><strong id="rParts">–</strong></div>
+      <div class="res-row"><span>Jeden díl</span><strong id="rPart">–</strong></div>
+      <div class="res-row"><span>Jedna přihrádka</span><strong id="rPocket">–</strong></div>
+      <div class="res-row"><span>Přihrádek celkem</span><strong id="rTotal">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tento organizér</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než organizér objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📏 Jak měřit šuplík</h3>
+      <p>Změřte vnitřní šířku a hloubku u dna, kde bývá šuplík nejužší. Výšku organizéru nechte o pár milimetrů nižší než bočnice, aby šel šuplík zavřít.</p>
+    </div>
+    <div class="info-card">
+      <h3>🧩 Proč víc dílů</h3>
+      <p>Tisková plocha má 235 × 235 mm. Větší šuplík proto rozdělíme na stejné díly, které k sobě těsně doléhají. Dají se i samostatně vyndat a umýt.</p>
+    </div>
+    <div class="info-card">
+      <h3>🧱 Stěna a materiál</h3>
+      <p>Na příbory, nářadí nebo kancelářské potřeby stačí stěna 1,6 mm z PLA. Do dílny nebo na těžší věci zvolte 2 mm a PETG.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Různě velké přihrádky?</h3>
+      <p>Konfigurátor dělá přihrádky stejně velké. Rozvržení na míru, třeba dlouhou přihrádku na nože a malé na drobnosti, připravíme podle náčrtu v <a href="/#naceneni">poptávce</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="box.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, dims3, init } = window.Sulc3DKonfig;
+  const { buildBox, place, join } = window.Sulc3DBox;
+  const DIVIDER = 1.2;   // mm, tloušťka přepážek
+  const MAX_PART = 220;  // mm, největší díl, který se pohodlně vejde na tiskovou plochu
+  const MIN_POCKET = 8;  // mm, nejmenší rozumná přihrádka
+
+  function compute(ctx) {
+    const p = { w: num('w'), d: num('d'), gap: num('gap'), h: num('h'), wall: num('wall'), r: num('r'), nx: num('nx'), ny: num('ny') };
+    const ok = [ctx.range(p.w, 50, 1200, 'Šířka šuplíku'), ctx.range(p.d, 50, 1200, 'Hloubka šuplíku'), ctx.range(p.gap, 0, 10, 'Vůle'),
+      ctx.range(p.h, 10, 150, 'Výška'), ctx.range(p.wall, 0.8, 4, 'Tloušťka stěny'), ctx.range(p.r, 0, 30, 'Zaoblení')];
+    [['nx', 'Počet přihrádek na šířku'], ['ny', 'Počet přihrádek na hloubku']].forEach(([k, name]) => {
+      if (!Number.isInteger(p[k]) || p[k] < 1 || p[k] > 10) { ctx.error(`${name} musí být celé číslo 1–10.`); ok.push(false); }
+    });
+    if (ok.includes(false)) return null;
+
+    // šuplík rozdělit na stejné díly, které se vejdou na tiskovou plochu
+    const availW = p.w - 2 * p.gap, availD = p.d - 2 * p.gap;
+    const mx = Math.ceil(availW / MAX_PART), my = Math.ceil(availD / MAX_PART);
+    const part = [availW / mx, availD / my, p.h];
+    const inner = [part[0] - 2 * p.wall, part[1] - 2 * p.wall, p.h - p.wall];
+    const ri = p.r > p.wall ? Math.min(p.r - p.wall, inner[0] / 2, inner[1] / 2) : 0;
+    const pocket = [(inner[0] - (p.nx - 1) * DIVIDER) / p.nx, (inner[1] - (p.ny - 1) * DIVIDER) / p.ny];
+    const parts = mx * my;
+    $('splitHint').textContent = parts > 1
+      ? `Šuplík se rozdělí na stejné díly v rozložení ${mx} × ${my}. Počet přihrádek platí pro každý díl.`
+      : 'Organizér vyjde z jednoho dílu. Přepážky jsou silné 1,2 mm.';
+    if (Math.min(...pocket) < MIN_POCKET) { ctx.error(`Přihrádky by vyšly menší než ${MIN_POCKET} mm. Zmenšete jejich počet.`); return null; }
+    if (Math.min(...pocket) < ri) { ctx.error('Zaoblení je větší než přihrádka. Zmenšete zaoblení, nebo počet přihrádek.'); return null; }
+    if (p.wall < 1.2) ctx.warn('Stěna pod 1,2 mm je křehká. Doporučujeme 1,6–2 mm.');
+    if (p.h > 80 && p.wall < 2) ctx.warn('U vysokého organizéru se tenká stěna může prohýbat. Doporučujeme alespoň 2 mm.');
+
+    const one = buildBox({ w: inner[0], d: inner[1], h: inner[2], wall: p.wall, floor: p.wall, ri, nx: p.nx, ny: p.ny, div: DIVIDER });
+    // náhled: všechny díly poskládané jako v šuplíku
+    const tiles = [];
+    for (let i = 0; i < mx; i++) for (let j = 0; j < my; j++) tiles.push(place(one, i * part[0], j * part[1], 0, false));
+    const total = parts * p.nx * p.ny;
+    return {
+      pos: one,
+      shown: join(...tiles),
+      count: parts,
+      fitSize: part,
+      partName: 'Díl organizéru',
+      name: `organizer-${mm(p.w)}x${mm(p.d)}x${mm(p.h)}${parts > 1 ? '-dil' : ''}.stl`,
+      rows: {
+        rParts: parts > 1 ? `${mx} × ${my} = ${parts} ${parts < 5 ? 'díly' : 'dílů'}` : '1 díl',
+        rPart: dims3(part),
+        rPocket: `${mm(pocket[0])} × ${mm(pocket[1])} × ${mm(inner[2])} mm`,
+        rTotal: String(total * Math.max(1, parseInt($('kusu').value, 10) || 1))
+      },
+      popis: 'Organizér do šuplíku z konfigurátoru – ' +
+        `šuplík ${mm(p.w)} × ${mm(p.d)} mm, vůle ${mm(p.gap)} mm, výška organizéru ${mm(p.h)} mm; ` +
+        (parts > 1 ? `počet stejných dílů: ${parts} (rozložení ${mx} × ${my}), jeden díl ${dims3(part)}; ` : `jeden díl ${dims3(part)}; `) +
+        `v každém dílu přihrádky ${p.nx} × ${p.ny} (jedna ${mm(pocket[0])} × ${mm(pocket[1])} mm, přepážky 1,2 mm); ` +
+        `stěna a dno ${mm(p.wall)} mm; zaoblení rohů ${ri > 0 ? mm(p.r) + ' mm' : 'žádné'}.` +
+        (parts > 1 ? ' Přiložený soubor obsahuje jeden díl.' : '')
+    };
+  }
+
+  init({ compute });
+</script>
+</body>
+</html>

@@ -522,9 +522,8 @@
 
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
       gap: 1.5rem;
-      max-width: 900px;
     }
 
     .tool-card {
@@ -1124,19 +1123,49 @@
 <!-- ── KONFIGURÁTORY ──────────────────────────────── -->
 <section class="tools" id="konfiguratory">
   <div class="section-tag">Konfigurátory</div>
-  <h2 class="section-title">Navrhněte si díl sami</h2>
+  <h2 class="section-title">Navrhněte si to sami</h2>
   <p class="section-sub">Zadáte rozměry, hned vidíte 3D náhled a orientační cenu. Poptávku pak pošlete jedním kliknutím — model se přiloží sám.</p>
   <div class="tools-grid">
-    <a href="/redukce" class="tool-card reveal">
-      <div class="tool-icon">🔧</div>
-      <h3 class="tech-name">Redukce na trubky a hadice</h3>
-      <p class="tech-desc">Přechod mezi dvěma průměry — na vysavač, odsávání, ventilaci nebo odtok. Každý konec se nasadí na trubku, nebo zasune dovnitř.</p>
+    <a href="/cedulky" class="tool-card reveal">
+      <div class="tool-icon">🪧</div>
+      <h3 class="tech-name">Cedulky a jmenovky</h3>
+      <p class="tech-desc">Cedulka s vlastním textem na dveře, schránku nebo do dílny. Pět písem, vystouplý nebo zapuštěný nápis, otvory na šrouby.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
+    <a href="/klicenky" class="tool-card reveal">
+      <div class="tool-icon">🔑</div>
+      <h3 class="tech-name">Klíčenky se jménem</h3>
+      <p class="tech-desc">Klíčenka ve tvaru jména nebo jako štítek s nápisem. Dárek, označení klíčů nebo drobnost pro celý tým.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
+    <a href="/lithofan" class="tool-card reveal">
+      <div class="tool-icon">🖼️</div>
+      <h3 class="tech-name">Lithofan z fotky</h3>
+      <p class="tech-desc">Tištěná destička, na které se proti světlu objeví vaše fotka. Nahrajete obrázek a hned vidíte náhled.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/krabicky" class="tool-card reveal">
       <div class="tool-icon">📦</div>
       <h3 class="tech-name">Krabičky s víkem</h3>
       <p class="tech-desc">Krabička přesně podle toho, co se do ní má vejít. S nasazovacím víkem, zaoblenými rohy a přihrádkami na drobnosti.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
+    <a href="/organizery" class="tool-card reveal">
+      <div class="tool-icon">🗄️</div>
+      <h3 class="tech-name">Organizéry do šuplíku</h3>
+      <p class="tech-desc">Zadáte rozměry šuplíku a počet přihrádek. Větší šuplík se sám rozdělí na díly, které se poskládají vedle sebe.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
+    <a href="/redukce" class="tool-card reveal">
+      <div class="tool-icon">🔧</div>
+      <h3 class="tech-name">Redukce na trubky a hadice</h3>
+      <p class="tech-desc">Přechod mezi dvěma průměry — na vysavač, odsávání, ventilaci nebo odtok. Každý konec se nasadí na trubku, nebo zasune dovnitř.</p>
+      <span class="tool-link">Otevřít konfigurátor →</span>
+    </a>
+    <a href="/krouzky" class="tool-card reveal">
+      <div class="tool-icon">⭕</div>
+      <h3 class="tech-name">Podložky, kroužky a záslepky</h3>
+      <p class="tech-desc">Distanční kroužky, podložky, záslepky do trubek a krytky na jejich konce. Drobnosti, které se v obchodě špatně shánějí.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
   </div>
@@ -1451,8 +1480,7 @@
       <h3>Služby</h3>
       <a href="#technologie">3D tisk</a>
       <a href="#modelovani">3D modelování</a>
-      <a href="/redukce">Redukce na míru</a>
-      <a href="/krabicky">Krabičky s víkem</a>
+      <a href="/#konfiguratory">Konfigurátory</a>
       <a href="#materialy">Materiály</a>
       <a href="#cenik">Ceník</a>
     </div>
@@ -1590,7 +1618,7 @@
   }
 
   // ── Kalkulačka a 3D náhled (STL) – sdílený kód a ceny jsou v model.js ──
-  const { CALC, parseSTL, measure, estimate, createViewer } = window.Sulc3D;
+  const { CALC, parseSTL, measure, estimate, takeHandoff, createViewer } = window.Sulc3D;
   const modelBox = document.getElementById('modelBox');
   const modelCanvas = document.getElementById('modelCanvas');
   const materialSel = document.getElementById('material');
@@ -1649,20 +1677,14 @@
     if ([...materialSel.options].some(o => o.value === query.get('material'))) materialSel.value = query.get('material');
     if (parseInt(query.get('kusu'), 10) > 0) qtyInput.value = parseInt(query.get('kusu'), 10);
     // model vygenerovaný konfigurátorem přiložit jako soubor
-    try {
-      const saved = JSON.parse(sessionStorage.getItem('sulc3d-model'));
-      sessionStorage.removeItem('sulc3d-model');
-      if (saved && saved.data) {
-        const bytes = Uint8Array.from(atob(saved.data), ch => ch.charCodeAt(0));
-        const dt = new DataTransfer();
-        dt.items.add(new File([bytes], saved.name || 'model.stl', { type: 'model/stl' }));
-        multiName = saved.multi ? saved.name : null;
-        fileUpload.files = dt.files;
-        checkFile();
-      }
-    } catch (e) {
-      // bez přílohy – rozměry jsou v textu poptávky
-    }
+    takeHandoff().then(saved => {
+      if (!saved || !saved.data) return;
+      const dt = new DataTransfer();
+      dt.items.add(new File([saved.data], saved.name || 'model.stl', { type: 'model/stl' }));
+      multiName = saved.multi ? saved.name : null;
+      fileUpload.files = dt.files;
+      checkFile();
+    });
   }
 
   fileUpload.addEventListener('change', checkFile);

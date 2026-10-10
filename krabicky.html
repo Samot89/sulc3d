@@ -26,7 +26,7 @@
   <a href="/" class="logo">SULC3D</a>
   <ul class="nav-links">
     <li><a href="/">3D tisk na zakázku</a></li>
-    <li><a href="/redukce">Redukce na trubky</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
     <li><a href="/#cenik">Ceník</a></li>
     <li><a href="/#faq">FAQ</a></li>
   </ul>
@@ -356,8 +356,13 @@
     $('viewToggle').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
     update();
   });
-  // Při poptávce přiložit vygenerovaný model (převezme ho formulář na hlavní stránce)
-  $('order').addEventListener('click', () => { if (current) handoff(current.pos, current.name, current.multi); });
+  // Při poptávce přiložit vygenerovaný model: nejdřív ho uložit, pak teprve přejít na formulář
+  $('order').addEventListener('click', e => {
+    if (!current || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    const href = $('order').href;
+    handoff(current.pos, current.name, current.multi).then(() => { location.href = href; });
+  });
   // Stažení STL jen s adresou ?stl=1
   $('stlBtn').hidden = !ownerMode();
   $('stlBtn').addEventListener('click', () => { if (current) download(current.pos, current.name); });

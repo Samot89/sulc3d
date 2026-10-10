@@ -336,3 +336,32 @@ fieldset:disabled .field { opacity: 0.45; }
 
 .btn-secondary:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
 .btn-secondary:disabled { opacity: 0.4; cursor: default; }
+
+.field textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.field textarea:focus { border-color: var(--blue); }
+.field input[type="file"] { padding: 0.5rem 0.6rem; font-size: 0.82rem; cursor: pointer; }
+.field input[type="file"]::file-selector-button {
+  margin-right: 0.75rem;
+  padding: 0.35rem 0.9rem;
+  background: rgba(79,123,239,0.18);
+  border: 1px solid rgba(79,123,239,0.5);
+  border-radius: 50px;
+  color: var(--text);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
