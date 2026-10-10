@@ -1591,6 +1591,20 @@
     document.getElementById('message').value = query.get('popis');
     if ([...materialSel.options].some(o => o.value === query.get('material'))) materialSel.value = query.get('material');
     if (parseInt(query.get('kusu'), 10) > 0) qtyInput.value = parseInt(query.get('kusu'), 10);
+    // model vygenerovaný konfigurátorem přiložit jako soubor
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('sulc3d-redukce'));
+      sessionStorage.removeItem('sulc3d-redukce');
+      if (saved && saved.data) {
+        const bytes = Uint8Array.from(atob(saved.data), ch => ch.charCodeAt(0));
+        const dt = new DataTransfer();
+        dt.items.add(new File([bytes], saved.name || 'redukce.stl', { type: 'model/stl' }));
+        fileUpload.files = dt.files;
+        checkFile();
+      }
+    } catch (e) {
+      // bez přílohy – rozměry jsou v textu poptávky
+    }
   }
 
   fileUpload.addEventListener('change', checkFile);

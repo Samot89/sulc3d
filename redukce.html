@@ -459,7 +459,7 @@
 
 <script src="model.js"></script>
 <script>
-  const { CALC, csNum, measure, estimate, createViewer } = window.Sulc3D;
+  const { CALC, csNum, toSTL, measure, estimate, createViewer } = window.Sulc3D;
   const $ = id => document.getElementById(id);
   const SEGMENTS = 96;
   const MODES = { na: 'nasadí se na trubku', do: 'zasune se do trubky' };
@@ -471,6 +471,7 @@
   const mm = v => csNum(v, Number.isInteger(Math.round(v * 10) / 10) ? 0 : 1);
   const viewer = createViewer($('canvas'));
   let transitionTouched = false;
+  let current = null; // poslední platný model { pos, name }
 
   // Vnitřní a vnější poloměr konce podle způsobu připojení
   function endRadii(d, mode, wall, gap) {
@@ -576,6 +577,7 @@
     let est = null;
     if (!errors.length) {
       const pos = buildMesh(p);
+      current = { pos, name: `redukce-${mm(p.dA)}-${mm(p.dB)}.stl`.replace(/,/g, '_') };
       const model = measure(pos);
       est = estimate(model, $('material').value, $('kusu').value);
       if (!est.fits) errors.push(`Redukce se nevejde do tiskového prostoru ${CALC.maxSize.join(' × ')} mm. Zmenšete průměr nebo délku.`);
@@ -595,6 +597,7 @@
 
     const ok = !errors.length;
     order.setAttribute('aria-disabled', String(!ok));
+    if (!ok) current = null;
     order.tabIndex = ok ? 0 : -1;
     if (!ok) {
       ['rWeight', 'rPrice'].forEach(id => { $(id).textContent = '–'; });
@@ -610,6 +613,19 @@
     order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty }) + '#naceneni';
   }
 
+
+  // Při poptávce přiložit vygenerovaný model: přes sessionStorage ho převezme formulář na hlavní stránce
+  $('order').addEventListener('click', () => {
+    try {
+      if (!current) return;
+      const bytes = new Uint8Array(toSTL(current.pos));
+      let bin = '';
+      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      sessionStorage.setItem('sulc3d-redukce', JSON.stringify({ name: current.name, data: btoa(bin) }));
+    } catch (e) {
+      // bez přílohy – rozměry jsou i tak v textu poptávky
+    }
+  });
   $('lT').addEventListener('input', () => { transitionTouched = true; });
   $('cfg').addEventListener('input', update);
   $('cfg').addEventListener('submit', e => e.preventDefault());

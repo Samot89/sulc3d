@@ -40,6 +40,27 @@
     return new Float32Array(nums);
   }
 
+  // Float32Array (9 čísel na trojúhelník) → binární STL
+  function toSTL(pos) {
+    const n = pos.length / 9;
+    const buf = new ArrayBuffer(84 + n * 50), dv = new DataView(buf);
+    const header = 'sulc3d.cz';
+    for (let i = 0; i < header.length; i++) dv.setUint8(i, header.charCodeAt(i));
+    dv.setUint32(80, n, true);
+    for (let i = 0, o = 84; i < n; i++, o += 50) {
+      const p = i * 9;
+      const ux = pos[p + 3] - pos[p], uy = pos[p + 4] - pos[p + 1], uz = pos[p + 5] - pos[p + 2];
+      const vx = pos[p + 6] - pos[p], vy = pos[p + 7] - pos[p + 1], vz = pos[p + 8] - pos[p + 2];
+      const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      const len = Math.hypot(nx, ny, nz) || 1;
+      dv.setFloat32(o, nx / len, true);
+      dv.setFloat32(o + 4, ny / len, true);
+      dv.setFloat32(o + 8, nz / len, true);
+      for (let k = 0; k < 9; k++) dv.setFloat32(o + 12 + k * 4, pos[p + k], true);
+    }
+    return buf;
+  }
+
   // Rozměry, objem (mm³) a povrch (mm²)
   function measure(pos) {
     const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
@@ -210,5 +231,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, measure, estimate, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, createViewer };
 })();
