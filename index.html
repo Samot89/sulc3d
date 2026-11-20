@@ -770,6 +770,40 @@
 
     .model-box[hidden] { display: none; }
 
+    .file-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; margin: 0; padding: 0; }
+    .file-list[hidden],
+    .form-group[hidden] { display: none; }
+    .file-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 0.4rem 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+    }
+    .file-item.active { border-color: rgba(79,123,239,0.6); }
+    .fi-name {
+      background: none; border: 0; padding: 0; font: inherit; color: var(--text); font-weight: 600;
+      font-size: 0.875rem; text-align: left; cursor: pointer; overflow-wrap: anywhere;
+    }
+    .fi-name:disabled { cursor: default; }
+    .fi-meta { grid-column: 1 / -1; font-size: 0.78rem; color: var(--muted); }
+    .fi-meta.warn { color: #facc15; }
+    .fi-qty { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--muted); }
+    .form-group .fi-qty input { width: 4.2rem; padding: 0.35rem 0.5rem; }
+    .fi-del {
+      background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--muted);
+      width: 2rem; height: 2rem; cursor: pointer; font-size: 0.9rem;
+    }
+    .fi-del:hover { color: #f87171; border-color: #f87171; }
+    .file-total { font-size: 0.9rem; color: var(--text); font-weight: 600; text-align: left; }
+    .file-hint { font-size: 0.78rem; color: var(--muted); text-align: left; }
+    .file-hint a { color: var(--blue); }
+    .model-name { font-weight: 600; font-size: 0.9rem; color: var(--text); overflow-wrap: anywhere; }
+
     .model-canvas {
       display: block;
       width: 100%;
@@ -1397,7 +1431,7 @@
           <option value="Jiný (uvedu v popisu)">Jiný (uvedu v popisu)</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="kusuGroup">
         <label for="kusu">Počet kusů</label>
         <input type="number" id="kusu" name="pocet_kusu" min="1" value="1" inputmode="numeric" />
       </div>
@@ -1407,23 +1441,27 @@
       <textarea id="message" name="message" rows="4" placeholder="Popište, co potřebujete vytisknout, barvu, rozměry, termín..."></textarea>
     </div>
     <div class="form-group">
-      <span class="form-label">3D soubor <small>(nepovinné)</small></span>
+      <span class="form-label">3D soubory <small>(nepovinné)</small></span>
       <label class="file-drop" id="fileDrop" for="fileUpload">
-        <input type="file" id="fileUpload" name="attachment" class="sr-only" accept=".stl,.step,.stp,.obj,.3mf" />
+        <input type="file" id="fileUpload" class="sr-only" accept=".stl,.step,.stp,.obj,.3mf" multiple />
         <div class="upload-icon">☁️</div>
-        <div class="upload-title">Přetáhněte soubor sem</div>
-        <p class="upload-sub">nebo klikněte pro výběr ze zařízení</p>
-        <p class="supported">STL · STEP · OBJ · 3MF · max. 10 MB<br />U souboru STL hned uvidíte 3D náhled a orientační cenu</p>
+        <div class="upload-title">Přetáhněte soubory sem</div>
+        <p class="upload-sub">nebo klikněte pro výběr ze zařízení – můžete vybrat i více souborů najednou</p>
+        <p class="supported">STL · STEP · OBJ · 3MF · až 10 souborů, dohromady max. 10 MB<br />U souborů STL hned uvidíte 3D náhled a orientační cenu</p>
       </label>
       <p id="fileInfo" class="file-info" role="status" hidden></p>
+      <ul class="file-list" id="fileList" hidden></ul>
+      <p class="file-total" id="fileTotal" hidden></p>
+      <p class="file-hint" id="fileHint" hidden>Chcete poptat ještě něco? Přidejte další soubor, nebo si díl navrhněte v <a href="#konfiguratory">konfigurátoru</a> a klikněte na „Poptat“ – přidá se k ostatním.</p>
       <div class="model-box" id="modelBox" hidden>
         <canvas id="modelCanvas" class="model-canvas" role="img" aria-label="3D náhled nahraného modelu – tažením lze otáčet"></canvas>
         <div class="model-info">
+          <div class="model-name" id="mName"></div>
           <div class="model-row"><span>Rozměry</span><strong id="mDims">–</strong></div>
           <div class="model-row"><span>Objem</span><strong id="mVol">–</strong></div>
           <div class="model-row"><span>Odhad hmotnosti</span><strong id="mWeight">–</strong></div>
           <div class="model-price">
-            Orientační cena
+            Orientační cena tohoto souboru
             <strong id="mPrice" class="grad-text">–</strong>
           </div>
           <p class="model-note" id="mNote"></p>
@@ -1433,7 +1471,7 @@
     </div>
     <button type="submit" class="btn-primary">Odeslat poptávku</button>
     <p class="form-note">
-      Větší soubory nebo více modelů pošlete e-mailem na
+      Soubory nad 10 MB nebo více než 10 modelů pošlete e-mailem na
       <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>.<br />
       Odesláním souhlasíte se <a href="/ochrana-osobnich-udaju">zpracováním osobních údajů</a> za účelem vyřízení poptávky.
     </p>
@@ -1579,63 +1617,165 @@
     });
   });
 
-  // Nahrání souboru
-  const MAX_FILE_MB = 10;
+  // ── Nahrání souborů (víc najednou) + kalkulačka a 3D náhled STL – sdílený kód a ceny jsou v model.js ──
+  // FormSubmit bere víc příloh jen jako samostatná pole a dohromady nejvýš 10 MB.
+  const MAX_FILES = 10;
+  const MAX_TOTAL_MB = 10;
   const ALLOWED_EXT = ['stl', 'step', 'stp', 'obj', '3mf'];
+  const { CALC, csNum, parseSTL, measure, estimate, listHandoff, removeHandoff, clearHandoff, createViewer } = window.Sulc3D;
+  const form = document.getElementById('contactForm');
   const fileUpload = document.getElementById('fileUpload');
   const fileDrop = document.getElementById('fileDrop');
   const fileInfo = document.getElementById('fileInfo');
-
-  function showFileInfo(text, isError) {
-    fileInfo.textContent = text;
-    fileInfo.classList.toggle('error', isError);
-    fileInfo.hidden = false;
-  }
-
-  function checkFile() {
-    const file = fileUpload.files[0];
-    hideModel();
-    if (!file) { fileInfo.hidden = true; return; }
-    const ext = file.name.split('.').pop().toLowerCase();
-    const sizeMb = file.size / 1024 / 1024;
-    if (!ALLOWED_EXT.includes(ext)) {
-      fileUpload.value = '';
-      showFileInfo('Nepodporovaný formát. Nahrajte prosím STL, STEP, OBJ nebo 3MF.', true);
-    } else if (sizeMb > MAX_FILE_MB) {
-      fileUpload.value = '';
-      showFileInfo(`Soubor má ${sizeMb.toFixed(1)} MB, limit je ${MAX_FILE_MB} MB. Pošlete ho prosím e-mailem.`, true);
-    } else {
-      const okText = `✓ ${file.name} (${sizeMb.toFixed(1)} MB)`;
-      if (ext !== 'stl') {
-        showFileInfo(okText + ' – náhled a odhad ceny umíme jen u STL, cenu vám pošleme v nabídce.', false);
-        return;
-      }
-      showFileInfo(okText, false);
-      file.arrayBuffer()
-        .then(buf => { if (fileUpload.files[0] === file) showModel(parseSTL(buf)); })
-        .catch(() => showFileInfo(okText + ' – náhled se nepodařilo vytvořit, soubor ale odešleme.', false));
-    }
-  }
-
-  // ── Kalkulačka a 3D náhled (STL) – sdílený kód a ceny jsou v model.js ──
-  const { CALC, parseSTL, measure, estimate, takeHandoff, createViewer } = window.Sulc3D;
+  const fileList = document.getElementById('fileList');
+  const fileTotal = document.getElementById('fileTotal');
+  const fileHint = document.getElementById('fileHint');
   const modelBox = document.getElementById('modelBox');
   const modelCanvas = document.getElementById('modelCanvas');
   const materialSel = document.getElementById('material');
   const qtyInput = document.getElementById('kusu');
+  const kusuGroup = document.getElementById('kusuGroup');
   const odhadField = document.getElementById('odhadField');
-  let model = null;
+  let items = [];     // { file, ext, qty, factor, multi, handoffId, pos, model, failed, row, meta }
+  let active = null;  // soubor zobrazený v 3D náhledu
   let viewer = null;
-  let fromKonfig = null; // { name, multi, factor } souboru předaného z konfigurátoru
 
-  function updateEstimate() {
-    if (!model) return;
-    // údaje z konfigurátoru platí jen pro soubor, který z něj přišel
-    const konfig = fromKonfig && fileUpload.files[0] && fileUpload.files[0].name === fromKonfig.name ? fromKonfig : null;
-    const e = estimate(model, materialSel.value, qtyInput.value, konfig ? konfig.factor : 1);
-    // u souboru s více díly vedle sebe celkový rozměr o tiskovém prostoru nic neříká
-    const multi = !!konfig && konfig.multi;
-    const fits = multi || e.fits;
+  const mb = bytes => csNum(bytes / 1024 / 1024, 1) + ' MB';
+  const totalBytes = () => items.reduce((s, it) => s + it.file.size, 0);
+
+  function showFileInfo(lines) {
+    fileInfo.textContent = lines.join(' ');
+    fileInfo.classList.toggle('error', lines.length > 0);
+    fileInfo.hidden = !lines.length;
+  }
+
+  // opts: { qty, factor, multi, handoffId } – u modelů předaných z konfigurátoru
+  function addFiles(list, opts = {}) {
+    const errors = [];
+    for (const file of list) {
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!ALLOWED_EXT.includes(ext)) {
+        errors.push(`${file.name}: nepodporovaný formát, nahrajte prosím STL, STEP, OBJ nebo 3MF.`);
+      } else if (items.length >= MAX_FILES) {
+        errors.push(`Najednou jde poslat nejvýš ${MAX_FILES} souborů, další pošlete prosím e-mailem.`);
+        break;
+      } else if ((totalBytes() + file.size) / 1024 / 1024 > MAX_TOTAL_MB) {
+        errors.push(`${file.name} (${mb(file.size)}) se už nevejde, soubory smí mít dohromady nejvýš ${MAX_TOTAL_MB} MB. Pošlete ho prosím e-mailem.`);
+      } else {
+        const it = {
+          file, ext, qty: opts.qty || Math.max(1, parseInt(qtyInput.value, 10) || 1),
+          factor: opts.factor || 1, multi: !!opts.multi, handoffId: opts.handoffId || null,
+          pos: null, model: null, failed: false
+        };
+        items.push(it);
+        if (ext === 'stl') {
+          file.arrayBuffer()
+            .then(buf => { it.pos = parseSTL(buf); it.model = measure(it.pos); })
+            .catch(() => { it.failed = true; })
+            .then(() => { if (items.includes(it)) { if (!active && it.model) active = it; refresh(); } });
+        }
+      }
+    }
+    fileUpload.value = '';
+    showFileInfo(errors);
+    renderList();
+  }
+
+  function removeItem(it) {
+    items = items.filter(i => i !== it);
+    if (it.handoffId) removeHandoff(it.handoffId);
+    if (active === it) active = items.find(i => i.model) || null;
+    showFileInfo([]);
+    renderList();
+  }
+
+  function renderList() {
+    fileList.replaceChildren(...items.map(it => {
+      const li = document.createElement('li');
+      li.className = 'file-item';
+      const name = document.createElement('button');
+      name.type = 'button';
+      name.className = 'fi-name';
+      name.textContent = it.file.name;
+      name.addEventListener('click', () => { if (it.model) { active = it; refresh(); } });
+      const qtyLabel = document.createElement('label');
+      qtyLabel.className = 'fi-qty';
+      const qty = document.createElement('input');
+      qty.type = 'number';
+      qty.min = '1';
+      qty.inputMode = 'numeric';
+      qty.value = it.qty;
+      qty.setAttribute('aria-label', `Počet kusů – ${it.file.name}`);
+      qty.addEventListener('input', () => { it.qty = Math.max(1, parseInt(qty.value, 10) || 1); refresh(); });
+      qtyLabel.append(qty, ' ks');
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'fi-del';
+      del.textContent = '✕';
+      del.title = 'Odebrat';
+      del.setAttribute('aria-label', `Odebrat ${it.file.name}`);
+      del.addEventListener('click', () => removeItem(it));
+      const meta = document.createElement('div');
+      meta.className = 'fi-meta';
+      li.append(name, qtyLabel, del, meta);
+      it.row = li;
+      it.meta = meta;
+      return li;
+    }));
+    // s přiloženými soubory se počet kusů zadává u každého souboru zvlášť
+    fileList.hidden = fileHint.hidden = !items.length;
+    kusuGroup.hidden = qtyInput.disabled = items.length > 0;
+    refresh();
+  }
+
+  // Přepočet odhadů, souhrnu, náhledu a textu do e-mailu (bez překreslení seznamu kvůli psaní do polí)
+  function refresh() {
+    let lo = 0, hi = 0, priced = 0;
+    const lines = items.map((it, i) => {
+      const head = `${i + 1}) ${it.file.name} – ${it.qty} ks`;
+      it.row.classList.toggle('active', it === active);
+      it.row.querySelector('.fi-name').disabled = !it.model;
+      if (!it.model) {
+        it.est = null;
+        it.meta.classList.remove('warn');
+        it.meta.textContent = mb(it.file.size) + (
+          it.ext !== 'stl' ? ' · náhled a odhad ceny umíme jen u STL, cenu pošleme v nabídce'
+          : it.failed ? ' · náhled se nepodařilo vytvořit, soubor ale odešleme'
+          : ' · načítám…');
+        return head + ', bez odhadu';
+      }
+      const e = it.est = estimate(it.model, materialSel.value, it.qty, it.factor);
+      const fits = it.multi || e.fits; // u souboru s více díly vedle sebe celkový rozměr nic neříká
+      lo += e.lo; hi += e.hi; priced++;
+      it.meta.textContent = `${mb(it.file.size)} · ${e.dims} · ${e.weight}${e.qty > 1 ? ' / ks' : ''} · ${e.price}` +
+        (fits ? '' : ' · větší než tiskový prostor');
+      it.meta.classList.toggle('warn', !fits);
+      return `${head}, ${e.dims}, objem ${e.vol}, ${e.weight}${e.qty > 1 ? ' / ks' : ''}, odhad ${e.price}` +
+        (it.multi ? ' – více dílů v jednom souboru' : '') + (fits ? '' : ' – NEVEJDE SE do tiskového prostoru');
+    });
+
+    const range = lo === hi ? `cca ${csNum(lo, 0)}` : `${csNum(lo, 0)}–${csNum(hi, 0)}`;
+    const unpriced = items.length - priced;
+    fileTotal.hidden = items.length < 2 || !priced;
+    fileTotal.textContent = `Celkem orientačně ${range} Kč` +
+      (unpriced ? ` + ${unpriced} ${unpriced === 1 ? 'soubor' : unpriced < 5 ? 'soubory' : 'souborů'} nacením v nabídce` : '');
+
+    odhadField.disabled = !items.length;
+    odhadField.value = items.length
+      ? lines.join('\n') + (priced ? `\nCelkem orientačně ${range} Kč (${items.find(i => i.est) ? items.find(i => i.est).est.matName : ''})` : '')
+      : '';
+
+    showActive();
+  }
+
+  function showActive() {
+    if (!active || !active.model || !items.includes(active)) { modelBox.hidden = true; return; }
+    const it = active, e = it.est, fits = it.multi || e.fits;
+    modelBox.hidden = false;
+    if (!viewer) viewer = createViewer(modelCanvas);
+    if (viewer) { if (viewer.shown !== it) { viewer.setModel(it.pos, it.model); viewer.shown = it; } }
+    else modelCanvas.hidden = true;
+    document.getElementById('mName').textContent = items.length > 1 ? it.file.name : '';
     document.getElementById('mDims').textContent = e.dims;
     document.getElementById('mVol').textContent = e.vol;
     document.getElementById('mWeight').textContent = e.weight + (e.qty > 1 ? ' / ks' : '');
@@ -1644,63 +1784,69 @@
     note.textContent =
       `Odhad pro ${e.matName}${e.exact ? '' : ' (materiál upřesníme)'}, rozměry bereme v milimetrech. ` +
       'Přesnou cenu potvrdíme v nabídce.' +
-      (multi ? ' Soubor obsahuje všechny díly vedle sebe.' : '') +
+      (items.length > 1 ? ' Náhled jiného souboru zobrazíte kliknutím na jeho název.' : '') +
+      (it.multi ? ' Soubor obsahuje všechny díly vedle sebe.' : '') +
       (fits ? '' : ` Pozor: model je větší než tiskový prostor ${CALC.maxSize.join(' × ')} mm, bylo by nutné ho rozdělit na části.`);
     note.classList.toggle('warn', !fits);
-    odhadField.value = `${e.dims}, objem ${e.vol}, ${e.weight}, odhad ${e.price} (${e.matName}, ${e.qty} ks)` +
-      (multi ? ' – více dílů v jednom souboru' : '') +
-      (fits ? '' : ' – NEVEJDE SE do tiskového prostoru');
-    odhadField.disabled = false;
   }
 
-  function showModel(pos) {
-    model = measure(pos);
-    modelBox.hidden = false;
-    if (!viewer) viewer = createViewer(modelCanvas);
-    if (viewer) viewer.setModel(pos, model);
-    else modelCanvas.hidden = true;
-    updateEstimate();
-  }
+  materialSel.addEventListener('change', refresh);
 
-  function hideModel() {
-    model = null;
-    modelBox.hidden = true;
-    odhadField.value = '';
-    odhadField.disabled = true;
-  }
-
-  materialSel.addEventListener('change', updateEstimate);
-  qtyInput.addEventListener('input', updateEstimate);
-
-  // Předvyplnění poptávky z konfigurátorů (/redukce, /krabicky)
+  // Modely z konfigurátorů: každé „Poptat…“ přidá další, tady se přiloží všechny najednou
   const query = new URLSearchParams(location.search);
-  if (query.get('popis')) {
-    document.getElementById('message').value = query.get('popis');
-    if ([...materialSel.options].some(o => o.value === query.get('material'))) materialSel.value = query.get('material');
-    if (parseInt(query.get('kusu'), 10) > 0) qtyInput.value = parseInt(query.get('kusu'), 10);
-    // model vygenerovaný konfigurátorem přiložit jako soubor
-    takeHandoff().then(saved => {
-      if (!saved || !saved.data) return;
-      const dt = new DataTransfer();
-      dt.items.add(new File([saved.data], saved.name || 'model.stl', { type: 'model/stl' }));
-      fromKonfig = { name: saved.name || 'model.stl', multi: !!saved.multi, factor: saved.factor || 1 };
-      fileUpload.files = dt.files;
-      checkFile();
-    });
-  }
+  const setMaterial = m => { if ([...materialSel.options].some(o => o.value === m)) materialSel.value = m; };
+  listHandoff().then(saved => {
+    const message = document.getElementById('message');
+    if (saved.length) {
+      saved.forEach(s => addFiles(
+        [new File([s.data], s.name || 'model.stl', { type: 'model/stl' })],
+        { qty: s.kusu, factor: s.factor, multi: s.multi, handoffId: s.id }
+      ));
+      if (!message.value) message.value = saved.map(s => s.popis).filter(Boolean).join('\n\n');
+      setMaterial(saved[saved.length - 1].material);
+    } else if (query.get('popis')) {
+      // záloha, když prohlížeč nedovolí IndexedDB: aspoň text z konfigurátoru
+      if (!message.value) message.value = query.get('popis');
+      setMaterial(query.get('material'));
+      if (parseInt(query.get('kusu'), 10) > 0) qtyInput.value = parseInt(query.get('kusu'), 10);
+    }
+  });
 
-  fileUpload.addEventListener('change', checkFile);
+  fileUpload.addEventListener('change', () => addFiles([...fileUpload.files]));
   fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('dragover'); });
   fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
   fileDrop.addEventListener('drop', e => {
     e.preventDefault();
     fileDrop.classList.remove('dragover');
-    if (e.dataTransfer.files.length) {
+    if (e.dataTransfer.files.length) addFiles([...e.dataTransfer.files]);
+  });
+
+  // Odeslání: každý soubor jako samostatná příloha (attachment1, attachment2, …)
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    form.querySelectorAll('.att-gen').forEach(n => n.remove());
+    items.forEach((it, i) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.name = `attachment${i + 1}`;
+      input.className = 'att-gen';
+      input.hidden = true;
       const dt = new DataTransfer();
-      dt.items.add(e.dataTransfer.files[0]);
-      fileUpload.files = dt.files;
-      checkFile();
-    }
+      dt.items.add(it.file);
+      input.files = dt.files;
+      form.append(input);
+    });
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Odesílám…';
+    // košík z konfigurátorů vyprázdnit; na IndexedDB se čeká nejvýš 1 s
+    Promise.race([clearHandoff(), new Promise(r => setTimeout(r, 1000))]).then(() => form.submit());
+  });
+  // po návratu zpět z FormSubmit (bfcache) zase povolit tlačítko
+  window.addEventListener('pageshow', () => {
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = false;
+    btn.textContent = 'Odeslat poptávku';
   });
 
   // Facebook – načíst až po kliknutí

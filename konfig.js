@@ -175,7 +175,7 @@
       if (!current || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
       const href = order.href;
-      handoff(current.pos, current.name, current.multi, current.factor).then(() => { location.href = href; });
+      handoff(current.pos, current.name, current.multi, current.factor, href).then(() => { location.href = href; });
     });
     // Stažení STL jen s adresou ?stl=1
     stlBtn.hidden = !ownerMode();

@@ -90,9 +90,11 @@
     return sorted.every((v, i) => v <= bed[i]);
   }
 
-  // Předání vygenerovaného modelu poptávkovému formuláři na hlavní stránce.
+  // Předání vygenerovaných modelů poptávkovému formuláři na hlavní stránce.
   // Jde přes IndexedDB, protože větší modely (cedulky, lithofan) se do sessionStorage nevejdou.
-  const HANDOFF_MAX_AGE = 10 * 60 * 1000; // ms, starší model už k poptávce nepatří
+  // Modely se sbírají jako do košíku: každé „Poptat…“ přidá další, formulář je pošle všechny
+  // a seznam se smaže až odesláním poptávky (nebo odebráním souboru ve formuláři).
+  const HANDOFF_MAX_AGE = 24 * 60 * 60 * 1000; // ms, starší model už k poptávce nepatří
   function handoffStore(mode, work) {
     return new Promise((resolve, reject) => {
       const open = indexedDB.open('sulc3d', 1);
@@ -101,27 +103,44 @@
       open.onsuccess = () => {
         const tx = open.result.transaction('handoff', mode);
         const result = work(tx.objectStore('handoff'));
-        tx.oncomplete = () => { open.result.close(); resolve(result && result.result); };
+        tx.oncomplete = () => { open.result.close(); resolve(result); };
         tx.onerror = tx.onabort = () => { open.result.close(); reject(tx.error); };
       };
     });
   }
 
-  // multi: soubor obsahuje víc dílů vedle sebe, takže celkový rozměr neříká nic o tiskovém prostoru.
-  // Vrací Promise; na chybu se nečeká – rozměry jsou i tak v textu poptávky.
-  function handoff(pos, name, multi, factor = 1) {
-    return handoffStore('readwrite', store => store.put({ name, multi: !!multi, factor, data: toSTL(pos), time: Date.now() }, 'model'))
-      .catch(() => {});
+  const freshItems = list => (Array.isArray(list) ? list : []).filter(i => Date.now() - i.time < HANDOFF_MAX_AGE);
+  // Upraví uložený seznam modelů: change(list) vrací nový seznam
+  function changeHandoff(change) {
+    return handoffStore('readwrite', store => {
+      const get = store.get('items');
+      get.onsuccess = () => store.put(change(freshItems(get.result)), 'items');
+    });
   }
 
-  // Vyzvednout (a smazat) předaný model; null, když žádný čerstvý není.
-  function takeHandoff() {
-    let found;
-    return handoffStore('readwrite', store => {
-      const get = store.get('model');
-      get.onsuccess = () => { found = get.result; if (found) store.delete('model'); };
-    }).then(() => (found && Date.now() - found.time < HANDOFF_MAX_AGE ? found : null)).catch(() => null);
+  // multi: soubor obsahuje víc dílů vedle sebe, takže celkový rozměr neříká nic o tiskovém prostoru.
+  // href: odkaz na poptávku z konfigurátoru – z něj se k modelu uloží popis, materiál a počet kusů.
+  // Vrací Promise; na chybu se nečeká – rozměry jsou i tak v textu poptávky.
+  function handoff(pos, name, multi, factor = 1, href = '') {
+    const q = new URL(href || location.href, location.href).searchParams;
+    const item = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      name, multi: !!multi, factor, data: toSTL(pos), time: Date.now(),
+      popis: q.get('popis') || '', material: q.get('material') || '', kusu: parseInt(q.get('kusu'), 10) || 1
+    };
+    return changeHandoff(list => [...list, item]).catch(() => {});
   }
+
+  // Všechny čerstvé předané modely (nemaže je); [] když žádné nejsou
+  function listHandoff() {
+    let found;
+    return handoffStore('readonly', store => {
+      const get = store.get('items');
+      get.onsuccess = () => { found = get.result; };
+    }).then(() => freshItems(found)).catch(() => []);
+  }
+  const removeHandoff = id => changeHandoff(list => list.filter(i => i.id !== id)).catch(() => {});
+  const clearHandoff = () => handoffStore('readwrite', store => { store.delete('items'); store.delete('model'); }).catch(() => {});
 
   // Stažení STL – tlačítko se v konfigurátorech ukáže jen s adresou ?stl=1
   const ownerMode = () => new URLSearchParams(location.search).get('stl') === '1';
@@ -296,5 +315,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, takeHandoff, ownerMode, download, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, ownerMode, download, createViewer };
 })();
