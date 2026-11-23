@@ -5,3 +5,6 @@
 wrangler.jsonc
 CNAME
 images
+worker.js
+node_modules
+.wrangler

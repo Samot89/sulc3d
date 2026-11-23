@@ -1868,8 +1868,25 @@
     const btn = form.querySelector('button[type="submit"]');
     btn.disabled = true;
     btn.textContent = 'Odesílám…';
-    // košík z konfigurátorů vyprázdnit; na IndexedDB se čeká nejvýš 1 s
-    Promise.race([clearHandoff(), new Promise(r => setTimeout(r, 1000))]).then(() => form.submit());
+    // 1) vlastní příjem (Cloudflare Worker /api/poptavka); 2) když selže, záloha přes FormSubmit
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000);
+    fetch('/api/poptavka', { method: 'POST', body: new FormData(form), signal: ctrl.signal })
+      .then(r => r.json().catch(() => ({})).then(d => ({ ok: r.ok && d.ok, status: r.status })))
+      .catch(() => ({ ok: false, status: 0 }))
+      .then(res => {
+        clearTimeout(timer);
+        // neplatná data nebo moc velké soubory – FormSubmit by je odmítl taky
+        if (!res.ok && (res.status === 400 || res.status === 413)) {
+          btn.disabled = false;
+          btn.textContent = 'Odeslat poptávku';
+          alert(res.status === 413 ? 'Soubory jsou dohromady větší než 10 MB. Pošlete je prosím e-mailem.' : 'Zkontrolujte prosím jméno a e-mail.');
+          return;
+        }
+        // košík z konfigurátorů vyprázdnit; na IndexedDB se čeká nejvýš 1 s
+        Promise.race([clearHandoff(), new Promise(r => setTimeout(r, 1000))])
+          .then(() => (res.ok ? location.assign('/dekujeme') : form.submit()));
+      });
   });
   // po návratu zpět z FormSubmit (bfcache) zase povolit tlačítko
   window.addEventListener('pageshow', () => {
