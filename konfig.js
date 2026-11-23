@@ -1,7 +1,7 @@
 // Společné ovládání konfigurátorů: validace, náhled, cena, poptávka a práce s textem.
 // Stránka dodá funkci compute(), která ze zadání vrátí model; zbytek je stejný pro všechny.
 (function () {
-  const { CALC, csNum, measure, estimate, fitsBed, handoff, ownerMode, download, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, fitsBed, handoff, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer } = window.Sulc3D;
   const $ = id => document.getElementById(id);
   const num = id => parseFloat(String($(id).value).replace(',', '.'));
   const mm = v => csNum(v, Number.isInteger(Math.round(v * 10) / 10) ? 0 : 1);
@@ -90,7 +90,8 @@
 
   /**
    * Spustí konfigurátor. Stránka musí mít prvky #cfg, #canvas, #material, #kusu, #rWeight, #rPrice,
-   * #messages, #order a #stlBtn.
+   * #messages, #order a #stlBtn. Volitelně #vrstva, #perimetry, #vypln – nastavení tisku; když na stránce jsou,
+   * je výběr povinný (bez něj nejde poptat). Lithofan je nemá, tiskne se vždy stejně.
    * cfg.compute(ctx) → { pos, name, popis, rows?, shown?, viewOpts?, multi?, count?, fitSize?, partName?, priceFactor? }
    *   ctx.error(text), ctx.warn(text), ctx.range(hodnota, od, do, název[, jednotka]) → true/false
    * cfg.debounce: ms, o kolik odložit přepočet při psaní (pro náročnější modely)
@@ -99,6 +100,8 @@
     const viewer = createViewer($('canvas'));
     const order = $('order'), stlBtn = $('stlBtn');
     let current = null, token = 0, timer = 0;
+    const printSel = $('vrstva') ? { layer: $('vrstva'), perimeters: $('perimetry'), infill: $('vypln') } : null;
+    if (printSel) fillPrintSelects(printSel, null);
 
     async function run() {
       const my = ++token;
@@ -121,11 +124,16 @@
       }
       if (my !== token) return; // mezitím přišlo novější zadání
 
+      const print = printSel ? readPrint(printSel) : null;
+      if (printSel && !print) {
+        const st = CALC.print.standard;
+        warnings.push(`Vyberte výšku vrstvy, počet perimetrů a výplň – bez nich poptávku neodešlete. Cena je zatím pro standard (${printLabel(st)}).`);
+      }
       let est = null, model = null;
       if (!errors.length && res) {
         model = measure(res.pos);
         const pieces = Math.max(1, parseInt($('kusu').value, 10) || 1) * (res.count || 1);
-        est = estimate(model, $('material').value, pieces, res.priceFactor || 1);
+        est = estimate(model, $('material').value, pieces, res.priceFactor || 1, print);
         if (!fitsBed(res.fitSize || model.size)) {
           errors.push(`${res.partName || 'Díl'} se nevejde do tiskového prostoru ${CALC.maxSize.join(' × ')} mm. Zmenšete rozměry.`);
         }
@@ -137,8 +145,9 @@
       warnings.forEach(t => add('warn', t));
 
       const ok = !errors.length && !!res;
-      order.setAttribute('aria-disabled', String(!ok));
-      order.tabIndex = ok ? 0 : -1;
+      const ready = ok && (!printSel || !!print); // poptat jde až s vybraným nastavením tisku
+      order.setAttribute('aria-disabled', String(!ready));
+      order.tabIndex = ready ? 0 : -1;
       stlBtn.disabled = !ok;
       if (!ok) {
         current = null;
@@ -158,9 +167,9 @@
       $('rPrice').textContent = est.price + (est.qty > 1 ? ` za ${est.qty} ks` : '');
 
       current = { pos: res.pos, name: res.name.replace(/,/g, '_'), multi: !!res.multi, factor: res.priceFactor || 1 };
-      const popis = `${res.popis} Orientační odhad: ${est.weight}${est.qty > 1 ? ' na kus' : ''}, ${est.price}${est.qty > 1 ? ` za ${est.qty} ks` : ''}.`;
+      const popis = `${res.popis}${print ? ` Tisk: ${printLabel(print)}.` : ''} Orientační odhad: ${est.weight}${est.qty > 1 ? ' na kus' : ''}, ${est.price}${est.qty > 1 ? ` za ${est.qty} ks` : ''}.`;
       const home = location.protocol === 'file:' ? 'index.html' : '/';
-      order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty }) + '#naceneni';
+      order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print) }) + '#naceneni';
     }
 
     const schedule = () => {
@@ -172,6 +181,7 @@
     $('cfg').addEventListener('submit', e => e.preventDefault());
     // Při poptávce přiložit vygenerovaný model: nejdřív ho uložit, pak teprve přejít na formulář
     order.addEventListener('click', e => {
+      if (order.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
       if (!current || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
       const href = order.href;

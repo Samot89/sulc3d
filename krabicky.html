@@ -135,6 +135,21 @@
           <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
         </div>
       </div>
+      <div class="row three print-row">
+        <div class="field">
+          <label for="vrstva">Výška vrstvy</label>
+          <select id="vrstva" required></select>
+        </div>
+        <div class="field">
+          <label for="perimetry">Perimetry (stěny)</label>
+          <select id="perimetry" required></select>
+        </div>
+        <div class="field">
+          <label for="vypln">Výplň</label>
+          <select id="vypln" required></select>
+        </div>
+      </div>
+      <p class="print-hint">Povinné – bez nastavení tisku poptávku neodešlete. Nevíte si rady? Zvolte „standard“.</p>
     </fieldset>
   </form>
 
@@ -201,9 +216,12 @@
 <script src="model.js"></script>
 <script src="box.js"></script>
 <script>
-  const { CALC, csNum, measure, estimate, fitsBed, handoff, ownerMode, download, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, fitsBed, handoff, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer } = window.Sulc3D;
   const { buildBox, place, join } = window.Sulc3DBox;
   const $ = id => document.getElementById(id);
+  // Nastavení tisku (vrstva, perimetry, výplň) – povinné, bez něj nejde poptat
+  const printSel = { layer: $('vrstva'), perimeters: $('perimetry'), infill: $('vypln') };
+  fillPrintSelects(printSel, null);
   const DIVIDER = 1.2;      // mm, tloušťka přepážek
   const PART_GAP = 10;      // mm, mezera mezi krabičkou a víkem v tiskovém souboru
   const MIN_POCKET = 8;     // mm, nejmenší rozumná přihrádka
@@ -303,15 +321,17 @@
   function update() {
     $('lidFields').disabled = !$('lid').checked;
     const { p, errors, warnings } = readParams();
+    const print = readPrint(printSel);
+    if (!print) warnings.push(`Vyberte výšku vrstvy, počet perimetrů a výplň – bez nich poptávku neodešlete. Cena je zatím pro standard (${printLabel(CALC.print.standard)}).`);
     const order = $('order');
     const ok = !errors.length;
 
     $('messages').innerHTML = '';
     errors.forEach(t => { const li = document.createElement('li'); li.className = 'error'; li.textContent = t; $('messages').append(li); });
     warnings.forEach(t => { const li = document.createElement('li'); li.className = 'warn'; li.textContent = t; $('messages').append(li); });
-    order.setAttribute('aria-disabled', String(!ok));
+    order.setAttribute('aria-disabled', String(!ok || !print));
     $('stlBtn').disabled = !ok;
-    order.tabIndex = ok ? 0 : -1;
+    order.tabIndex = ok && print ? 0 : -1;
     if (!ok) {
       current = null;
       ['rWeight', 'rPrice'].forEach(id => { $(id).textContent = '–'; });
@@ -319,7 +339,7 @@
     }
 
     const parts = buildParts(p);
-    const est = estimate(measure(parts.print), $('material').value, $('kusu').value);
+    const est = estimate(measure(parts.print), $('material').value, $('kusu').value, 1, print);
     const shown = p.lid && view === 'closed' ? parts.closed : parts.print;
     if (viewer) viewer.setModel(shown, measure(shown), true);
     else $('canvas').hidden = true;
@@ -344,9 +364,9 @@
       `přihrádky ${p.nx} × ${p.ny}${split ? ` (jedna ${mm(p.pocket[0])} × ${mm(p.pocket[1])} mm, přepážky 1,2 mm)` : ''}; ` +
       (p.lid ? `nasazovací víko s lemem ${mm(p.lidH)} mm a vůlí ${csNum(p.gap, 2)} mm; ` : 'bez víka; ') +
       `vnější rozměr krabičky ${dims3(p.outer)}` + (p.lid ? `, víka ${dims3(p.lidOuter)}` : '') + '. ' +
-      `Orientační odhad: ${est.weight}, ${est.price}.`;
+      (print ? `Tisk: ${printLabel(print)}. ` : '') + `Orientační odhad: ${est.weight}, ${est.price}.`;
     const home = location.protocol === 'file:' ? 'index.html' : '/';
-    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty }) + '#naceneni';
+    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print) }) + '#naceneni';
   }
 
   $('viewToggle').addEventListener('click', e => {
@@ -358,6 +378,7 @@
   });
   // Při poptávce přiložit vygenerovaný model: nejdřív ho uložit, pak teprve přejít na formulář
   $('order').addEventListener('click', e => {
+    if ($('order').getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
     if (!current || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
     e.preventDefault();
     const href = $('order').href;

@@ -1,10 +1,21 @@
-// Sdílený kód pro 3D náhled a orientační kalkulaci (hlavní stránka + konfigurátor redukcí).
+// Sdílený kód pro 3D náhled, orientační kalkulaci a nastavení tisku (hlavní stránka + konfigurátory).
 (function () {
   // Parametry orientačního odhadu – upravte podle skutečného ceníku.
   const CALC = {
     minPrice: 50,           // Kč za kus
-    wall: 1.2,              // mm, tloušťka stěn
-    infill: 0.15,           // podíl výplně uvnitř dílu
+    lineWidth: 0.4,         // mm, šířka jednoho perimetru (tryska 0,4)
+    // Nastavení tisku, které volí zákazník. layers: výška vrstvy → koeficient ceny (čas tisku).
+    print: {
+      layers: {
+        '0.12': { factor: 1.4, label: '0,12 mm – jemná, nejhladší' },
+        '0.16': { factor: 1.2, label: '0,16 mm – kvalitní' },
+        '0.20': { factor: 1.0, label: '0,20 mm – standard' },
+        '0.28': { factor: 0.9, label: '0,28 mm – rychlá, hrubší' }
+      },
+      perimeters: { 2: '2 – lehký díl', 3: '3 – standard', 4: '4 – pevnější', 5: '5 – pevný', 6: '6 – velmi pevný' },
+      infill: { 10: '10 % – dekorace', 15: '15 % – standard', 20: '20 %', 30: '30 % – pevnější', 50: '50 % – pevný díl', 100: '100 % – plný' },
+      standard: { layer: '0.20', perimeters: 3, infill: 15 } // pro odhad, dokud zákazník nevybere
+    },
     spread: [0.85, 1.25],   // rozptyl odhadu (od–do)
     fallback: 'PLA',        // materiál pro "Nevím" a "Jiný"
     maxSize: [235, 235, 250], // mm, tiskový prostor
@@ -119,14 +130,16 @@
   }
 
   // multi: soubor obsahuje víc dílů vedle sebe, takže celkový rozměr neříká nic o tiskovém prostoru.
-  // href: odkaz na poptávku z konfigurátoru – z něj se k modelu uloží popis, materiál a počet kusů.
+  // href: odkaz na poptávku z konfigurátoru – z něj se k modelu uloží popis, materiál, počet kusů
+  // a nastavení tisku (vrstva, perimetry, vypln).
   // Vrací Promise; na chybu se nečeká – rozměry jsou i tak v textu poptávky.
   function handoff(pos, name, multi, factor = 1, href = '') {
     const q = new URL(href || location.href, location.href).searchParams;
     const item = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       name, multi: !!multi, factor, data: toSTL(pos), time: Date.now(),
-      popis: q.get('popis') || '', material: q.get('material') || '', kusu: parseInt(q.get('kusu'), 10) || 1
+      popis: q.get('popis') || '', material: q.get('material') || '', kusu: parseInt(q.get('kusu'), 10) || 1,
+      print: printFromQuery(q)
     };
     return changeHandoff(list => [...list, item]).catch(() => {});
   }
@@ -155,17 +168,55 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // ── Nastavení tisku: výška vrstvy, počet perimetrů, výplň ──
+  // print = { layer: '0.20', perimeters: 3, infill: 15 }; null = zákazník ještě nevybral
+  function validPrint(p) {
+    const P = CALC.print;
+    return !!p && !!P.layers[p.layer] && !!P.perimeters[p.perimeters] && !!P.infill[p.infill];
+  }
+  function printFromQuery(q) {
+    const p = { layer: q.get('vrstva'), perimeters: parseInt(q.get('perimetry'), 10), infill: parseInt(q.get('vypln'), 10) };
+    return validPrint(p) ? p : null;
+  }
+  const printQuery = p => (validPrint(p) ? { vrstva: p.layer, perimetry: p.perimeters, vypln: p.infill } : {});
+  function printLabel(p) {
+    if (!validPrint(p)) return 'nastavení tisku nevybráno';
+    const per = p.perimeters;
+    return `vrstva ${csNum(parseFloat(p.layer), 2)} mm, ${per} ${per < 5 ? 'perimetry' : 'perimetrů'}, výplň ${p.infill} %`;
+  }
+
+  // Naplní tři <select> volbami; první je prázdná „Vyberte…“, takže pole s atributem required
+  // nepustí poptávku bez výběru. value: předvyplněné nastavení (nebo null).
+  function fillPrintSelects(sel, value) {
+    const P = CALC.print;
+    const fill = (el, opts, current) => {
+      if (!el) return;
+      el.replaceChildren(new Option('Vyberte…', ''), ...Object.entries(opts).map(([v, o]) => new Option(typeof o === 'string' ? o : o.label, v)));
+      el.value = current != null ? String(current) : '';
+      el.required = true;
+    };
+    fill(sel.layer, P.layers, value && value.layer);
+    fill(sel.perimeters, P.perimeters, value && value.perimeters);
+    fill(sel.infill, P.infill, value && value.infill);
+  }
+  function readPrint(sel) {
+    const p = { layer: sel.layer.value, perimeters: parseInt(sel.perimeters.value, 10), infill: parseInt(sel.infill.value, 10) };
+    return validPrint(p) ? p : null;
+  }
+
   // Orientační hmotnost a cena pro změřený model
   // factor: cenový koeficient pro výrobky s delším tiskem (např. lithofan)
-  function estimate(model, material, qtyValue, factor = 1) {
+  // print: nastavení tisku; bez něj se počítá se standardem (CALC.print.standard)
+  function estimate(model, material, qtyValue, factor = 1, print = null) {
     const exact = !!CALC.materials[material];
     const matName = exact ? material : CALC.fallback;
     const mat = CALC.materials[matName];
     const qty = Math.max(1, parseInt(qtyValue, 10) || 1);
-    // spotřeba materiálu: stěny + řídká výplň zbytku objemu
-    const shell = Math.min(model.volume, model.area * CALC.wall);
-    const grams = (shell + (model.volume - shell) * CALC.infill) / 1000 * mat.density;
-    const piece = grams * mat.perGram * factor;
+    const pr = validPrint(print) ? print : CALC.print.standard;
+    // spotřeba materiálu: stěny (perimetry) + výplň zbytku objemu
+    const shell = Math.min(model.volume, model.area * pr.perimeters * CALC.lineWidth);
+    const grams = (shell + (model.volume - shell) * pr.infill / 100) / 1000 * mat.density;
+    const piece = grams * mat.perGram * factor * CALC.print.layers[pr.layer].factor;
     const round10 = v => Math.max(CALC.minPrice, Math.round(v / 10) * 10);
     const lo = round10(piece * CALC.spread[0]) * qty, hi = round10(piece * CALC.spread[1]) * qty;
     return {
@@ -315,5 +366,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, ownerMode, download, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, validPrint, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer };
 })();

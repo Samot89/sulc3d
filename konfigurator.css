@@ -365,3 +365,11 @@ fieldset:disabled .field { opacity: 0.45; }
   font-weight: 600;
   cursor: pointer;
 }
+
+/* ── NASTAVENÍ TISKU (vrstva, perimetry, výplň) ───────── */
+.row.print-row { margin: 0.9rem 0 0.4rem; }
+.print-hint { font-size: 0.74rem; color: var(--muted); line-height: 1.4; margin: 0; }
+.field select:required:invalid { color: var(--muted); border-color: rgba(250,204,21,0.45); }
+@media (max-width: 480px) {
+  .row.three.print-row { grid-template-columns: 1fr; }
+}
