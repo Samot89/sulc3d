@@ -59,7 +59,7 @@ async function buildMime({ subject, replyTo, rows, files }) {
   const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const html = '<!doctype html><meta charset="utf-8"><h2 style="font-family:sans-serif">Nová poptávka ze sulc3d.cz</h2>' +
     '<table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">' +
-    rows.map(([k, v]) => `<tr><th align="left" valign="top" style="border:1px solid #ccc;background:#f3f3f3">${esc(k)}</th>` +
+    rows.map(([k, v]) => `<tr><th align="left" valign="top" style="border:1px solid #ccc;background:#f3f3f3;color:#222">${esc(k)}</th>` +
       `<td style="border:1px solid #ccc;white-space:pre-wrap">${esc(v)}</td></tr>`).join('') + '</table>';
   const text = rows.map(([k, v]) => `${k}: ${v}`).join('\n\n');
 
