@@ -225,7 +225,8 @@
     const grams = (shell + (model.volume - shell) * pr.infill / 100) / 1000 * mat.density;
     const piece = grams * mat.perGram * factor * CALC.print.layers[pr.layer].factor;
     const fill = CALC.print.infill[pr.infill].factor;
-    const round = v => Math.round(Math.max(CALC.minPrice, Math.round(v / 10) * 10) * fill);
+    // minimum platí vždy (i u 10% výplně), koeficient výplně až po zaokrouhlení na desetikoruny
+    const round = v => Math.max(CALC.minPrice, Math.round(Math.max(CALC.minPrice, Math.round(v / 10) * 10) * fill));
     const lo = round(piece * CALC.spread[0]) * qty, hi = round(piece * CALC.spread[1]) * qty;
     return {
       matName, exact, qty, grams, lo, hi,

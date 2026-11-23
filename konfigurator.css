@@ -128,7 +128,7 @@ legend {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--blue);
+  color: #6b8ff2; /* světlejší modrá kvůli kontrastu na tmavém pozadí (WCAG 4,5:1) */
   margin-bottom: 0.75rem;
 }
 
