@@ -13,7 +13,14 @@
         '0.28': { factor: 0.9, label: '0,28 mm – rychlá, hrubší' }
       },
       perimeters: { 2: '2 – lehký díl', 3: '3 – standard', 4: '4 – pevnější', 5: '5 – pevný', 6: '6 – velmi pevný' },
-      infill: { 10: '10 % – dekorace', 15: '15 % – standard', 20: '20 %', 30: '30 % – pevnější', 50: '50 % – pevný díl', 100: '100 % – plný' },
+      // infill: výplň → koeficient ceny (čas tisku); uplatní se až po min. ceně, takže každá volba mění cenu
+      infill: {
+        10: { factor: 0.9, label: '10 % – dekorace' },
+        15: { factor: 1.0, label: '15 % – standard' },
+        20: { factor: 1.1, label: '20 %' },
+        30: { factor: 1.2, label: '30 % – pevnější' },
+        50: { factor: 1.4, label: '50 % – pevný díl' }
+      },
       standard: { layer: '0.20', perimeters: 3, infill: 15 } // pro odhad, dokud zákazník nevybere
     },
     spread: [0.85, 1.25],   // rozptyl odhadu (od–do)
@@ -217,8 +224,9 @@
     const shell = Math.min(model.volume, model.area * pr.perimeters * CALC.lineWidth);
     const grams = (shell + (model.volume - shell) * pr.infill / 100) / 1000 * mat.density;
     const piece = grams * mat.perGram * factor * CALC.print.layers[pr.layer].factor;
-    const round10 = v => Math.max(CALC.minPrice, Math.round(v / 10) * 10);
-    const lo = round10(piece * CALC.spread[0]) * qty, hi = round10(piece * CALC.spread[1]) * qty;
+    const fill = CALC.print.infill[pr.infill].factor;
+    const round = v => Math.round(Math.max(CALC.minPrice, Math.round(v / 10) * 10) * fill);
+    const lo = round(piece * CALC.spread[0]) * qty, hi = round(piece * CALC.spread[1]) * qty;
     return {
       matName, exact, qty, grams, lo, hi,
       fits: fitsBed(model.size),
