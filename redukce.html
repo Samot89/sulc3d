@@ -110,7 +110,7 @@
 
     <fieldset style="margin-bottom:0;">
       <legend>Výroba</legend>
-      <div class="row" style="margin-bottom:0;">
+      <div class="row three color-row" style="margin-bottom:0;">
         <div class="field">
           <label for="material">Materiál</label>
           <select id="material">
@@ -119,6 +119,10 @@
             <option value="ABS / ASA">ABS / ASA</option>
             <option value="TPU">TPU (pružný)</option>
           </select>
+        </div>
+        <div class="field">
+          <label for="barva">Barva <small>(nepovinné)</small></label>
+          <select id="barva"></select>
         </div>
         <div class="field">
           <label for="kusu">Počet kusů</label>
@@ -201,11 +205,12 @@
 
 <script src="model.js"></script>
 <script>
-  const { CALC, csNum, measure, estimate, handoff, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, handoff, printQuery, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, ownerMode, download, createViewer } = window.Sulc3D;
   const $ = id => document.getElementById(id);
   // Nastavení tisku (vrstva, perimetry, výplň) – povinné, bez něj nejde poptat
   const printSel = { layer: $('vrstva'), perimeters: $('perimetry'), infill: $('vypln') };
   fillPrintSelects(printSel, null);
+  fillColorSelect($('barva'), '');
   const SEGMENTS = 96;
   const MODES = { na: 'nasadí se na trubku', do: 'zasune se do trubky' };
   const HINTS = {
@@ -319,6 +324,8 @@
 
     const { p, errors, warnings } = readParams();
     const print = readPrint(printSel);
+    const color = validColor($('barva').value);
+    if (viewer) viewer.setColor(colorRgb(color));
     if (!print) warnings.push(`Vyberte výšku vrstvy, počet perimetrů a výplň – bez nich poptávku neodešlete. Cena je zatím pro standard (${printLabel(CALC.print.standard)}).`);
     const order = $('order');
     let est = null;
@@ -356,9 +363,9 @@
     const popis = 'Redukce z konfigurátoru – ' +
       `${end('A', p.dA, p.mA, p.lA, p.A)}; ${end('B', p.dB, p.mB, p.lB, p.B)}; ` +
       `přechod ${mm(p.lT)} mm; stěna ${mm(p.wall)} mm; vůle ${csNum(p.gap, 2)} mm; celková délka ${mm(p.length)} mm. ` +
-      (print ? `Tisk: ${printLabel(print)}. ` : '') + `Orientační odhad: ${est.weight}, ${est.price}.`;
+      (print ? `Tisk: ${printLabel(print)}. ` : '') + (color ? `Barva: ${colorLabel(color)}. ` : '') + `Orientační odhad: ${est.weight}, ${est.price}.`;
     const home = location.protocol === 'file:' ? 'index.html' : '/';
-    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print) }) + '#naceneni';
+    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print), ...(color ? { barva: color } : {}) }) + '#naceneni';
   }
 
 

@@ -169,6 +169,13 @@
     }
 
     .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+    .cart-badge {
+      display: inline-grid; place-items: center;
+      min-width: 1.35em; height: 1.35em; padding: 0 0.3em; margin-left: 0.45em;
+      border-radius: 999px; background: #fff; color: #3b4fd8;
+      font-size: 0.75em; font-weight: 800; line-height: 1; vertical-align: 0.1em;
+    }
+    .cart-badge[hidden] { display: none; }
 
     .nav-toggle {
       display: none;
@@ -803,13 +810,13 @@
     }
     .fi-del:hover { color: #f87171; border-color: #f87171; }
     .fi-print {
-      grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+      grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem;
       font-size: 0.75rem; color: var(--muted);
     }
     .fi-print label { display: flex; flex-direction: column; gap: 0.2rem; }
-    .form-group .fi-print select { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
+    .form-group .fi-print select { padding: 0.4rem 0.5rem; font-size: 0.8rem; width: 100%; min-width: 0; }
     .form-group .fi-print select:invalid { color: var(--muted); border-color: rgba(250,204,21,0.45); }
-    @media (max-width: 600px) { .fi-print { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .fi-print { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     .file-total { font-size: 0.9rem; color: var(--text); font-weight: 600; text-align: left; }
     .file-hint { font-size: 0.78rem; color: var(--muted); text-align: left; }
     .file-hint a { color: var(--blue); }
@@ -1458,7 +1465,7 @@
         <div class="upload-icon">☁️</div>
         <div class="upload-title">Přetáhněte soubory sem</div>
         <p class="upload-sub">nebo klikněte pro výběr ze zařízení – můžete vybrat i více souborů najednou</p>
-        <p class="supported">STL · STEP · OBJ · 3MF · až 10 souborů, dohromady max. 10 MB<br />U souborů STL hned uvidíte 3D náhled a orientační cenu<br />U každého souboru pak vyberete výšku vrstvy, perimetry a výplň</p>
+        <p class="supported">STL · STEP · OBJ · 3MF · až 10 souborů, dohromady max. 10 MB<br />U souborů STL hned uvidíte 3D náhled a orientační cenu<br />U každého souboru pak vyberete výšku vrstvy, perimetry, výplň a barvu</p>
       </label>
       <p id="fileInfo" class="file-info" role="status" hidden></p>
       <ul class="file-list" id="fileList" hidden></ul>
@@ -1633,7 +1640,7 @@
   const MAX_FILES = 10;
   const MAX_TOTAL_MB = 10;
   const ALLOWED_EXT = ['stl', 'step', 'stp', 'obj', '3mf'];
-  const { CALC, csNum, parseSTL, measure, estimate, listHandoff, removeHandoff, clearHandoff, printLabel, fillPrintSelects, readPrint, createViewer } = window.Sulc3D;
+  const { CALC, csNum, parseSTL, measure, estimate, listHandoff, removeHandoff, clearHandoff, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, setCartCount, createViewer } = window.Sulc3D;
   const form = document.getElementById('contactForm');
   const fileUpload = document.getElementById('fileUpload');
   const fileDrop = document.getElementById('fileDrop');
@@ -1660,7 +1667,7 @@
     fileInfo.hidden = !lines.length;
   }
 
-  // opts: { qty, factor, multi, handoffId, print, fixedPrint } – u modelů předaných z konfigurátoru
+  // opts: { qty, factor, multi, handoffId, print, fixedPrint, color } – u modelů předaných z konfigurátoru
   // print: nastavení tisku (vrstva, perimetry, výplň); fixedPrint: konfigurátor ho určuje sám (lithofan)
   function addFiles(list, opts = {}) {
     const errors = [];
@@ -1677,7 +1684,7 @@
         const it = {
           file, ext, qty: opts.qty || Math.max(1, parseInt(qtyInput.value, 10) || 1),
           factor: opts.factor || 1, multi: !!opts.multi, handoffId: opts.handoffId || null,
-          print: opts.print || null, fixedPrint: !!opts.fixedPrint,
+          print: opts.print || null, fixedPrint: !!opts.fixedPrint, color: validColor(opts.color), color2: validColor(opts.color2),
           pos: null, model: null, failed: false
         };
         items.push(it);
@@ -1746,7 +1753,14 @@
           printBox.append(label);
         });
         fillPrintSelects(sel, it.print);
-        printBox.addEventListener('change', () => { it.print = readPrint(sel); refresh(); });
+        // barva filamentu – nepovinná
+        const colorLabelEl = document.createElement('label');
+        const color = document.createElement('select');
+        color.setAttribute('aria-label', `Barva – ${it.file.name}`);
+        fillColorSelect(color, it.color);
+        colorLabelEl.append('Barva', color);
+        printBox.append(colorLabelEl);
+        printBox.addEventListener('change', () => { it.print = readPrint(sel); it.color = validColor(color.value); refresh(); });
       }
       li.append(printBox);
       it.row = li;
@@ -1756,6 +1770,7 @@
     // s přiloženými soubory se počet kusů zadává u každého souboru zvlášť
     fileList.hidden = fileHint.hidden = !items.length;
     kusuGroup.hidden = qtyInput.disabled = items.length > 0;
+    setCartCount(items.length);
     refresh();
   }
 
@@ -1763,7 +1778,7 @@
   function refresh() {
     let lo = 0, hi = 0, priced = 0;
     const lines = items.map((it, i) => {
-      const head = `${i + 1}) ${it.file.name} – ${it.qty} ks, ` + (it.fixedPrint ? 'tisk podle konfigurátoru' : printLabel(it.print));
+      const head = `${i + 1}) ${it.file.name} – ${it.qty} ks, ` + (it.fixedPrint ? 'tisk podle konfigurátoru' : printLabel(it.print)) + (it.color ? `, barva ${colorLabel(it.color)}` : '') + (it.color2 ? `, písmo ${colorLabel(it.color2)}` : '');
       const std = !it.print && !it.fixedPrint ? ' (pro standardní tisk, vyberte nastavení)' : '';
       it.row.classList.toggle('active', it === active);
       it.row.querySelector('.fi-name').disabled = !it.model;
@@ -1805,7 +1820,7 @@
     const it = active, e = it.est, fits = it.multi || e.fits;
     modelBox.hidden = false;
     if (!viewer) viewer = createViewer(modelCanvas);
-    if (viewer) { if (viewer.shown !== it) { viewer.setModel(it.pos, it.model); viewer.shown = it; } }
+    if (viewer) { viewer.setColor(colorRgb(it.color), colorRgb(it.color2)); if (viewer.shown !== it) { viewer.setModel(it.pos, it.model); viewer.shown = it; } }
     else modelCanvas.hidden = true;
     document.getElementById('mName').textContent = items.length > 1 ? it.file.name : '';
     document.getElementById('mDims').textContent = e.dims;
@@ -1814,7 +1829,7 @@
     document.getElementById('mPrice').textContent = e.price + (e.qty > 1 ? ` za ${e.qty} ks` : '');
     const note = document.getElementById('mNote');
     note.textContent =
-      `Odhad pro ${e.matName}${e.exact ? '' : ' (materiál upřesníme)'}, ${it.fixedPrint ? 'tisk podle konfigurátoru' : it.print ? printLabel(it.print) : 'standardní tisk (nastavení zatím nevybráno)'}, rozměry bereme v milimetrech. ` +
+      `Odhad pro ${e.matName}${e.exact ? '' : ' (materiál upřesníme)'}, ${it.fixedPrint ? 'tisk podle konfigurátoru' : it.print ? printLabel(it.print) : 'standardní tisk (nastavení zatím nevybráno)'}${it.color ? `, barva ${colorLabel(it.color)}` : ''}, rozměry bereme v milimetrech. ` +
       'Přesnou cenu potvrdíme v nabídce.' +
       (items.length > 1 ? ' Náhled jiného souboru zobrazíte kliknutím na jeho název.' : '') +
       (it.multi ? ' Soubor obsahuje všechny díly vedle sebe.' : '') +
@@ -1832,7 +1847,7 @@
     if (saved.length) {
       saved.forEach(s => addFiles(
         [new File([s.data], s.name || 'model.stl', { type: 'model/stl' })],
-        { qty: s.kusu, factor: s.factor, multi: s.multi, handoffId: s.id, print: s.print, fixedPrint: !s.print }
+        { qty: s.kusu, factor: s.factor, multi: s.multi, handoffId: s.id, print: s.print, fixedPrint: !s.print, color: s.color, color2: s.color2 }
       ));
       if (!message.value) message.value = saved.map(s => s.popis).filter(Boolean).join('\n\n');
       setMaterial(saved[saved.length - 1].material);

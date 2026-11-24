@@ -63,7 +63,7 @@
         </div>
       </div>
       <div class="field">
-        <small>Text se sám zvětší tak, aby vyplnil cedulku. Vystouplé písmo vynikne nejlépe ve dvou barvách — barvu podkladu a písma napište do poptávky.</small>
+        <small>Text se sám zvětší tak, aby vyplnil cedulku. Vystouplé písmo vynikne nejlépe ve dvou barvách — barvu podkladu a písma vyberte dole u výroby.</small>
       </div>
     </fieldset>
 
@@ -123,7 +123,7 @@
 
     <fieldset style="margin-bottom:0;">
       <legend>Výroba</legend>
-      <div class="row" style="margin-bottom:0;">
+      <div class="row color-row" style="margin-bottom:0;">
         <div class="field">
           <label for="material">Materiál</label>
           <select id="material">
@@ -135,6 +135,14 @@
         <div class="field">
           <label for="kusu">Počet kusů</label>
           <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="barva">Barva podkladu <small>(nepovinné)</small></label>
+          <select id="barva"></select>
+        </div>
+        <div class="field">
+          <label for="barva2">Barva písma <small>(nepovinné)</small></label>
+          <select id="barva2"></select>
         </div>
       </div>
       <div class="row three print-row">
@@ -182,7 +190,7 @@
   <div class="info-grid">
     <div class="info-card">
       <h3>🎨 Barvy</h3>
-      <p>Cedulku tiskneme jednobarevně, nebo s písmem v jiné barvě než podklad. Požadované barvy napište do poptávky, potvrdíme, co máme skladem.</p>
+      <p>Cedulku tiskneme jednobarevně, nebo s písmem v jiné barvě než podklad. Barvu podkladu a písma vyberete u výroby a hned ji uvidíte v náhledu. Jinou barvu napište do poptávky.</p>
     </div>
     <div class="info-card">
       <h3>🔤 Velikost písma</h3>
@@ -279,14 +287,14 @@
     return {
       pos,
       name: `cedulka-${mm(p.w)}x${mm(p.h)}.stl`,
-      viewOpts: { tintZ: [top - p.depth, top], view: { yaw: 0, pitch: 1.1, spin: false } },
+      viewOpts: { tintZ: [top - p.depth, top], textLow: !p.raised, view: { yaw: 0, pitch: 1.1, spin: false } },
       rows: { rSize: dims3([p.w, p.h, top]), rLetter: `asi ${mm(letter)} mm` },
       popis: 'Cedulka z konfigurátoru – ' +
         `text „${lines.join(' / ')}“, písmo ${FONTS[p.font].label.toLowerCase()}, ${p.raised ? 'vystouplé' : 'zapuštěné'} o ${mm(p.depth)} mm; ` +
         `rozměr ${mm(p.w)} × ${mm(p.h)} mm, tloušťka podkladu ${mm(p.t)} mm, zaoblení ${mm(p.r)} mm; ` +
         `${p.frame ? 's rámečkem' : 'bez rámečku'}; ` +
         (p.holes ? `${p.holes} otvory Ø ${mm(p.holeD)} mm.` : 'bez otvorů.') +
-        ' Barvy: (doplňte barvu podkladu a písma).'
+        ''
     };
   }
 

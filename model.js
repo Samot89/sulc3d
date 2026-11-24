@@ -23,6 +23,15 @@
       },
       standard: { layer: '0.20', perimeters: 3, infill: 15 } // pro odhad, dokud zákazník nevybere
     },
+    // Barvy filamentu (volitelné; prázdná volba = „Nezáleží“). rgb = barva 3D náhledu.
+    colors: {
+      cerna:  { label: 'Černá',  rgb: [0.17, 0.17, 0.19] },
+      bila:   { label: 'Bílá',   rgb: [0.93, 0.93, 0.91] },
+      seda:   { label: 'Šedá',   rgb: [0.55, 0.57, 0.6] },
+      zluta:  { label: 'Žlutá',  rgb: [0.98, 0.78, 0.1] },
+      zelena: { label: 'Zelená', rgb: [0.15, 0.66, 0.3] },
+      modra:  { label: 'Modrá',  rgb: [0.18, 0.4, 0.92] }
+    },
     spread: [0.85, 1.25],   // rozptyl odhadu (od–do)
     fallback: 'PLA',        // materiál pro "Nevím" a "Jiný"
     maxSize: [235, 235, 250], // mm, tiskový prostor
@@ -146,7 +155,7 @@
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       name, multi: !!multi, factor, data: toSTL(pos), time: Date.now(),
       popis: q.get('popis') || '', material: q.get('material') || '', kusu: parseInt(q.get('kusu'), 10) || 1,
-      print: printFromQuery(q)
+      print: printFromQuery(q), color: validColor(q.get('barva')), color2: validColor(q.get('barva2'))
     };
     return changeHandoff(list => [...list, item]).catch(() => {});
   }
@@ -173,6 +182,60 @@
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  // ── Barva filamentu (nepovinná) ──
+  const validColor = k => (k && CALC.colors[k] ? k : '');
+  const colorLabel = k => (validColor(k) ? CALC.colors[k].label : '');
+  const colorRgb = k => (validColor(k) ? CALC.colors[k].rgb : null);
+  function fillColorSelect(el, value) {
+    if (!el) return;
+    el.replaceChildren(new Option('Nezáleží – poradíme', ''),
+      ...Object.entries(CALC.colors).map(([k, c]) => new Option(c.label, k)));
+    el.value = validColor(value);
+  }
+
+  // ── Košík v menu: počet modelů v poptávce u tlačítka „Nezávazná poptávka“ ──
+  // Na hlavní stránce počet nastavuje formulář (setCartCount), jinde se čte z IndexedDB.
+  function setCartCount(n) {
+    document.querySelectorAll('.nav-cta').forEach(a => {
+      let b = a.querySelector('.cart-badge');
+      if (!b) {
+        b = document.createElement('span');
+        b.className = 'cart-badge';
+        a.append(b);
+      }
+      b.textContent = n;
+      b.hidden = !n;
+      a.setAttribute('aria-label', n ? `Nezávazná poptávka – v poptávce ${n} ${n === 1 ? 'model' : n < 5 ? 'modely' : 'modelů'}` : 'Nezávazná poptávka');
+    });
+    // v konfigurátoru upozornit, že se nový model přidá k ostatním
+    const order = document.getElementById('order');
+    if (order && !document.getElementById('contactForm')) {
+      let note = document.getElementById('cartNote');
+      if (!note) {
+        note = document.createElement('p');
+        note.id = 'cartNote';
+        note.className = 'cart-note';
+        order.before(note);
+      }
+      note.hidden = !n;
+      note.innerHTML = '';
+      if (n) {
+        note.append(`V poptávce už ${n === 1 ? 'máte 1 model' : `máte ${n} ${n < 5 ? 'modely' : 'modelů'}`} – tento se přidá k ${n === 1 ? 'němu' : 'nim'}. `);
+        const a = document.createElement('a');
+        a.href = '/#naceneni';
+        a.textContent = 'Zobrazit poptávku';
+        note.append(a);
+      }
+    }
+  }
+  if (!document.getElementById('contactForm')) {
+    const refresh = () => listHandoff().then(l => setCartCount(l.length));
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refresh);
+    else refresh();
+    // návrat zpět tlačítkem prohlížeče (bfcache) – košík se mezitím mohl změnit
+    window.addEventListener('pageshow', e => { if (e.persisted) refresh(); });
   }
 
   // ── Nastavení tisku: výška vrstvy, počet perimetrů, výplň ──
@@ -254,11 +317,19 @@
       'void main(){ vn = (rot * vec4(n, 0.0)).xyz; vz = p.z; gl_Position = mvp * vec4(p, 1.0); }'));
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER,
       // tint.z > 0: barvit podle výšky (tint.x = spodní mez, tint.y = rozsah) – odliší text od podkladu
-      'precision mediump float; varying vec3 vn; varying float vz; uniform vec3 tint;' +
+      // base.w > 0: barva filamentu base.rgb místo výchozí modré
+      'precision mediump float; varying vec3 vn; varying float vz; uniform vec3 tint; uniform vec4 base; uniform vec4 base2;' +
       'void main(){ float d = abs(dot(normalize(vn), normalize(vec3(0.35, 0.55, 1.0))));' +
-      'vec3 c = mix(vec3(0.13, 0.18, 0.40), vec3(0.52, 0.64, 1.0), d);' +
+      'vec3 lo = vec3(0.13, 0.18, 0.40), hi = vec3(0.52, 0.64, 1.0), tl = vec3(0.16, 0.22, 0.50), th = vec3(0.95, 0.96, 1.0);' +
+      'if (base.w > 0.5) { lo = base.rgb * 0.32 + 0.03; hi = min(base.rgb * 1.08 + 0.1, 1.0);' +
+      'tl = base.rgb * 0.5 + 0.03; th = min(mix(base.rgb, vec3(1.0), 0.35) + 0.08, 1.0); }' +
+      'vec3 c = mix(lo, hi, d);' +
       'if (tint.z > 0.5) { float t = clamp((vz - tint.x) / tint.y, 0.0, 1.0);' +
-      'c = mix(vec3(0.16, 0.22, 0.50), vec3(0.95, 0.96, 1.0), t) * (0.55 + 0.45 * d); }' +
+      'c = mix(tl, th, t) * (0.55 + 0.45 * d);' +
+      // base2.w > 0: dvoubarevný reliéf – písmo v barvě base2.rgb (w = 2: písmo je zapuštěné, tedy dole)
+      'if (base2.w > 0.5) { float k = smoothstep(0.3, 0.7, t); if (base2.w > 1.5) k = 1.0 - k;' +
+      'vec3 b = base.w > 0.5 ? base.rgb : vec3(0.3, 0.42, 0.85);' +
+      'c = mix(b, base2.rgb, k) * (0.45 + 0.6 * d) + 0.03; } }' +
       'gl_FragColor = vec4(c, 1.0); }'));
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
@@ -267,7 +338,11 @@
     const posBuf = gl.createBuffer(), norBuf = gl.createBuffer();
     const aP = gl.getAttribLocation(prog, 'p'), aN = gl.getAttribLocation(prog, 'n');
     const uMvp = gl.getUniformLocation(prog, 'mvp'), uRot = gl.getUniformLocation(prog, 'rot');
-    const uTint = gl.getUniformLocation(prog, 'tint');
+    const uTint = gl.getUniformLocation(prog, 'tint'), uBase = gl.getUniformLocation(prog, 'base'), uBase2 = gl.getUniformLocation(prog, 'base2');
+    gl.uniform4f(uBase, 0, 0, 0, 0);
+    let text2 = null, textLow = false; // barva písma u dvoubarevného reliéfu
+    const applyText = () => gl.uniform4f(uBase2, ...(text2 ? [text2[0], text2[1], text2[2], textLow ? 2 : 1] : [0, 0, 0, 0]));
+    applyText();
 
     const mul = (a, b) => {
       const o = new Float32Array(16);
@@ -329,8 +404,18 @@
     window.addEventListener('resize', draw);
 
     return {
+      // rgb: [r, g, b] 0–1 = barva filamentu; null = výchozí modrá
+      // textRgb: barva písma u reliéfu (cedulky, klíčenky); null = jednobarevně
+      setColor(rgb, textRgb = null) {
+        if (rgb) gl.uniform4f(uBase, rgb[0], rgb[1], rgb[2], 1);
+        else gl.uniform4f(uBase, 0, 0, 0, 0);
+        text2 = textRgb;
+        applyText();
+        draw();
+      },
       // keepView: ponechat natočení (pro živé úpravy parametrů)
       // opts.tintZ: [z nejtmavší, z nejsvětlejší] v mm – barvení podle výšky
+      // opts.textLow: písmo je zapuštěné (u dvoubarevného náhledu je dole)
       // opts.view: { yaw, pitch, spin } – výchozí pohled místo otáčení
       setModel(pos, m, keepView, opts = {}) {
         // vystředit a zmenšit tak, aby se model vešel do koule o poloměru 0,5
@@ -361,6 +446,8 @@
         } else {
           gl.uniform3f(uTint, 0, 1, 0);
         }
+        textLow = !!opts.textLow;
+        applyText();
         const first = !count;
         count = pos.length / 3;
         if (!keepView || first) {
@@ -375,5 +462,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, validPrint, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, validPrint, printQuery, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, setCartCount, ownerMode, download, createViewer };
 })();

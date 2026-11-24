@@ -100,7 +100,7 @@
 
     <fieldset style="margin-bottom:0;">
       <legend>Výroba</legend>
-      <div class="row" style="margin-bottom:0;">
+      <div class="row color-row" style="margin-bottom:0;">
         <div class="field">
           <label for="material">Materiál</label>
           <select id="material">
@@ -111,6 +111,14 @@
         <div class="field">
           <label for="kusu">Počet kusů</label>
           <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="barva">Barva podkladu <small>(nepovinné)</small></label>
+          <select id="barva"></select>
+        </div>
+        <div class="field">
+          <label for="barva2">Barva písma <small>(nepovinné)</small></label>
+          <select id="barva2"></select>
         </div>
       </div>
       <div class="row three print-row">
@@ -158,7 +166,7 @@
   <div class="info-grid">
     <div class="info-card">
       <h3>🎨 Dvě barvy</h3>
-      <p>Klíčenka vynikne s písmem v jiné barvě než podklad. Požadované barvy napište do poptávky, potvrdíme, co máme skladem.</p>
+      <p>Klíčenka vynikne s písmem v jiné barvě než podklad. Barvu podkladu a písma vyberete u výroby a hned ji uvidíte v náhledu. Jinou barvu napište do poptávky.</p>
     </div>
     <div class="info-card">
       <h3>🔤 Délka a čitelnost</h3>
@@ -296,7 +304,7 @@
       popis: 'Klíčenka z konfigurátoru – ' +
         `text „${text}“, písmo ${FONTS[p.font].label.toLowerCase()}, tvar ${p.shape === 'outline' ? 'obrys podle písma' : 'štítek'}; ` +
         `rozměr ${dims3(size)}, podklad ${mm(p.t)} mm, písmo vystouplé o ${mm(p.depth)} mm, okraj ${mm(p.edge)} mm, otvor Ø ${mm(p.hole)} mm.` +
-        ' Barvy: (doplňte barvu podkladu a písma).'
+        ''
     };
   }
 

@@ -1,7 +1,7 @@
 // Společné ovládání konfigurátorů: validace, náhled, cena, poptávka a práce s textem.
 // Stránka dodá funkci compute(), která ze zadání vrátí model; zbytek je stejný pro všechny.
 (function () {
-  const { CALC, csNum, measure, estimate, fitsBed, handoff, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, fitsBed, handoff, printQuery, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, ownerMode, download, createViewer } = window.Sulc3D;
   const $ = id => document.getElementById(id);
   const num = id => parseFloat(String($(id).value).replace(',', '.'));
   const mm = v => csNum(v, Number.isInteger(Math.round(v * 10) / 10) ? 0 : 1);
@@ -102,6 +102,10 @@
     let current = null, token = 0, timer = 0;
     const printSel = $('vrstva') ? { layer: $('vrstva'), perimeters: $('perimetry'), infill: $('vypln') } : null;
     if (printSel) fillPrintSelects(printSel, null);
+    const colorSel = $('barva'); // volitelná barva filamentu (lithofan ji nemá)
+    const textSel = $('barva2'); // barva písma u cedulek a klíčenek
+    fillColorSelect(colorSel, '');
+    fillColorSelect(textSel, '');
 
     async function run() {
       const my = ++token;
@@ -156,6 +160,9 @@
       }
 
       const shown = res.shown || res.pos;
+      const color = colorSel ? validColor(colorSel.value) : '';
+      const color2 = textSel ? validColor(textSel.value) : '';
+      if (viewer) viewer.setColor(colorRgb(color), colorRgb(color2));
       if (viewer) viewer.setModel(shown, res.shown ? measure(shown) : model, true, res.viewOpts);
       else $('canvas').hidden = true;
       for (const [id, text] of Object.entries(res.rows || {})) {
@@ -167,9 +174,9 @@
       $('rPrice').textContent = est.price + (est.qty > 1 ? ` za ${est.qty} ks` : '');
 
       current = { pos: res.pos, name: res.name.replace(/,/g, '_'), multi: !!res.multi, factor: res.priceFactor || 1 };
-      const popis = `${res.popis}${print ? ` Tisk: ${printLabel(print)}.` : ''} Orientační odhad: ${est.weight}${est.qty > 1 ? ' na kus' : ''}, ${est.price}${est.qty > 1 ? ` za ${est.qty} ks` : ''}.`;
+      const popis = `${res.popis}${print ? ` Tisk: ${printLabel(print)}.` : ''}${textSel ? ((color || color2) ? ` Barva podkladu: ${colorLabel(color) || 'nezáleží'}, písma: ${colorLabel(color2) || 'nezáleží'}.` : '') : color ? ` Barva: ${colorLabel(color)}.` : ''} Orientační odhad: ${est.weight}${est.qty > 1 ? ' na kus' : ''}, ${est.price}${est.qty > 1 ? ` za ${est.qty} ks` : ''}.`;
       const home = location.protocol === 'file:' ? 'index.html' : '/';
-      order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print) }) + '#naceneni';
+      order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print), ...(color ? { barva: color } : {}), ...(color2 ? { barva2: color2 } : {}) }) + '#naceneni';
     }
 
     const schedule = () => {

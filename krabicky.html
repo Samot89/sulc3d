@@ -120,7 +120,7 @@
 
     <fieldset style="margin-bottom:0;">
       <legend>Výroba</legend>
-      <div class="row" style="margin-bottom:0;">
+      <div class="row three color-row" style="margin-bottom:0;">
         <div class="field">
           <label for="material">Materiál</label>
           <select id="material">
@@ -129,6 +129,10 @@
             <option value="ABS / ASA">ABS / ASA</option>
             <option value="TPU">TPU (pružný)</option>
           </select>
+        </div>
+        <div class="field">
+          <label for="barva">Barva <small>(nepovinné)</small></label>
+          <select id="barva"></select>
         </div>
         <div class="field">
           <label for="kusu">Počet kusů</label>
@@ -216,12 +220,13 @@
 <script src="model.js"></script>
 <script src="box.js"></script>
 <script>
-  const { CALC, csNum, measure, estimate, fitsBed, handoff, printQuery, printLabel, fillPrintSelects, readPrint, ownerMode, download, createViewer } = window.Sulc3D;
+  const { CALC, csNum, measure, estimate, fitsBed, handoff, printQuery, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, ownerMode, download, createViewer } = window.Sulc3D;
   const { buildBox, place, join } = window.Sulc3DBox;
   const $ = id => document.getElementById(id);
   // Nastavení tisku (vrstva, perimetry, výplň) – povinné, bez něj nejde poptat
   const printSel = { layer: $('vrstva'), perimeters: $('perimetry'), infill: $('vypln') };
   fillPrintSelects(printSel, null);
+  fillColorSelect($('barva'), '');
   const DIVIDER = 1.2;      // mm, tloušťka přepážek
   const PART_GAP = 10;      // mm, mezera mezi krabičkou a víkem v tiskovém souboru
   const MIN_POCKET = 8;     // mm, nejmenší rozumná přihrádka
@@ -322,6 +327,8 @@
     $('lidFields').disabled = !$('lid').checked;
     const { p, errors, warnings } = readParams();
     const print = readPrint(printSel);
+    const color = validColor($('barva').value);
+    if (viewer) viewer.setColor(colorRgb(color));
     if (!print) warnings.push(`Vyberte výšku vrstvy, počet perimetrů a výplň – bez nich poptávku neodešlete. Cena je zatím pro standard (${printLabel(CALC.print.standard)}).`);
     const order = $('order');
     const ok = !errors.length;
@@ -364,9 +371,9 @@
       `přihrádky ${p.nx} × ${p.ny}${split ? ` (jedna ${mm(p.pocket[0])} × ${mm(p.pocket[1])} mm, přepážky 1,2 mm)` : ''}; ` +
       (p.lid ? `nasazovací víko s lemem ${mm(p.lidH)} mm a vůlí ${csNum(p.gap, 2)} mm; ` : 'bez víka; ') +
       `vnější rozměr krabičky ${dims3(p.outer)}` + (p.lid ? `, víka ${dims3(p.lidOuter)}` : '') + '. ' +
-      (print ? `Tisk: ${printLabel(print)}. ` : '') + `Orientační odhad: ${est.weight}, ${est.price}.`;
+      (print ? `Tisk: ${printLabel(print)}. ` : '') + (color ? `Barva: ${colorLabel(color)}. ` : '') + `Orientační odhad: ${est.weight}, ${est.price}.`;
     const home = location.protocol === 'file:' ? 'index.html' : '/';
-    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print) }) + '#naceneni';
+    order.href = home + '?' + new URLSearchParams({ popis, material: $('material').value, kusu: est.qty, ...printQuery(print), ...(color ? { barva: color } : {}) }) + '#naceneni';
   }
 
   $('viewToggle').addEventListener('click', e => {

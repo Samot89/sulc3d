@@ -373,3 +373,23 @@ fieldset:disabled .field { opacity: 0.45; }
 @media (max-width: 480px) {
   .row.three.print-row { grid-template-columns: 1fr; }
 }
+
+/* ── Košík: počet modelů v poptávce ── */
+.cart-badge {
+  display: inline-grid; place-items: center;
+  min-width: 1.35em; height: 1.35em; padding: 0 0.3em; margin-left: 0.45em;
+  border-radius: 999px; background: #fff; color: #3b4fd8;
+  font-size: 0.75em; font-weight: 800; line-height: 1; vertical-align: 0.1em;
+}
+.cart-badge[hidden] { display: none; }
+.cart-note {
+  margin: 0 0 0.75rem; padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(79,123,239,0.35); border-radius: 10px;
+  background: rgba(79,123,239,0.08); color: var(--text); font-size: 0.85rem; line-height: 1.45;
+}
+.cart-note a { color: #8fa9f5; font-weight: 600; }
+.cart-note[hidden] { display: none; }
+/* Materiál | Barva | Počet kusů – na úzkém displeji pod sebe */
+@media (max-width: 480px) {
+  .row.three.color-row { grid-template-columns: 1fr; }
+}
