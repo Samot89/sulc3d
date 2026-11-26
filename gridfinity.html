@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gridfinity krabičky na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor krabiček Gridfinity – modulární úložný systém s mřížkou 42 mm. Zvolte velikost, výšku a přihrádky, prohlédněte si náhled s cenou a pošlete poptávku." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/gridfinity" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Gridfinity krabičky na míru" />
+  <meta property="og:description" content="Modulární krabičky s mřížkou 42 mm. Velikost, výška a přihrádky podle vás." />
+  <meta property="og:url" content="https://sulc3d.cz/gridfinity" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Gridfinity krabičky<br /><span class="grad-text">modulární úložný systém</span></h1>
+  <p class="lead">Krabičky v mřížce 42 mm, které do sebe zapadají a stohují se na sebe. Zvolte velikost v polích, výšku a přihrádky – náhled a cena se přepočítají hned.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Velikost</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="gx">Šířka (pole)</label>
+          <input type="number" id="gx" value="2" min="1" max="5" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="gy">Hloubka (pole)</label>
+          <input type="number" id="gy" value="1" min="1" max="5" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="gz">Výška (jednotky)</label>
+          <input type="number" id="gz" value="3" min="2" max="12" step="1" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="field">
+        <small id="sizeHint">Jedno pole je 42 × 42 mm, jedna jednotka výšky 7 mm.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Přihrádky a provedení</legend>
+      <div class="row">
+        <div class="field">
+          <label for="dx">Přihrádek na šířku</label>
+          <input type="number" id="dx" value="2" min="1" max="10" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="dy">Přihrádek na hloubku</label>
+          <input type="number" id="dy" value="1" min="1" max="10" step="1" inputmode="numeric" />
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="lip" checked /> Okraj pro stohování (další krabička se postaví navrch)</label>
+      <div class="field">
+        <label for="wall">Stěna (mm)</label>
+        <input type="number" id="wall" value="1.2" min="0.8" max="2.4" step="0.1" inputmode="decimal" />
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row three color-row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA</option>
+            <option value="PETG">PETG</option>
+            <option value="ABS / ASA">ABS / ASA</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="barva">Barva <small>(nepovinné)</small></label>
+          <select id="barva"></select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="row three print-row">
+        <div class="field">
+          <label for="vrstva">Výška vrstvy</label>
+          <select id="vrstva" required></select>
+        </div>
+        <div class="field">
+          <label for="perimetry">Perimetry (stěny)</label>
+          <select id="perimetry" required></select>
+        </div>
+        <div class="field">
+          <label for="vypln">Výplň</label>
+          <select id="vypln" required></select>
+        </div>
+      </div>
+      <p class="print-hint">Povinné – bez nastavení tisku poptávku neodešlete. Nevíte si rady? Zvolte „standard“.</p>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled krabičky Gridfinity – tažením lze otáčet"></canvas>
+    <p class="hint">Tažením model otočíte.</p>
+
+    <div class="results">
+      <div class="res-row"><span>Vnější rozměr</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span>Jedna přihrádka</span><strong id="rPocket">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tuto krabičku</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Co je Gridfinity</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🧩 Mřížka 42 mm</h3>
+      <p>Gridfinity je otevřený systém úložných krabiček. Každá krabička má rozměr v násobcích pole 42 × 42 mm, takže se různé velikosti skládají vedle sebe bez mezer.</p>
+    </div>
+    <div class="info-card">
+      <h3>📐 Výška v jednotkách</h3>
+      <p>Výška se udává v jednotkách po 7 mm (3 jednotky = 21 mm). Okraj pro stohování nahoře přidá asi 4,4 mm a další krabička se na něj postaví.</p>
+    </div>
+    <div class="info-card">
+      <h3>🗂️ Podložka do šuplíku</h3>
+      <p>Krabičky stojí samy, ale nejlépe drží ve vytištěné podložce (baseplate) na míru šuplíku. Tu připravíme na zakázku – napište rozměry šuplíku do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+    <div class="info-card">
+      <h3>🧲 Magnety a štítky</h3>
+      <p>Otvory na magnety, štítky s popiskem nebo zaoblené dno přihrádek doplníme na přání. Stačí to napsat do poptávky.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, dims3, init } = window.Sulc3DKonfig;
+  const { sweepRect, loftRect } = window.Sulc3DRelief;
+  // Rozměry podle specifikace Gridfinity
+  const GRID = 42, CLEAR = 0.5, UNIT = 7;   // mm: pole, vůle mezi krabičkami, jednotka výšky
+  const R_OUT = 3.75;                        // mm, poloměr vnějších rohů
+  const FOOT = [                             // profil patky zdola: [z, odsazení od obvodu]
+    [0, 2.95], [0.8, 2.15], [2.6, 2.15], [4.75, 0]
+  ];
+  const FLOOR_TOP = 6;                       // mm, horní plocha dna
+  const LIP_H = 4.4;                         // mm, okraj pro stohování
+  const DIV = 1.2;                           // mm, tloušťka přepážek
+
+  function join(parts) {
+    const out = new Float32Array(parts.reduce((n, p) => n + p.length, 0));
+    let off = 0;
+    for (const p of parts) { out.set(p, off); off += p.length; }
+    return out;
+  }
+
+  function compute(ctx) {
+    const p = { gx: num('gx'), gy: num('gy'), gz: num('gz'), dx: num('dx'), dy: num('dy'), wall: num('wall'), lip: $('lip').checked };
+    const ok = [ctx.range(p.gx, 1, 5, 'Šířka', ' polí'), ctx.range(p.gy, 1, 5, 'Hloubka', ' polí'), ctx.range(p.gz, 2, 12, 'Výška', ' jednotek'),
+      ctx.range(p.dx, 1, 10, 'Počet přihrádek na šířku', ''), ctx.range(p.dy, 1, 10, 'Počet přihrádek na hloubku', ''), ctx.range(p.wall, 0.8, 2.4, 'Stěna')];
+    if (![p.gx, p.gy, p.gz, p.dx, p.dy].every(Number.isInteger)) { ctx.error('Počty polí, jednotek a přihrádek musí být celá čísla.'); ok.push(false); }
+    if (ok.includes(false)) return null;
+
+    const W = p.gx * GRID - CLEAR, D = p.gy * GRID - CLEAR, H = p.gz * UNIT;
+    const parts = [];
+    // patky: jedna na každé pole
+    for (let i = 0; i < p.gx; i++) for (let j = 0; j < p.gy; j++) {
+      const cx = (i - (p.gx - 1) / 2) * GRID, cy = (j - (p.gy - 1) / 2) * GRID;
+      const s = GRID - CLEAR;
+      parts.push(loftRect(FOOT.map(([z, o]) => ({ z, w: s - 2 * o, d: s - 2 * o, r: Math.max(0.8, R_OUT - o) })), cx, cy));
+    }
+    // dno přes celou krabičku
+    parts.push(loftRect([{ z: FOOT[FOOT.length - 1][0], w: W, d: D, r: R_OUT }, { z: FLOOR_TOP, w: W, d: D, r: R_OUT }]));
+    // stěny (a okraj pro stohování): profil [odsazení ven (záporně dovnitř), z]
+    const w = p.wall;
+    const prof = p.lip
+      ? [[0, FLOOR_TOP], [0, H + LIP_H], [-0.5, H + LIP_H], [-2.4, H + LIP_H - 1.9], [-2.4, H + LIP_H - 3.7], [-3.1, H], [-w, H - (3.1 - w)], [-w, FLOOR_TOP]]
+      : [[0, FLOOR_TOP], [0, H], [-w, H], [-w, FLOOR_TOP]];
+    parts.push(sweepRect(prof, W, D, R_OUT));
+    // přepážky: končí pod okrajem, aby nepřekážely krabičce navrchu
+    const inW = W - 2 * w, inD = D - 2 * w, top = p.lip ? H - (3.1 - w) : H;
+    const pw = (inW - (p.dx - 1) * DIV) / p.dx, pd = (inD - (p.dy - 1) * DIV) / p.dy;
+    if (pw < 8 || pd < 8) { ctx.error(`Přihrádky by vyšly moc úzké (${mm(pw)} × ${mm(pd)} mm). Zmenšete jejich počet, nebo zvětšete krabičku.`); return null; }
+    for (let i = 1; i < p.dx; i++) {
+      const x = -inW / 2 + i * pw + (i - 0.5) * DIV;
+      parts.push(loftRect([{ z: FLOOR_TOP, w: DIV, d: inD, r: 0 }, { z: top, w: DIV, d: inD, r: 0 }], x, 0, 1));
+    }
+    for (let j = 1; j < p.dy; j++) {
+      const y = -inD / 2 + j * pd + (j - 0.5) * DIV;
+      parts.push(loftRect([{ z: FLOOR_TOP, w: inW, d: DIV, r: 0 }, { z: top, w: inW, d: DIV, r: 0 }], 0, y, 1));
+    }
+
+    const total = H + (p.lip ? LIP_H : 0);
+    $('sizeHint').textContent = `Jedno pole je 42 × 42 mm, jedna jednotka výšky 7 mm. Tahle krabička: ${p.gx} × ${p.gy} polí, ${p.gz} jednotek (${mm(H)} mm).`;
+    return {
+      pos: join(parts),
+      name: `gridfinity-${p.gx}x${p.gy}x${p.gz}.stl`,
+      fitSize: [W, D, total],
+      rows: { rSize: dims3([W, D, total]), rPocket: `${mm(pw)} × ${mm(pd)} × ${mm(top - FLOOR_TOP)} mm` },
+      popis: `Gridfinity krabička z konfigurátoru – ${p.gx} × ${p.gy} polí, výška ${p.gz} jednotek (${mm(H)} mm${p.lip ? ' + okraj pro stohování' : ', bez okraje'}), ` +
+        `přihrádky ${p.dx} × ${p.dy} (jedna ${mm(pw)} × ${mm(pd)} mm), stěna ${mm(w)} mm; vnější rozměr ${dims3([W, D, total])}.`
+    };
+  }
+
+  init({ compute });
+</script>
+</body>
+</html>

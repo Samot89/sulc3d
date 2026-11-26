@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vykrajovátka na cukroví na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor vykrajovátek na cukroví: srdce, hvězda, stromeček, perníček i vykrajovátko ve tvaru jména. Volitelně razítko s nápisem do těsta." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/vykrajovatka" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Vykrajovátka na cukroví na míru" />
+  <meta property="og:description" content="Srdce, hvězda, perníček nebo vykrajovátko ve tvaru jména. S razítkem s nápisem do těsta." />
+  <meta property="og:url" content="https://sulc3d.cz/vykrajovatka" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@600&family=Inter:wght@400;500;600;700;800;900&family=Lobster&family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Vykrajovátka na cukroví<br /><span class="grad-text">tvar i jméno podle vás</span></h1>
+  <p class="lead">Vyberte tvar, nebo napište jméno – vykrajovátko vznikne přesně podle něj. Ke tvaru můžete přidat razítko, které do těsta otiskne nápis.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Tvar</legend>
+      <div class="field" style="margin-bottom:0.9rem;">
+        <label for="shape">Tvar vykrajovátka</label>
+        <select id="shape">
+          <option value="heart">Srdce</option>
+          <option value="star">Hvězda</option>
+          <option value="tree">Stromeček</option>
+          <option value="ginger">Perníček</option>
+          <option value="snowman">Sněhulák</option>
+          <option value="circle">Kolečko</option>
+          <option value="wavy">Vlnité kolečko</option>
+          <option value="text">Nápis – vykrajovátko ve tvaru jména</option>
+        </select>
+      </div>
+      <div class="field" id="fText" hidden>
+        <label for="word">Nápis (až 10 znaků)</label>
+        <input type="text" id="word" value="Anička" maxlength="10" />
+        <small>Písmena se slijí do jednoho obrysu, ze kterého vznikne vykrajovátko.</small>
+      </div>
+      <div class="field">
+        <label for="size">Velikost – delší strana (mm)</label>
+        <input type="number" id="size" value="70" min="30" max="150" step="1" inputmode="decimal" />
+      </div>
+    </fieldset>
+
+    <fieldset id="fStamp">
+      <legend>Razítko s nápisem</legend>
+      <label class="check"><input type="checkbox" id="stamp" /> Přidat razítko, které do těsta otiskne nápis</label>
+      <div class="field">
+        <label for="stampText">Text razítka (až 2 řádky, max. 20 znaků)</label>
+        <textarea id="stampText" rows="2" maxlength="20">Veselé
+Vánoce</textarea>
+        <small>Razítko má tvar vykrajovátka, jen o kousek menší. Vytisknete ho zvlášť a nápis na něm je zrcadlově, aby se do těsta otiskl správně.</small>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Provedení</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="height">Výška (mm)</label>
+          <input type="number" id="height" value="14" min="8" max="30" step="0.5" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="wall">Řezná stěna (mm)</label>
+          <input type="number" id="wall" value="1" min="0.8" max="2" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="lip">Okraj na držení (mm)</label>
+          <input type="number" id="lip" value="3" min="0" max="8" step="0.5" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Okraj je rozšířený lem nahoře, za který se vykrajovátko drží a díky kterému netlačí do dlaně.</small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row three color-row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA</option>
+            <option value="PETG">PETG</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="barva">Barva <small>(nepovinné)</small></label>
+          <select id="barva"></select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet kusů</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+      </div>
+      <div class="row three print-row">
+        <div class="field">
+          <label for="vrstva">Výška vrstvy</label>
+          <select id="vrstva" required></select>
+        </div>
+        <div class="field">
+          <label for="perimetry">Perimetry (stěny)</label>
+          <select id="perimetry" required></select>
+        </div>
+        <div class="field">
+          <label for="vypln">Výplň</label>
+          <select id="vypln" required></select>
+        </div>
+      </div>
+      <p class="print-hint">Povinné – bez nastavení tisku poptávku neodešlete. Nevíte si rady? Zvolte „standard“.</p>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled vykrajovátka – tažením lze otáčet"></canvas>
+    <p class="hint">Tiskne se okrajem dolů, řezná hrana je nahoře. Tažením model otočíte.</p>
+
+    <div class="results">
+      <div class="res-row"><span>Velikost cukroví</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span>Razítko</span><strong id="rStamp">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat toto vykrajovátko</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než vykrajovátko objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🍪 Pro pečení</h3>
+      <p>Vykrajovátko tiskneme z PLA nebo PETG. Je určené k vykrajování syrového těsta. Myjte ho ručně ve vlažné vodě – do myčky ani do trouby nepatří.</p>
+    </div>
+    <div class="info-card">
+      <h3>✂️ Jemné detaily</h3>
+      <p>Úzké části tvaru (cípy hvězdy, tenké tahy písma) těsto hůř vypustí. U vykrajovátka ve tvaru jména volte raději větší velikost a krátké jméno.</p>
+    </div>
+    <div class="info-card">
+      <h3>🎄 Na Vánoce včas</h3>
+      <p>Vykrajovátka tiskneme obvykle do několika dnů. Před svátky pošlete poptávku s předstihem, ať ho máte na pečení doma.</p>
+    </div>
+    <div class="info-card">
+      <h3>✏️ Vlastní tvar</h3>
+      <p>Tvar podle obrázku nebo loga (zvířátko, auto, znak) připravíme na zakázku. Obrázek pošlete s <a href="/#naceneni">poptávkou</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, MAX_TRIS, loadFont, layoutText, raster, init } = window.Sulc3DKonfig;
+  const { buildRelief } = window.Sulc3DRelief;
+  const LIP_H = 1.6;        // mm, výška okraje na držení
+  const STAMP_GAP = 1.2;    // mm, o kolik je razítko menší než tvar
+  const STAMP_T = 3, STAMP_R = 1.5; // mm, deska razítka a výška písma
+  const NAMES = { heart: 'srdce', star: 'hvězda', tree: 'stromeček', ginger: 'perníček', snowman: 'sněhulák', circle: 'kolečko', wavy: 'vlnité kolečko', text: 'nápis' };
+
+  // Tvary v jednotkovém čtverci (střed 0, delší strana 1), kreslené plnou barvou
+  const SHAPES = {
+    circle(c) { c.beginPath(); c.arc(0, 0, 0.5, 0, 2 * Math.PI); c.fill(); },
+    wavy(c) {
+      c.beginPath();
+      for (let k = 0; k <= 360; k++) {
+        const a = k / 360 * 2 * Math.PI, r = 0.455 + 0.045 * Math.cos(12 * a);
+        k ? c.lineTo(r * Math.cos(a), r * Math.sin(a)) : c.moveTo(r, 0);
+      }
+      c.fill();
+    },
+    heart(c) {
+      c.beginPath();
+      for (let k = 0; k <= 360; k++) {
+        const t = k / 360 * 2 * Math.PI;
+        const x = 16 * Math.sin(t) ** 3, y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        k ? c.lineTo(x / 33, (y + 2.5) / 33) : c.moveTo(x / 33, (y + 2.5) / 33);
+      }
+      c.fill();
+    },
+    star(c) {
+      c.beginPath();
+      for (let k = 0; k < 10; k++) {
+        const a = -Math.PI / 2 + k * Math.PI / 5, r = k % 2 ? 0.21 : 0.5;
+        k ? c.lineTo(r * Math.cos(a), r * Math.sin(a) + 0.05) : c.moveTo(r * Math.cos(a), r * Math.sin(a) + 0.05);
+      }
+      c.closePath(); c.fill();
+      c.lineJoin = 'round'; c.lineWidth = 0.05; c.stroke(); // zakulacené cípy se líp vykrajují
+    },
+    tree(c) {
+      const tier = (y, w, h) => { c.beginPath(); c.moveTo(0, y); c.lineTo(w / 2, y + h); c.lineTo(-w / 2, y + h); c.closePath(); c.fill(); c.stroke(); };
+      c.lineJoin = 'round'; c.lineWidth = 0.04;
+      tier(-0.48, 0.42, 0.34); tier(-0.3, 0.6, 0.36); tier(-0.1, 0.8, 0.42);
+      c.fillRect(-0.08, 0.3, 0.16, 0.18);
+    },
+    snowman(c) {
+      c.beginPath(); c.arc(0, -0.29, 0.19, 0, 2 * Math.PI); c.fill();
+      c.beginPath(); c.arc(0, 0.17, 0.31, 0, 2 * Math.PI); c.fill();
+    },
+    ginger(c) {
+      c.lineCap = 'round';
+      c.beginPath(); c.arc(0, -0.33, 0.15, 0, 2 * Math.PI); c.fill();
+      c.lineWidth = 0.17;
+      c.beginPath(); c.moveTo(-0.33, -0.1); c.lineTo(0.33, -0.1); c.stroke();          // ruce
+      c.beginPath(); c.moveTo(0, -0.15); c.lineTo(0, 0.15); c.lineWidth = 0.32; c.stroke(); // tělo
+      c.lineWidth = 0.17;
+      c.beginPath(); c.moveTo(-0.08, 0.1); c.lineTo(-0.2, 0.41); c.stroke();          // nohy
+      c.beginPath(); c.moveTo(0.08, 0.1); c.lineTo(0.2, 0.41); c.stroke();
+    }
+  };
+
+  // Vzdálenost (v buňkách) od nejbližší buňky masky; dvouprůchodová aproximace eukleidovské
+  function distance(mask, nx, ny) {
+    const INF = 1e9, d = new Float32Array(nx * ny), D = Math.SQRT2;
+    for (let k = 0; k < d.length; k++) d[k] = mask[k] ? 0 : INF;
+    for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+      const k = j * nx + i; let v = d[k];
+      if (i > 0) v = Math.min(v, d[k - 1] + 1);
+      if (j > 0) { v = Math.min(v, d[k - nx] + 1); if (i > 0) v = Math.min(v, d[k - nx - 1] + D); if (i < nx - 1) v = Math.min(v, d[k - nx + 1] + D); }
+      d[k] = v;
+    }
+    for (let j = ny - 1; j >= 0; j--) for (let i = nx - 1; i >= 0; i--) {
+      const k = j * nx + i; let v = d[k];
+      if (i < nx - 1) v = Math.min(v, d[k + 1] + 1);
+      if (j < ny - 1) { v = Math.min(v, d[k + nx] + 1); if (i < nx - 1) v = Math.min(v, d[k + nx + 1] + D); if (i > 0) v = Math.min(v, d[k + nx - 1] + D); }
+      d[k] = v;
+    }
+    return d;
+  }
+
+  // Posun sítě v rovině
+  function shift(pos, dx) {
+    const out = new Float32Array(pos);
+    for (let i = 0; i < out.length; i += 3) out[i] += dx;
+    return out;
+  }
+
+  async function compute(ctx) {
+    const p = { shape: $('shape').value, size: num('size'), height: num('height'), wall: num('wall'), lip: num('lip'),
+      stamp: $('stamp').checked, word: $('word').value.trim(), stampText: $('stampText').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 2) };
+    const isText = p.shape === 'text';
+    $('fText').hidden = !isText;
+    $('fStamp').hidden = isText;
+    $('stampText').disabled = !p.stamp;
+    const ok = [ctx.range(p.size, 30, 150, 'Velikost'), ctx.range(p.height, 8, 30, 'Výška'), ctx.range(p.wall, 0.8, 2, 'Řezná stěna'), ctx.range(p.lip, 0, 8, 'Okraj')];
+    if (isText && !p.word) { ctx.error('Napište nápis, ze kterého má vykrajovátko vzniknout.'); ok.push(false); }
+    const useStamp = p.stamp && !isText;
+    if (useStamp && !p.stampText.length) { ctx.error('Napište text razítka, nebo razítko vypněte.'); ok.push(false); }
+    if (ok.includes(false)) return null;
+    if (isText) await loadFont('fredoka', p.word);
+    if (useStamp) await loadFont('fredoka', p.stampText.join(' '));
+
+    const outer = p.wall + p.lip;            // mm kolem tvaru
+    const full = p.size + 2 * outer + 2;     // mm, rastr s rezervou
+    let cell = Math.max(0.18, full / 700), parts, shapeW = 0, shapeH = 0;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const n = Math.round(full / cell), s = full / n;
+      const R = raster(n, n), c = R.ctx;
+      R.clear();
+      c.save();
+      c.translate(n / 2, n / 2);
+      if (isText) {
+        // nápis: písmena slitá tlustým obrysem do jednoho tvaru
+        const L = layoutText(c, [p.word], 'fredoka', p.size * 0.9 / s, p.size * 0.6 / s);
+        c.lineWidth = Math.max(2.5, p.size * 0.04) / s;
+        L.draw(c, 0, 0);
+        L.draw(c, 0, 0, 'stroke', c.lineWidth);
+      } else {
+        c.scale(p.size / s, p.size / s);
+        SHAPES[p.shape](c);
+      }
+      c.restore();
+      const shape = R.mask();
+      // skutečný rozměr tvaru
+      let x0 = n, x1 = -1, y0 = n, y1 = -1;
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) if (shape[j * n + i]) { if (i < x0) x0 = i; if (i > x1) x1 = i; if (j < y0) y0 = j; if (j > y1) y1 = j; }
+      if (x1 < 0) { ctx.error('Tvar se nepodařilo vytvořit.'); return null; }
+      shapeW = (x1 - x0 + 1) * s; shapeH = (y1 - y0 + 1) * s;
+      // řezná stěna = pás kolem tvaru, okraj = širší pás pod ní
+      const dOut = distance(shape, n, n);
+      const levels = new Uint8Array(n * n);
+      for (let k = 0; k < levels.length; k++) {
+        const d = dOut[k] * s;
+        if (shape[k]) continue;
+        if (d <= p.wall + 0.5 * s) levels[k] = 2;
+        else if (d <= outer + 0.5 * s && p.lip > 0) levels[k] = 1;
+      }
+      const cutter = buildRelief({ nx: n, ny: n, cell: s, levels, heights: [0, LIP_H, p.height] });
+      parts = [cutter];
+      if (useStamp) {
+        // razítko: tvar zmenšený o STAMP_GAP, na něm zrcadlový nápis
+        const inv = new Uint8Array(n * n);
+        for (let k = 0; k < inv.length; k++) inv[k] = shape[k] ? 0 : 1;
+        const dIn = distance(inv, n, n);
+        R.clear();
+        const L = layoutText(c, p.stampText, 'fredoka', shapeW * 0.62 / s, shapeH * 0.5 / s);
+        c.save(); c.translate(n / 2, n / 2); c.scale(-1, 1); L.draw(c, 0, 0); c.restore();
+        const ink = R.mask();
+        const sl = new Uint8Array(n * n);
+        for (let k = 0; k < sl.length; k++) {
+          if (!shape[k] || dIn[k] * s <= STAMP_GAP) continue;
+          sl[k] = ink[k] ? 2 : 1;
+        }
+        const stamp = buildRelief({ nx: n, ny: n, cell: s, levels: sl, heights: [0, STAMP_T, STAMP_T + STAMP_R] });
+        parts.push(shift(stamp, full + 4));
+      }
+      const tris = parts.reduce((t, q) => t + q.length / 9, 0);
+      if (tris <= MAX_TRIS) break;
+      cell *= 1.3;
+    }
+    const pos = parts.length > 1 ? (() => { const o = new Float32Array(parts[0].length + parts[1].length); o.set(parts[0]); o.set(parts[1], parts[0].length); return o; })() : parts[0];
+    const what = isText ? `ve tvaru nápisu „${p.word}“` : `tvar ${NAMES[p.shape]}`;
+    if (isText && shapeH < 20) ctx.warn('Nápis vychází nízký a tenké části písmen se z těsta špatně vyklápějí. Zvětšete velikost, nebo zkraťte nápis.');
+    return {
+      pos,
+      multi: parts.length > 1,
+      fitSize: [shapeW + 2 * outer, shapeH + 2 * outer, p.height],
+      name: `vykrajovatko-${isText ? 'napis' : p.shape}-${mm(p.size)}.stl`,
+      viewOpts: { view: { yaw: 0.5, pitch: 0.7 } },
+      rows: { rSize: `${mm(shapeW)} × ${mm(shapeH)} mm`, rStamp: useStamp ? `„${p.stampText.join(' / ')}“` : 'bez razítka' },
+      popis: `Vykrajovátko z konfigurátoru – ${what}, velikost cukroví ${mm(shapeW)} × ${mm(shapeH)} mm, výška ${mm(p.height)} mm, ` +
+        `řezná stěna ${mm(p.wall)} mm, okraj ${mm(p.lip)} mm` + (useStamp ? `; s razítkem s nápisem „${p.stampText.join(' / ')}“.` : '.')
+    };
+  }
+
+  init({ compute, debounce: 250 });
+</script>
+</body>
+</html>

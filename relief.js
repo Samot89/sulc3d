@@ -147,7 +147,77 @@
     return new Float32Array(out);
   }
 
-  const api = { buildRelief, buildLitho, revolve };
+  // Obdélník se zaoblenými rohy se středem v počátku, proti směru hodin; vždy 4 × (steps + 1) bodů,
+  // aby šly obrysy s různým poloměrem propojit bod po bodu.
+  function rrect(w, d, r, steps = 8) {
+    r = Math.max(0, Math.min(r, w / 2, d / 2));
+    const pts = [], cs = [[w / 2 - r, d / 2 - r], [-w / 2 + r, d / 2 - r], [-w / 2 + r, -d / 2 + r], [w / 2 - r, -d / 2 + r]];
+    for (let q = 0; q < 4; q++) {
+      for (let k = 0; k <= steps; k++) {
+        const a = (q + k / steps) * Math.PI / 2;
+        pts.push([cs[q][0] + r * Math.cos(a), cs[q][1] + r * Math.sin(a)]);
+      }
+    }
+    return pts;
+  }
+
+  // Otočí všechny trojúhelníky, když vyšel záporný objem (normály dovnitř)
+  function orient(out) {
+    let v = 0;
+    for (let i = 0; i < out.length; i += 9) {
+      v += out[i] * (out[i + 4] * out[i + 8] - out[i + 5] * out[i + 7]) - out[i + 1] * (out[i + 3] * out[i + 8] - out[i + 5] * out[i + 6])
+        + out[i + 2] * (out[i + 3] * out[i + 7] - out[i + 4] * out[i + 6]);
+    }
+    if (v < 0) {
+      for (let i = 0; i < out.length; i += 9) {
+        for (let k = 0; k < 3; k++) { const t = out[i + 3 + k]; out[i + 3 + k] = out[i + 6 + k]; out[i + 6 + k] = t; }
+      }
+    }
+    return out;
+  }
+
+  /**
+   * Prstenec: uzavřený profil [[s, z], …] protažený po obvodu obdélníku w × d s poloměrem rohů r.
+   * s = posun od obvodu ven (záporné = dovnitř). Obdoba revolve() pro hranaté díly.
+   */
+  function sweepRect(profile, w, d, r, steps = 8) {
+    const loops = profile.map(([s, z]) => rrect(w + 2 * s, d + 2 * s, r + s, steps).map(p => [p[0], p[1], z]));
+    const out = [], n = loops[0].length;
+    for (let e = 0; e < loops.length; e++) {
+      const A = loops[e], B = loops[(e + 1) % loops.length];
+      for (let k = 0; k < n; k++) {
+        const k1 = (k + 1) % n;
+        out.push(...A[k], ...A[k1], ...B[k1], ...A[k], ...B[k1], ...B[k]);
+      }
+    }
+    return orient(new Float32Array(out));
+  }
+
+  /**
+   * Plné těleso z vodorovných řezů [{ z, w, d, r }, …] (zdola nahoru), s víkem dole i nahoře.
+   * cx, cy: střed. Hodí se pro konvexní tvary (patky, desky).
+   */
+  function loftRect(levels, cx = 0, cy = 0, steps = 8) {
+    const loops = levels.map(L => rrect(L.w, L.d, L.r, steps).map(p => [p[0] + cx, p[1] + cy, L.z]));
+    const out = [], n = loops[0].length;
+    for (let e = 0; e < loops.length - 1; e++) {
+      const A = loops[e], B = loops[e + 1];
+      for (let k = 0; k < n; k++) {
+        const k1 = (k + 1) % n;
+        out.push(...A[k], ...A[k1], ...B[k1], ...A[k], ...B[k1], ...B[k]);
+      }
+    }
+    const bot = loops[0], top = loops[loops.length - 1];
+    const cb = [cx, cy, levels[0].z], ct = [cx, cy, levels[levels.length - 1].z];
+    for (let k = 0; k < n; k++) {
+      const k1 = (k + 1) % n;
+      out.push(...cb, ...bot[k1], ...bot[k]);
+      out.push(...ct, ...top[k], ...top[k1]);
+    }
+    return orient(new Float32Array(out));
+  }
+
+  const api = { buildRelief, buildLitho, revolve, rrect, sweepRect, loftRect };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Sulc3DRelief = api;
 })(typeof window !== 'undefined' ? window : globalThis);

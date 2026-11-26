@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Popisky do elektrorozvaděče na míru – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor popisků do elektrorozvaděče. Napište názvy okruhů, zvolte šířku podle jističů a barvy – popisky přesně sednou na řadu modulů 17,5 mm." />
+  <meta name="theme-color" content="#080c14" />
+  <link rel="canonical" href="https://sulc3d.cz/rozvadec" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="sulc3d" />
+  <meta property="og:title" content="Popisky do elektrorozvaděče na míru" />
+  <meta property="og:description" content="Názvy okruhů, šířka podle jističů, dvě barvy. Náhled a orientační cena hned." />
+  <meta property="og:url" content="https://sulc3d.cz/rozvadec" />
+  <meta property="og:image" content="https://sulc3d.cz/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@600&family=Inter:wght@400;500;600;700;800;900&family=Lobster&family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="konfigurator.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">SULC3D</a>
+  <ul class="nav-links">
+    <li><a href="/">3D tisk na zakázku</a></li>
+    <li><a href="/#konfiguratory">Další konfigurátory</a></li>
+    <li><a href="/#cenik">Ceník</a></li>
+    <li><a href="/#faq">FAQ</a></li>
+  </ul>
+  <a href="/#naceneni" class="nav-cta">Nezávazná poptávka</a>
+</nav>
+
+<header>
+  <div class="section-tag">Konfigurátor</div>
+  <h1>Popisky do rozvaděče<br /><span class="grad-text">přesně na jističe</span></h1>
+  <p class="lead">Napište názvy okruhů a kolik modulů zabírá každý jistič. Popisky sednou přesně nad řadu přístrojů — konec hledání, který jistič vypnout.</p>
+</header>
+
+<main>
+<div class="config">
+
+  <form class="panel" id="cfg" novalidate>
+    <fieldset>
+      <legend>Popisky</legend>
+      <div class="field" style="margin-bottom:0.9rem;">
+        <label for="labels">Jeden popisek na řádek</label>
+        <textarea id="labels" rows="9" maxlength="1500">Světla | 1
+Zás. / kuch. | 1
+Pračka | 1
+Myčka | 1
+Sporák | 3
+Chránič | 4
+
+HDO | 1
+Bojler | 1
+TČ / venek | 3</textarea>
+        <small>Za svislou čáru napište, kolik modulů jistič zabírá (běžný jistič 1, třífázový 3, chránič 2 nebo 4). Lomítko rozdělí text na dva řádky. Prázdný řádek začne další řadu rozvaděče.</small>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="font">Písmo</label>
+          <select id="font"></select>
+        </div>
+        <div class="field">
+          <label for="pitch">Šířka modulu</label>
+          <select id="pitch">
+            <option value="17.5" selected>17,5 mm (standard DIN)</option>
+            <option value="18">18 mm</option>
+          </select>
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="same" checked /> Stejně velké písmo u všech popisků</label>
+      <label class="check"><input type="checkbox" id="sep" checked /> Dělicí čárky mezi popisky</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Rozměry</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="h">Výška popisku (mm)</label>
+          <input type="number" id="h" value="18" min="8" max="40" step="0.5" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="t">Tloušťka (mm)</label>
+          <input type="number" id="t" value="1.2" min="0.8" max="4" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="depth">Reliéf písma (mm)</label>
+          <input type="number" id="depth" value="0.6" min="0.4" max="2" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small>Výšku změřte na krytu rozvaděče – v místě, kam se popisky lepí nebo zasouvají.</small>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0;">
+      <legend>Výroba</legend>
+      <div class="row color-row" style="margin-bottom:0;">
+        <div class="field">
+          <label for="material">Materiál</label>
+          <select id="material">
+            <option value="PLA" selected>PLA</option>
+            <option value="PETG">PETG</option>
+            <option value="ABS / ASA">ASA (teplejší prostředí)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kusu">Počet sad</label>
+          <input type="number" id="kusu" value="1" min="1" step="1" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="barva">Barva podkladu <small>(nepovinné)</small></label>
+          <select id="barva"></select>
+        </div>
+        <div class="field">
+          <label for="barva2">Barva písma <small>(nepovinné)</small></label>
+          <select id="barva2"></select>
+        </div>
+      </div>
+      <div class="row three print-row">
+        <div class="field">
+          <label for="vrstva">Výška vrstvy</label>
+          <select id="vrstva" required></select>
+        </div>
+        <div class="field">
+          <label for="perimetry">Perimetry (stěny)</label>
+          <select id="perimetry" required></select>
+        </div>
+        <div class="field">
+          <label for="vypln">Výplň</label>
+          <select id="vypln" required></select>
+        </div>
+      </div>
+      <p class="print-hint">Povinné – bez nastavení tisku poptávku neodešlete. Nevíte si rady? Zvolte „standard“.</p>
+    </fieldset>
+  </form>
+
+  <div class="panel preview">
+    <canvas id="canvas" class="model-canvas" role="img" aria-label="3D náhled popisků do rozvaděče – tažením lze otáčet"></canvas>
+    <p class="hint">Každá řada rozvaděče je samostatný pruh. Tažením model otočíte.</p>
+
+    <div class="results">
+      <div class="res-row"><span>Řady</span><strong id="rSize">–</strong></div>
+      <div class="res-row"><span>Výška písmen</span><strong id="rLetter">–</strong></div>
+      <div class="res-row"><span>Odhad hmotnosti</span><strong id="rWeight">–</strong></div>
+      <div class="price">
+        Orientační cena
+        <strong id="rPrice" class="grad-text">–</strong>
+        <small>Přesnou cenu potvrdíme v nabídce.</small>
+      </div>
+    </div>
+
+    <ul class="messages" id="messages" aria-live="polite"></ul>
+    <a href="/#naceneni" class="btn-primary" id="order">Poptat tyto popisky</a>
+    <button type="button" class="btn-secondary" id="stlBtn" hidden>Stáhnout STL</button>
+  </div>
+
+</div>
+
+<section class="info">
+  <h2>Než popisky objednáte</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>📏 Moduly</h3>
+      <p>Jistič, chránič i stykač mají šířku v modulech po 17,5 mm. Běžný jistič je 1 modul, třífázový 3, proudový chránič 2 nebo 4. Počet modulů bývá i na štítku přístroje.</p>
+    </div>
+    <div class="info-card">
+      <h3>🎨 Dvě barvy</h3>
+      <p>Nejlépe se čte písmo v kontrastní barvě – třeba oranžové nebo černé na bílém podkladu. Barvu podkladu a písma vyberete u výroby a hned ji uvidíte v náhledu.</p>
+    </div>
+    <div class="info-card">
+      <h3>🔌 Montáž</h3>
+      <p>Popisky se nalepí oboustrannou páskou nad nebo pod řadu jističů, případně zasunou do lišty na popisky, pokud ji rozvaděč má. Do rozvaděče nezasahujete.</p>
+    </div>
+    <div class="info-card">
+      <h3>🏷️ Vlastní symboly</h3>
+      <p>Šipky, piktogramy, čísla okruhů nebo logo připravíme na zakázku. Napište to do <a href="/#naceneni">poptávky</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>© 2026 Tomáš Šulc – 3D tisk na zakázku</span>
+  <span>
+    <a href="tel:+420733524062">733 524 062</a>
+    <a href="mailto:samot.sulc@seznam.cz">samot.sulc@seznam.cz</a>
+    <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+  </span>
+</footer>
+
+<script src="model.js"></script>
+<script src="relief.js"></script>
+<script src="konfig.js"></script>
+<script>
+  const { $, num, mm, MAX_TRIS, FONTS, loadFont, layoutText, raster, init } = window.Sulc3DKonfig;
+  const { buildRelief } = window.Sulc3DRelief;
+  const csNum = window.Sulc3D.csNum;
+  const BED = 230;      // mm, nejdelší pruh, který se vejde na tiskárnu
+  const GAP = 4;        // mm, mezera mezi řadami v souboru
+  const SEP_W = 0.8;    // mm, šířka dělicí čárky
+  const PAD = 1.2;      // mm, okraj kolem textu v popisku
+  const MAX_ROWS = 6;
+
+  for (const [key, f] of Object.entries(FONTS)) $('font').add(new Option(f.label, key));
+  $('font').value = 'bebas'; // úzké písmo se do modulu 17,5 mm vejde větší
+
+  // „Text / druhý řádek | moduly“ → { lines, mods }; prázdný řádek odděluje řady
+  function parse(text) {
+    const rows = [[]];
+    for (const raw of text.split('\n')) {
+      const line = raw.trim();
+      if (!line) { if (rows[rows.length - 1].length) rows.push([]); continue; }
+      const [t, m] = line.split('|');
+      const mods = m === undefined ? 1 : parseInt(m, 10);
+      rows[rows.length - 1].push({ lines: t.split('/').map(s => s.trim()).filter(Boolean).slice(0, 2), mods, raw: line });
+    }
+    return rows.filter(r => r.length);
+  }
+
+  async function compute(ctx) {
+    const p = { h: num('h'), t: num('t'), depth: num('depth'), pitch: parseFloat($('pitch').value),
+      font: $('font').value, same: $('same').checked, sep: $('sep').checked };
+    const ok = [ctx.range(p.h, 8, 40, 'Výška popisku'), ctx.range(p.t, 0.8, 4, 'Tloušťka'), ctx.range(p.depth, 0.4, 2, 'Reliéf písma')];
+    const rows = parse($('labels').value);
+    if (!rows.length) { ctx.error('Napište aspoň jeden popisek.'); ok.push(false); }
+    if (rows.length > MAX_ROWS) { ctx.error(`Najednou jde nejvýš ${MAX_ROWS} řad. Další pošlete jako druhou poptávku.`); ok.push(false); }
+    rows.flat().forEach(l => {
+      if (!(l.mods >= 1 && l.mods <= 12)) { ctx.error(`„${l.raw}“: počet modulů musí být 1 až 12.`); ok.push(false); }
+    });
+    if (ok.includes(false)) return null;
+    const lens = rows.map(r => r.reduce((s, l) => s + l.mods, 0) * p.pitch);
+    lens.forEach((L, i) => {
+      if (L > BED) { ctx.error(`Řada ${i + 1} je dlouhá ${mm(L)} mm, na tiskárnu se vejde nejvýš ${BED} mm. Rozdělte ji prázdným řádkem na dvě.`); ok.push(false); }
+    });
+    if (ok.includes(false)) return null;
+    await loadFont(p.font, rows.flat().map(l => l.lines.join(' ')).join(' '));
+
+    const W = Math.max(...lens), H = rows.length * p.h + (rows.length - 1) * GAP;
+    let cell = Math.max(0.12, Math.max(W, H) / 1600), pos, letter = 0;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const nx = Math.round(W / cell), ny = Math.round(H / cell), s = W / nx;
+      const R = raster(nx, ny), c = R.ctx;
+      // podklad: pruh na každou řadu
+      R.clear();
+      rows.forEach((_, i) => c.fillRect(0, i * (p.h + GAP) / s, lens[i] / s, p.h / s));
+      const plate = R.mask();
+      // text a dělicí čárky
+      R.clear();
+      const boxes = [];
+      rows.forEach((row, i) => {
+        let x = 0;
+        const y = i * (p.h + GAP);
+        row.forEach((l, k) => {
+          const w = l.mods * p.pitch;
+          const sepL = p.sep && k > 0 ? SEP_W / 2 : 0, sepR = p.sep && k < row.length - 1 ? SEP_W / 2 : 0;
+          boxes.push({ l, cx: x + (sepL + w - sepR) / 2, cy: y + p.h / 2, aw: w - sepL - sepR - 2 * PAD, ah: p.h - 2 * PAD });
+          if (p.sep && k > 0) c.fillRect((x - SEP_W / 2) / s, (y + 0.8) / s, SEP_W / s, (p.h - 1.6) / s);
+          x += w;
+        });
+      });
+      // stejná velikost písma: nejmenší, která se vejde do všech popisků se stejným počtem řádků textu
+      const lay = boxes.map(b => b.l.lines.length ? layoutText(c, b.l.lines, p.font, b.aw / s, b.ah / s) : null);
+      const minPx = {};
+      lay.forEach((L, i) => { if (L) { const n = boxes[i].l.lines.length; minPx[n] = Math.min(minPx[n] || Infinity, L.px); } });
+      boxes.forEach((b, i) => {
+        if (!lay[i]) return;
+        const L = p.same ? layoutText(c, b.l.lines, p.font, b.aw / s, b.ah / s, minPx[b.l.lines.length]) : lay[i];
+        L.draw(c, b.cx / s, b.cy / s);
+        b.px = L.px * s;
+      });
+      letter = Math.min(...boxes.filter(b => b.px).map(b => b.px)) * 0.72;
+      const ink = R.mask();
+      const levels = new Uint8Array(nx * ny);
+      for (let k = 0; k < levels.length; k++) levels[k] = plate[k] ? (ink[k] ? 2 : 1) : 0;
+      pos = buildRelief({ nx, ny, cell: s, levels, heights: [0, p.t, p.t + p.depth] });
+      if (pos.length / 9 <= MAX_TRIS) break;
+      cell *= 1.3;
+    }
+
+    if (letter < 3) ctx.warn(`Písmena vycházejí jen asi ${mm(letter)} mm vysoká. Zkraťte texty, použijte dva řádky, nebo zvětšete výšku popisků.`);
+    const count = rows.flat().length;
+    const list = rows.map((row, i) => `řada ${i + 1}: ` + row.map(l => `${l.lines.join(' / ') || '(prázdný)'} (${l.mods} mod.)`).join(', ')).join('; ');
+    return {
+      pos,
+      multi: rows.length > 1,
+      name: `popisky-rozvadec-${count}ks.stl`,
+      viewOpts: { tintZ: [p.t, p.t + p.depth], view: { yaw: 0, pitch: 1.15, spin: false } },
+      rows: { rSize: `${rows.length} × ${mm(p.h)} mm, nejdelší ${mm(W)} mm`, rLetter: `asi ${mm(letter)} mm` },
+      popis: 'Popisky do rozvaděče z konfigurátoru – ' + list +
+        `. Rozteč modulu ${csNum(p.pitch, 1)} mm, výška ${mm(p.h)} mm, tloušťka ${mm(p.t)} mm, písmo ${FONTS[p.font].label.toLowerCase()} vystouplé o ${mm(p.depth)} mm` +
+        `${p.sep ? ', s dělicími čárkami' : ''}.`
+    };
+  }
+
+  init({ compute, debounce: 220 });
+</script>
+</body>
+</html>

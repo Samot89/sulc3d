@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Podložky, distanční kroužky a záslepky na míru – 3D tisk | sulc3d.cz</title>
-  <meta name="description" content="Konfigurátor plastových podložek, distančních kroužků, záslepek a krytek na trubky. Zadejte průměry, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
+  <title>Podložky, kroužky, záslepky a krytky na jekly – 3D tisk | sulc3d.cz</title>
+  <meta name="description" content="Konfigurátor plastových podložek, distančních kroužků, záslepek a krytek na trubky i jekly (čtyřhranné profily). Zadejte průměry, prohlédněte si náhled s orientační cenou a pošlete poptávku." />
   <meta name="theme-color" content="#080c14" />
   <link rel="canonical" href="https://sulc3d.cz/krouzky" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -51,6 +51,8 @@
           <option value="ring">Podložka nebo distanční kroužek</option>
           <option value="plug">Záslepka do trubky</option>
           <option value="cap">Krytka na trubku</option>
+          <option value="jplug">Záslepka do jeklu (čtyřhranný profil)</option>
+          <option value="jcap">Krytka na jekl (čtyřhranný profil)</option>
         </select>
         <small id="typeHint"></small>
       </div>
@@ -142,6 +144,52 @@
       </div>
       <div class="field">
         <small>Krytka se nasadí přes konec trubky zvenku. Vůle je rezerva na průměru; pro pevnější držení ji zmenšete.</small>
+      </div>
+    </fieldset>
+
+
+    <fieldset id="fJekl" hidden>
+      <legend>Rozměry jeklu</legend>
+      <div class="row three">
+        <div class="field">
+          <label for="jA">Šířka profilu (mm)</label>
+          <input type="number" id="jA" value="40" min="8" max="200" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="jB">Výška profilu (mm)</label>
+          <input type="number" id="jB" value="40" min="8" max="200" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="jT">Tloušťka stěny jeklu (mm)</label>
+          <input type="number" id="jT" value="2" min="0.8" max="10" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row three">
+        <div class="field">
+          <label for="jR">Zaoblení rohů jeklu (mm)</label>
+          <input type="number" id="jR" value="3" min="0" max="20" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="jL">Délka čepu / hloubka (mm)</label>
+          <input type="number" id="jL" value="15" min="5" max="60" step="1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="jH">Hlava / dno (mm)</label>
+          <input type="number" id="jH" value="3" min="1" max="15" step="0.1" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="jW">Stěna dílu (mm)</label>
+          <input type="number" id="jW" value="1.6" min="1" max="6" step="0.1" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label for="jG">Vůle (mm)</label>
+          <input type="number" id="jG" value="0.3" min="0" max="1" step="0.05" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="field">
+        <small id="jHint">Rozměry jeklu změřte posuvkou zvenku (např. 40 × 40 × 2). Zaoblení rohů bývá zhruba 1,5násobek tloušťky stěny.</small>
       </div>
     </fieldset>
 
@@ -244,12 +292,14 @@
 <script src="konfig.js"></script>
 <script>
   const { $, num, mm, init } = window.Sulc3DKonfig;
-  const { revolve } = window.Sulc3DRelief;
+  const { revolve, sweepRect, loftRect } = window.Sulc3DRelief;
   const csNum = window.Sulc3D.csNum;
   const HINTS = {
     ring: 'Plochý kroužek s otvorem – podložka pod šroub, vymezovací nebo distanční kroužek.',
     plug: 'Zátka s hlavou, která se zasune do konce trubky a uzavře ho.',
-    cap: 'Čepička, která se nasadí na konec trubky zvenku.'
+    cap: 'Čepička, která se nasadí na konec trubky zvenku.',
+    jplug: 'Záslepka s hlavou do konce čtyřhranného nebo obdélníkového profilu (jeklu) – nožka pod stůl, regál nebo zábradlí.',
+    jcap: 'Krytka, která se nasadí na konec jeklu zvenku.'
   };
   const CHAMFER = 0.8; // mm, zkosení čepu pro snazší zasunutí
 
@@ -271,6 +321,8 @@
     $('fRing').hidden = type !== 'ring';
     $('fPlug').hidden = type !== 'plug';
     $('fCap').hidden = type !== 'cap';
+    $('fJekl').hidden = type !== 'jplug' && type !== 'jcap';
+    if (type === 'jplug' || type === 'jcap') return computeJekl(ctx, type);
 
     let profile, rows, name, popis;
     if (type === 'ring') {
@@ -317,6 +369,48 @@
     }
     drawSection(profile);
     return { pos: revolve(profile), rows, name, popis };
+  }
+
+  // Záslepka do jeklu a krytka na jekl: hranaté díly z prstence protaženého po obvodu (sweepRect)
+  function computeJekl(ctx, type) {
+    const A = num('jA'), B = num('jB'), t = num('jT'), r = num('jR'), L = num('jL'), H = num('jH'), w = num('jW'), g = num('jG');
+    const ok = [ctx.range(A, 8, 200, 'Šířka profilu'), ctx.range(B, 8, 200, 'Výška profilu'), ctx.range(t, 0.8, 10, 'Tloušťka stěny jeklu'),
+      ctx.range(r, 0, 20, 'Zaoblení rohů'), ctx.range(L, 5, 60, 'Délka čepu'), ctx.range(H, 1, 15, 'Hlava / dno'), ctx.range(w, 1, 6, 'Stěna dílu'),
+      ctx.range(g, 0, 1, 'Vůle')];
+    if (ok.includes(false)) return null;
+    const join = (a, b) => { const o = new Float32Array(a.length + b.length); o.set(a); o.set(b, a.length); return o; };
+    const c = Math.min(CHAMFER, w / 2);
+    let pos, rows, name, popis, section;
+    if (type === 'jplug') {
+      // čep: vnitřek jeklu zmenšený o vůli; hlava: vnější rozměr jeklu
+      const iA = A - 2 * t - g, iB = B - 2 * t - g, ir = Math.max(0.3, r - t);
+      if (iA < 2 * w + 2 || iB < 2 * w + 2) { ctx.error('Jekl je na záslepku moc úzký nebo má moc silnou stěnu. Zkontrolujte rozměry.'); return null; }
+      if (r > Math.min(A, B) / 2) { ctx.error('Zaoblení rohů je větší než polovina profilu.'); return null; }
+      const head = loftRect([{ z: 0, w: A, d: B, r }, { z: H, w: A, d: B, r }]);
+      // čep je dutý: prstenec se zkosením nahoře pro snazší zasunutí
+      const pin = sweepRect([[0, H], [0, H + L - c], [-c, H + L], [-w, H + L], [-w, H]], iA, iB, ir);
+      pos = join(head, pin);
+      rows = { rSize: `${mm(A)} × ${mm(B)} × ${mm(H + L)} mm`, rFit: `${mm(iA)} × ${mm(iB)} mm` };
+      $('rFitLabel').textContent = 'Čep';
+      name = `zaslepka-jekl-${mm(A)}x${mm(B)}.stl`;
+      popis = `Záslepka do jeklu z konfigurátoru – profil ${mm(A)} × ${mm(B)} mm, stěna jeklu ${mm(t)} mm, zaoblení ${mm(r)} mm; ` +
+        `čep ${mm(iA)} × ${mm(iB)} mm (vůle ${csNum(g, 2)} mm) délky ${mm(L)} mm se stěnou ${mm(w)} mm, hlava ${mm(H)} mm.`;
+      section = [[0, 0], [A / 2, 0], [A / 2, H], [iA / 2, H], [iA / 2, H + L - c], [iA / 2 - c, H + L], [iA / 2 - w, H + L], [iA / 2 - w, H], [0, H]];
+    } else {
+      // krytka: dutina = vnější rozměr jeklu zvětšený o vůli
+      const cA = A + g, cB = B + g, cr = r + g / 2;
+      const bottom = loftRect([{ z: 0, w: cA + 2 * w, d: cB + 2 * w, r: cr + w }, { z: H, w: cA + 2 * w, d: cB + 2 * w, r: cr + w }]);
+      const ring = sweepRect([[0, H], [0, H + L], [w, H + L], [w, H]], cA, cB, cr);
+      pos = join(bottom, ring);
+      rows = { rSize: `${mm(cA + 2 * w)} × ${mm(cB + 2 * w)} × ${mm(H + L)} mm`, rFit: `${mm(cA)} × ${mm(cB)} mm` };
+      $('rFitLabel').textContent = 'Vnitřní rozměr';
+      name = `krytka-jekl-${mm(A)}x${mm(B)}.stl`;
+      popis = `Krytka na jekl z konfigurátoru – profil ${mm(A)} × ${mm(B)} mm, zaoblení ${mm(r)} mm; vnitřní rozměr krytky ${mm(cA)} × ${mm(cB)} mm ` +
+        `(vůle ${csNum(g, 2)} mm), hloubka ${mm(L)} mm, stěna ${mm(w)} mm, dno ${mm(H)} mm.`;
+      section = [[0, 0], [cA / 2 + w, 0], [cA / 2 + w, H + L], [cA / 2, H + L], [cA / 2, H], [0, H]];
+    }
+    drawSection(section);
+    return { pos, rows, name, popis };
   }
 
   init({ compute });
