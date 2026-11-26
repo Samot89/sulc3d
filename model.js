@@ -67,6 +67,136 @@
     return new Float32Array(nums);
   }
 
+  // OBJ (text): řádky „v x y z“ a „f a b c …“ (i a/b/c, záporné indexy); mnohoúhelníky se rozloží na trojúhelníky
+  function parseOBJ(buf) {
+    const text = new TextDecoder().decode(buf);
+    const verts = [], out = [];
+    for (const line of text.split(/\r?\n/)) {
+      const t = line.trim().split(/\s+/);
+      if (t[0] === 'v' && t.length >= 4) verts.push([+t[1], +t[2], +t[3]]);
+      else if (t[0] === 'f' && t.length >= 4) {
+        const idx = t.slice(1).map(s => { const i = parseInt(s, 10); return i < 0 ? verts.length + i : i - 1; });
+        for (let k = 1; k + 1 < idx.length; k++) {
+          for (const i of [idx[0], idx[k], idx[k + 1]]) {
+            const v = verts[i];
+            if (!v) throw new Error('Neplatné OBJ');
+            out.push(v[0], v[1], v[2]);
+          }
+        }
+      }
+    }
+    if (out.length < 9 || out.some(v => !isFinite(v))) throw new Error('Neplatné OBJ');
+    return new Float32Array(out);
+  }
+
+  // ZIP (3MF je ZIP): vrátí { cesta: Uint8Array } pro soubory, které projdou filtrem want(cesta)
+  async function unzip(buf, want) {
+    const dv = new DataView(buf), u8 = new Uint8Array(buf);
+    let eocd = -1;
+    for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 65557); i--) {
+      if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error('Neplatný ZIP');
+    const count = dv.getUint16(eocd + 10, true);
+    let p = dv.getUint32(eocd + 16, true);
+    const files = {};
+    for (let n = 0; n < count; n++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) break;
+      const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+      const nameLen = dv.getUint16(p + 28, true), extraLen = dv.getUint16(p + 30, true), commentLen = dv.getUint16(p + 32, true);
+      const local = dv.getUint32(p + 42, true);
+      const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nameLen));
+      p += 46 + nameLen + extraLen + commentLen;
+      if (!want(name)) continue;
+      const start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+      const data = u8.subarray(start, start + csize);
+      if (method === 0) files[name] = data;
+      else if (method === 8) {
+        if (typeof DecompressionStream === 'undefined') throw new Error('Prohlížeč neumí rozbalit 3MF');
+        const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+        files[name] = new Uint8Array(await new Response(stream).arrayBuffer());
+      }
+    }
+    return files;
+  }
+
+  // 3MF: sítě objektů, komponenty (i z dalších souborů přes p:path) a umístění z <build>; jednotky → mm
+  async function parse3MF(buf) {
+    const files = await unzip(buf, n => /\.model$/i.test(n));
+    const docs = {};
+    for (const [name, data] of Object.entries(files)) {
+      const xml = new DOMParser().parseFromString(new TextDecoder().decode(data), 'application/xml');
+      docs['/' + name.replace(/^\//, '')] = xml;
+    }
+    const mainPath = Object.keys(docs).find(n => /^\/3D\/3dmodel\.model$/i.test(n)) || Object.keys(docs)[0];
+    if (!mainPath) throw new Error('Neplatné 3MF');
+    const UNITS = { micron: 0.001, millimeter: 1, centimeter: 10, inch: 25.4, foot: 304.8, meter: 1000 };
+    const root = docs[mainPath].documentElement;
+    const unit = UNITS[root.getAttribute('unit') || 'millimeter'] || 1;
+    const byTag = (el, tag) => [...el.getElementsByTagName('*')].filter(e => e.localName === tag);
+    const mat = s => {
+      const v = (s || '').trim().split(/\s+/).map(Number);
+      return v.length === 12 && v.every(isFinite) ? v : [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0];
+    };
+    // složení transformací: nejdřív a, potom b (3MF: řádkové vektory, poslední 3 čísla = posun)
+    const compose = (a, b) => {
+      const r = [];
+      for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) {
+        r[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j] + (i === 3 ? b[9 + j] : 0);
+      }
+      return r;
+    };
+    const objects = {};
+    for (const [path, xml] of Object.entries(docs)) {
+      for (const o of byTag(xml.documentElement, 'object')) objects[path + '#' + o.getAttribute('id')] = { el: o, path };
+    }
+    const out = [];
+    let guard = 0;
+    function emit(key, m) {
+      if (++guard > 100000) throw new Error('Příliš složité 3MF');
+      const obj = objects[key];
+      if (!obj) return;
+      const mesh = byTag(obj.el, 'mesh')[0];
+      if (mesh) {
+        const vs = byTag(mesh, 'vertex').map(v => {
+          const x = +v.getAttribute('x'), y = +v.getAttribute('y'), z = +v.getAttribute('z');
+          return [x * m[0] + y * m[3] + z * m[6] + m[9], x * m[1] + y * m[4] + z * m[7] + m[10], x * m[2] + y * m[5] + z * m[8] + m[11]];
+        });
+        for (const t of byTag(mesh, 'triangle')) {
+          for (const a of ['v1', 'v2', 'v3']) {
+            const v = vs[+t.getAttribute(a)];
+            if (!v) throw new Error('Neplatné 3MF');
+            out.push(v[0] * unit, v[1] * unit, v[2] * unit);
+          }
+        }
+      }
+      for (const c of byTag(obj.el, 'component')) {
+        const path = c.getAttributeNS('http://schemas.microsoft.com/3dmanufacturing/production/2015/06', 'path') || c.getAttribute('p:path') || obj.path;
+        emit(path + '#' + c.getAttribute('objectid'), compose(mat(c.getAttribute('transform')), m));
+      }
+    }
+    const items = byTag(root, 'item');
+    if (items.length) {
+      for (const it of items) {
+        const path = it.getAttributeNS('http://schemas.microsoft.com/3dmanufacturing/production/2015/06', 'path') || it.getAttribute('p:path') || mainPath;
+        emit(path + '#' + it.getAttribute('objectid'), mat(it.getAttribute('transform')));
+      }
+    } else {
+      for (const o of byTag(root, 'object')) emit(mainPath + '#' + o.getAttribute('id'), mat(''));
+    }
+    if (out.length < 9 || out.some(v => !isFinite(v))) throw new Error('Neplatné 3MF');
+    return { pos: new Float32Array(out), parts: items.length };
+  }
+
+  // Načte model podle přípony: STL, OBJ, 3MF → Promise<{ pos, parts }>; parts > 1 = víc dílů v souboru
+  async function parseModel(buf, ext) {
+    if (ext === 'stl') return { pos: parseSTL(buf), parts: 1 };
+    if (ext === 'obj') return { pos: parseOBJ(buf), parts: 1 };
+    if (ext === '3mf') return parse3MF(buf);
+    throw new Error('Nepodporovaný formát');
+  }
+  const PREVIEW_EXT = ['stl', 'obj', '3mf'];
+
   // Float32Array (9 čísel na trojúhelník) → binární STL
   function toSTL(pos) {
     const n = pos.length / 9;
@@ -462,5 +592,5 @@
     };
   }
 
-  window.Sulc3D = { CALC, csNum, parseSTL, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, validPrint, printQuery, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, setCartCount, ownerMode, download, createViewer };
+  window.Sulc3D = { CALC, csNum, parseSTL, parseModel, PREVIEW_EXT, toSTL, measure, estimate, fitsBed, handoff, listHandoff, removeHandoff, clearHandoff, validPrint, printQuery, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, setCartCount, ownerMode, download, createViewer };
 })();

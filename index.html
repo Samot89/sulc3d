@@ -549,6 +549,14 @@
 
     .tool-card:hover { transform: translateY(-5px); border-color: rgba(79,123,239,0.4); }
     .tool-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+    /* náhled výrobku vyrenderovaný z konfigurátoru (nahledy/*.webp) */
+    .tool-thumb {
+      aspect-ratio: 8 / 5; margin: -0.75rem -0.75rem 1.1rem; border-radius: 12px; overflow: hidden;
+      background: radial-gradient(ellipse at 50% 45%, #1b2a52 0%, #0e1628 70%);
+    }
+    .tool-thumb img { display: block; width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s; }
+    .tool-card:hover .tool-thumb img { transform: scale(1.05); }
+    @media (prefers-reduced-motion: reduce) { .tool-card:hover .tool-thumb img { transform: none; } }
     .tool-link { font-size: 0.9rem; font-weight: 700; color: var(--blue); }
 
     /* ── BENEFITS ──────────────────────────────── */
@@ -1179,43 +1187,43 @@
   <p class="section-sub">Zadáte rozměry, hned vidíte 3D náhled a orientační cenu. Poptávku pak pošlete jedním kliknutím — model se přiloží sám.</p>
   <div class="tools-grid">
     <a href="/cedulky" class="tool-card reveal">
-      <div class="tool-icon">🪧</div>
+      <div class="tool-thumb"><img src="/nahledy/cedulky.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Cedulky a jmenovky</h3>
       <p class="tech-desc">Cedulka s vlastním textem na dveře, schránku nebo do dílny. Pět písem, vystouplý nebo zapuštěný nápis, otvory na šrouby.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/klicenky" class="tool-card reveal">
-      <div class="tool-icon">🔑</div>
+      <div class="tool-thumb"><img src="/nahledy/klicenky.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Klíčenky se jménem</h3>
       <p class="tech-desc">Klíčenka ve tvaru jména nebo jako štítek s nápisem. Dárek, označení klíčů nebo drobnost pro celý tým.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/lithofan" class="tool-card reveal">
-      <div class="tool-icon">🖼️</div>
+      <div class="tool-thumb"><img src="/nahledy/lithofan.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Lithofan z fotky</h3>
       <p class="tech-desc">Tištěná destička, na které se proti světlu objeví vaše fotka. Nahrajete obrázek a hned vidíte náhled.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/krabicky" class="tool-card reveal">
-      <div class="tool-icon">📦</div>
+      <div class="tool-thumb"><img src="/nahledy/krabicky.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Krabičky s víkem</h3>
       <p class="tech-desc">Krabička přesně podle toho, co se do ní má vejít. S nasazovacím víkem, zaoblenými rohy a přihrádkami na drobnosti.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/organizery" class="tool-card reveal">
-      <div class="tool-icon">🗄️</div>
+      <div class="tool-thumb"><img src="/nahledy/organizery.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Organizéry do šuplíku</h3>
       <p class="tech-desc">Zadáte rozměry šuplíku a počet přihrádek. Větší šuplík se sám rozdělí na díly, které se poskládají vedle sebe.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/redukce" class="tool-card reveal">
-      <div class="tool-icon">🔧</div>
+      <div class="tool-thumb"><img src="/nahledy/redukce.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Redukce na trubky a hadice</h3>
       <p class="tech-desc">Přechod mezi dvěma průměry — na vysavač, odsávání, ventilaci nebo odtok. Každý konec se nasadí na trubku, nebo zasune dovnitř.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
     </a>
     <a href="/krouzky" class="tool-card reveal">
-      <div class="tool-icon">⭕</div>
+      <div class="tool-thumb"><img src="/nahledy/krouzky.webp" width="480" height="300" alt="" loading="lazy" decoding="async" /></div>
       <h3 class="tech-name">Podložky, kroužky a záslepky</h3>
       <p class="tech-desc">Distanční kroužky, podložky, záslepky do trubek a krytky na jejich konce. Drobnosti, které se v obchodě špatně shánějí.</p>
       <span class="tool-link">Otevřít konfigurátor →</span>
@@ -1465,7 +1473,7 @@
         <div class="upload-icon">☁️</div>
         <div class="upload-title">Přetáhněte soubory sem</div>
         <p class="upload-sub">nebo klikněte pro výběr ze zařízení – můžete vybrat i více souborů najednou</p>
-        <p class="supported">STL · STEP · OBJ · 3MF · až 10 souborů, dohromady max. 10 MB<br />U souborů STL hned uvidíte 3D náhled a orientační cenu<br />U každého souboru pak vyberete výšku vrstvy, perimetry, výplň a barvu</p>
+        <p class="supported">STL · STEP · OBJ · 3MF · až 10 souborů, dohromady max. 10 MB<br />U souborů STL, OBJ a 3MF hned uvidíte 3D náhled a orientační cenu<br />U každého souboru pak vyberete výšku vrstvy, perimetry, výplň a barvu</p>
       </label>
       <p id="fileInfo" class="file-info" role="status" hidden></p>
       <ul class="file-list" id="fileList" hidden></ul>
@@ -1640,7 +1648,7 @@
   const MAX_FILES = 10;
   const MAX_TOTAL_MB = 10;
   const ALLOWED_EXT = ['stl', 'step', 'stp', 'obj', '3mf'];
-  const { CALC, csNum, parseSTL, measure, estimate, listHandoff, removeHandoff, clearHandoff, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, setCartCount, createViewer } = window.Sulc3D;
+  const { CALC, csNum, parseSTL, parseModel, PREVIEW_EXT, measure, estimate, listHandoff, removeHandoff, clearHandoff, printLabel, fillPrintSelects, readPrint, validColor, colorLabel, colorRgb, fillColorSelect, setCartCount, createViewer } = window.Sulc3D;
   const form = document.getElementById('contactForm');
   const fileUpload = document.getElementById('fileUpload');
   const fileDrop = document.getElementById('fileDrop');
@@ -1688,9 +1696,10 @@
           pos: null, model: null, failed: false
         };
         items.push(it);
-        if (ext === 'stl') {
+        if (PREVIEW_EXT.includes(ext)) {
           file.arrayBuffer()
-            .then(buf => { it.pos = parseSTL(buf); it.model = measure(it.pos); })
+            .then(buf => parseModel(buf, ext))
+            .then(r => { it.pos = r.pos; it.model = measure(it.pos); if (r.parts > 1) it.multi = true; })
             .catch(() => { it.failed = true; })
             .then(() => { if (items.includes(it)) { if (!active && it.model) active = it; refresh(); } });
         }
@@ -1786,7 +1795,7 @@
         it.est = null;
         it.meta.classList.remove('warn');
         it.meta.textContent = mb(it.file.size) + (
-          it.ext !== 'stl' ? ' · náhled a odhad ceny umíme jen u STL, cenu pošleme v nabídce'
+          !PREVIEW_EXT.includes(it.ext) ? ' · u STEP náhled a odhad ceny neumíme, cenu pošleme v nabídce'
           : it.failed ? ' · náhled se nepodařilo vytvořit, soubor ale odešleme'
           : ' · načítám…');
         return head + ', bez odhadu';
